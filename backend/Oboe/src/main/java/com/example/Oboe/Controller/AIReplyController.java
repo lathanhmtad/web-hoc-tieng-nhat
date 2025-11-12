@@ -1,9 +1,9 @@
 package com.example.Oboe.Controller;
 
 import com.example.Oboe.DTOs.AIBlogReplyDTO;
-import com.example.Oboe.Entity.AIBlogReply;
+import com.example.Oboe.Entity.AIPhanHoiBaiViet;
 import com.example.Oboe.Entity.AICommentReply;
-import com.example.Oboe.Entity.Blog;
+import com.example.Oboe.Entity.BaiViet;
 import com.example.Oboe.Entity.Comment;
 import com.example.Oboe.Repository.AIBlogReplyRepository;
 import com.example.Oboe.Repository.AICommentReplyRepository;
@@ -40,15 +40,15 @@ public class AIReplyController {
 
     @PostMapping("/blog/{blogId}")
     public ResponseEntity<?> getOrCreateAIBlogReply(@PathVariable UUID blogId) {
-        Blog blog = blogRepository.findById(blogId).orElse(null);
-        if (blog == null) {
+        BaiViet baiViet = blogRepository.findById(blogId).orElse(null);
+        if (baiViet == null) {
             Map<String, String> error = new HashMap<>();
             error.put("error", "Blog not found with ID: " + blogId);
             return ResponseEntity.status(404).body(error);
         }
 
         // Kiểm tra đã có phản hồi AI chưa
-        AIBlogReply existingReply = aiBlogReplyRepository.findByBlog_BlogId(blogId);
+        AIPhanHoiBaiViet existingReply = aiBlogReplyRepository.findByBaiViet_BlogId(blogId);
         AIBlogReplyDTO dto = new AIBlogReplyDTO();
 
         if (existingReply != null) {
@@ -63,17 +63,17 @@ public class AIReplyController {
 
         // Nếu chưa có, gọi Gemini
         String prompt = "Bạn là một AI chuyên viết bình luận giá trị cho các bài blog liên quan đến tiếng Nhật. Hãy dựa vào nội dung bài viết bên dưới để đưa ra phản hồi phù hợp:\n\n" +
-                "Tiêu đề: " + blog.getTitle() +
-                "\nNội dung: " + blog.getContent() +
+                "Tiêu đề: " + baiViet.getTitle() +
+                "\nNội dung: " + baiViet.getContent() +
                 "\n\nNếu đây là bài viết nêu câu hỏi hoặc vấn đề, hãy trả lời rõ ràng, đúng trọng tâm, giúp người viết hiểu và giải quyết triệt để vấn đề. Nếu đây là bài chia sẻ kinh nghiệm, tâm sự hay bí quyết học tập (ví dụ như 'Tôi đã hoàn thành khóa học Kanji như thế nào...'), hãy phản hồi một cách thân thiện, đồng cảm và cổ vũ tích cực. Luôn dùng giọng điệu thân thiện, không dùng markdown, câu văn rõ ràng, ngắn gọn nhưng đầy đủ ý nghĩa, giúp người đọc cảm thấy được lắng nghe và trân trọng." +
                 " và hãy viết chỉ tầm khoảng dưới 150 chữ thôi";
 
         String response = geminiService.generateTextFromPrompt(prompt);
 
         // Tạo phản hồi mới
-        AIBlogReply newReply = new AIBlogReply();
+        AIPhanHoiBaiViet newReply = new AIPhanHoiBaiViet();
         newReply.setId(UUID.randomUUID());
-        newReply.setBlog(blog);
+        newReply.setBaiViet(baiViet);
         newReply.setContent(response);
         newReply.setCreatedAt(LocalDateTime.now());
 

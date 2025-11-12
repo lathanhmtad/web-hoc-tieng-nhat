@@ -86,7 +86,7 @@ public class NguoiDung {
 
     @OneToMany(mappedBy = "nguoiDung", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference("user-blogs")
-    private List<Blog> blogs = new ArrayList<>();
+    private List<BaiViet> baiViets = new ArrayList<>();
 
     @OneToMany(mappedBy = "nguoiDung", cascade = CascadeType.ALL)
     @JsonManagedReference("users-Notifications")
@@ -223,12 +223,12 @@ public class NguoiDung {
         this.accountType = accountType;
     }
 
-    public List<Blog> getBlogs() {
-        return blogs;
+    public List<BaiViet> getBaiViets() {
+        return baiViets;
     }
 
-    public void setBlogs(List<Blog> blogs) {
-        this.blogs = blogs;
+    public void setBaiViets(List<BaiViet> baiViets) {
+        this.baiViets = baiViets;
     }
 
     public List<Comment> getComments() {

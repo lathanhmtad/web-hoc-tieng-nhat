@@ -1,8 +1,8 @@
 package com.example.Oboe.Service;
 
 import com.example.Oboe.DTOs.QuestionDTO;
-import com.example.Oboe.Entity.Questions;
-import com.example.Oboe.Entity.Quizzes;
+import com.example.Oboe.Entity.CauHoi;
+import com.example.Oboe.Entity.BaiKiemTra;
 import com.example.Oboe.Repository.QuestionsRepository;
 import com.example.Oboe.Repository.QuizzesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class QuestionsService {
@@ -32,16 +31,16 @@ public class QuestionsService {
         List<QuestionDTO> createdQuestions = new ArrayList<>();
 
         for (QuestionDTO dto : dtoList) {
-            Quizzes quiz = quizzesRepository.findById(dto.getQuizId())
+            BaiKiemTra quiz = quizzesRepository.findById(dto.getQuizId())
                     .orElseThrow(() -> new RuntimeException("Quiz not found with ID: " + dto.getQuizId()));
 
-            Questions question = new Questions();
+            CauHoi question = new CauHoi();
             question.setQuestionName(dto.getQuestionName());
             question.setCorrectAnswer(dto.getCorrectAnswer());
             question.setOptions(String.join(";", dto.getOptions()));
             question.setQuiz(quiz);
 
-            Questions saved = questionsRepository.save(question);
+            CauHoi saved = questionsRepository.save(question);
             createdQuestions.add(toDTO(saved));
         }
 
@@ -49,7 +48,7 @@ public class QuestionsService {
     }
 
     public Page<QuestionDTO> getQuestionsByQuizId(UUID quizId, Pageable pageable) {
-        Quizzes quiz = quizzesRepository.findById(quizId)
+        BaiKiemTra quiz = quizzesRepository.findById(quizId)
                 .orElseThrow(() -> new RuntimeException("Quiz not found"));
 
         return questionsRepository.findByQuiz(quiz, pageable)
@@ -58,7 +57,7 @@ public class QuestionsService {
 
 
 
-    private QuestionDTO toDTO(Questions q) {
+    private QuestionDTO toDTO(CauHoi q) {
         QuestionDTO dto = new QuestionDTO();
         dto.setQuestionID(q.getQuestionID());
         dto.setQuestionName(q.getQuestionName());

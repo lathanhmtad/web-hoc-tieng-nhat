@@ -381,7 +381,8 @@ onMounted(() => {
 
   if (isAuthenticated.value) {
     loadNotifications()
-    WebSocketService.connect(currentUser.value?.userId || currentUser.value?.id)
+    console.log('currentUser', currentUser.value)
+    WebSocketService.connect(currentUser.value?.userId || currentUser.value?.id || currentUser.value?.user_id)
 
     WebSocketService.onMessage((msg) => {
       console.log("[ Message Received]", msg);

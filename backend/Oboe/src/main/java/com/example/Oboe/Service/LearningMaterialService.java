@@ -1,7 +1,7 @@
 package com.example.Oboe.Service;
 
 import com.example.Oboe.DTOs.LearningMaterialDTO;
-import com.example.Oboe.Entity.Quizzes;
+import com.example.Oboe.Entity.BaiKiemTra;
 import com.example.Oboe.Repository.QuizzesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,9 +21,9 @@ public class LearningMaterialService {
 
     // Gợi ý từ 10 quiz đầu tiên, random 3 cái
     public List<LearningMaterialDTO> getSuggestedMaterials() {
-        List<Quizzes> allQuizzes = quizzesRepository.findAll();
+        List<BaiKiemTra> allQuizzes = quizzesRepository.findAll();
 
-        List<Quizzes> top10 = allQuizzes.stream()
+        List<BaiKiemTra> top10 = allQuizzes.stream()
                 .limit(10)
                 .collect(Collectors.toList());
 
@@ -37,7 +37,7 @@ public class LearningMaterialService {
 
     //Gợi ý random 3 quiz bất kỳ từ toàn bộ danh sách
     public List<LearningMaterialDTO> getSuggestedMaterialsRandom() {
-        List<Quizzes> allQuizzes = quizzesRepository.findAll();
+        List<BaiKiemTra> allQuizzes = quizzesRepository.findAll();
 
         // Nếu dưới 3 quiz thì trả về hết
         if (allQuizzes.size() <= 3) {
@@ -55,7 +55,7 @@ public class LearningMaterialService {
                 .collect(Collectors.toList());
     }
 
-    private LearningMaterialDTO toDTO(Quizzes quiz) {
+    private LearningMaterialDTO toDTO(BaiKiemTra quiz) {
         LearningMaterialDTO dto = new LearningMaterialDTO();
 
         if (quiz.getUser() != null) {
@@ -74,7 +74,7 @@ public class LearningMaterialService {
     }
 
     public List<LearningMaterialDTO> getSuggestedMaterialsRandomFromDB() {
-        List<Quizzes> randomQuizzes = quizzesRepository.findRandomQuizzes();
+        List<BaiKiemTra> randomQuizzes = quizzesRepository.findRandomQuizzes();
 
         return randomQuizzes.stream()
                 .map(this::toDTO)

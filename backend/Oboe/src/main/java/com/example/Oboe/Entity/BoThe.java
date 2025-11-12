@@ -79,7 +79,7 @@ public class BoThe {
         this.created = created;
     }
 
-    public List<MucThe> getCardItems() {
+    public List<MucThe> getMucThes() {
         return mucThes;
     }
 

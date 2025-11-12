@@ -47,7 +47,7 @@ public class FlashCardService {
                 mucThe.setWord(itemDto.getWord());
                 mucThe.setMeaning(itemDto.getMeaning());
                 mucThe.setBoThe(boThe);
-                boThe.getCardItems().add(mucThe);
+                boThe.getMucThes().add(mucThe);
             }
         }
 
@@ -119,7 +119,7 @@ public class FlashCardService {
 
         boThe.setTerm(dto.getTerm());
         boThe.setDescription(dto.getDescription());
-        boThe.getCardItems().clear();
+        boThe.getMucThes().clear();
 
         if (dto.getCardItems() != null) {
             for (CardItemDto itemDto : dto.getCardItems()) {
@@ -127,7 +127,7 @@ public class FlashCardService {
                 mucThe.setWord(itemDto.getWord());
                 mucThe.setMeaning(itemDto.getMeaning());
                 mucThe.setBoThe(boThe);
-                boThe.getCardItems().add(mucThe);
+                boThe.getMucThes().add(mucThe);
             }
         }
 
@@ -139,7 +139,7 @@ public class FlashCardService {
         dto.setTerm(boThe.getTerm());
         dto.setDescription(boThe.getDescription());
         dto.setFlashcardID(boThe.getSet_id());
-        List<CardItemDto> itemDtos = boThe.getCardItems().stream()
+        List<CardItemDto> itemDtos = boThe.getMucThes().stream()
                 .map(item -> {
                     CardItemDto itemDto = new CardItemDto();
                     itemDto.setWord(item.getWord());

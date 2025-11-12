@@ -18,7 +18,7 @@ public interface ReportRepository extends JpaRepository<Report, UUID> {
     @Query("SELECT r FROM Report r WHERE r.nguoiDung.user_id = :userId")
     List<Report> findByUserId(@Param("userId") UUID userId);
 
-    @Query("SELECT r FROM Report r WHERE r.blog.blogId = :blogId")
+    @Query("SELECT r FROM Report r WHERE r.baiViet.blogId = :blogId")
     List<Report> findByBlogId(@Param("blogId") UUID blogId);
     @Query("SELECT COUNT(r) FROM Report r WHERE r.status = 'PENDING'")
     Long countPendingReports();
@@ -29,10 +29,10 @@ public interface ReportRepository extends JpaRepository<Report, UUID> {
     @Query("SELECT r FROM Report r ORDER BY r.report_at DESC")
     List<Report> findLatestReport();
 
-    @Query("SELECT COUNT(r) FROM Report r WHERE r.blog IS NOT NULL AND r.status = 'PENDING'")
+    @Query("SELECT COUNT(r) FROM Report r WHERE r.baiViet IS NOT NULL AND r.status = 'PENDING'")
     Long countPendingBlogReports();
 
-    @Query("SELECT COUNT(r) FROM Report r WHERE r.blog IS NULL AND r.status = 'PENDING'")
+    @Query("SELECT COUNT(r) FROM Report r WHERE r.baiViet IS NULL AND r.status = 'PENDING'")
     Long countPendingFeedbackReports();
 
     @Query("""
@@ -51,7 +51,7 @@ public interface ReportRepository extends JpaRepository<Report, UUID> {
         (SELECT COUNT(r2) FROM Report r2 WHERE r2.nguoiDung.user_id = u.user_id)
     )
     FROM Report r
-    JOIN r.blog b
+    JOIN r.baiViet b
     JOIN r.nguoiDung u
     WHERE (:title IS NULL OR LOWER(b.title) LIKE LOWER(CONCAT('%', :title, '%')))
       AND (:type IS NULL OR LOWER(r.title) LIKE LOWER(CONCAT('%', :type, '%')))
@@ -79,7 +79,7 @@ public interface ReportRepository extends JpaRepository<Report, UUID> {
         (SELECT COUNT(r2) FROM Report r2 WHERE r2.nguoiDung.user_id = u.user_id)
     )
     FROM Report r
-    JOIN r.blog b
+    JOIN r.baiViet b
     JOIN r.nguoiDung u
     ORDER BY r.report_at DESC
 """)

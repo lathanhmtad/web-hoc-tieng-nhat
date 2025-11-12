@@ -31,7 +31,7 @@ public class UserAnswerService {
     }
     public QuizResultDTO saveUserAnswer(List<UserAnswerDTO> answers, UUID userId, UUID quizzesId) {
         // Lấy QuizID
-        Quizzes quiz = quizzesRepository.findById(quizzesId).orElse(null);
+        BaiKiemTra quiz = quizzesRepository.findById(quizzesId).orElse(null);
         if (quiz == null) {
             return new QuizResultDTO("Không tìm thấy Quiz!", 0, 0, 0, LocalDateTime.now());
         }
@@ -64,7 +64,7 @@ public class UserAnswerService {
         long correctAnswers = 0;
 
         for (UserAnswerDTO dto : answers) {
-            Questions question = questionsRepository.findById(dto.getQuestionId())
+            CauHoi question = questionsRepository.findById(dto.getQuestionId())
                     .orElseThrow(() -> new RuntimeException("Không tìm thấy câu hỏi"));
 
             // Kiểm tra đúng/sai

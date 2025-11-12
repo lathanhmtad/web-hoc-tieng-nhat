@@ -5,23 +5,24 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "ai_blog_reply")
-public class AIBlogReply {
+@Table(name = "ai_phan_hoi_bai_viet")
+public class AIPhanHoiBaiViet {
     @Id
     @Column(columnDefinition = "BINARY(16)")
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "blog_id", referencedColumnName = "blog_id")
-    private Blog blog;
+    private BaiViet baiViet;
 
     @Lob
+    @Column(columnDefinition = "LONGTEXT")
     private String content;
 
     @Column(name = "created_at", columnDefinition = "DATETIME(6)")
     private LocalDateTime createdAt;
 
-    public AIBlogReply() {
+    public AIPhanHoiBaiViet() {
         this.id = UUID.randomUUID();
         this.createdAt = LocalDateTime.now();
     }
@@ -36,12 +37,12 @@ public class AIBlogReply {
         this.id = id;
     }
 
-    public Blog getBlog() {
-        return blog;
+    public BaiViet getBaiViet() {
+        return baiViet;
     }
 
-    public void setBlog(Blog blog) {
-        this.blog = blog;
+    public void setBaiViet(BaiViet baiViet) {
+        this.baiViet = baiViet;
     }
 
     public String getContent() {

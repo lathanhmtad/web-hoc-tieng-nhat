@@ -1,7 +1,7 @@
 package com.example.Oboe.Service;
 
 import com.example.Oboe.DTOs.CommentDTOs;
-import com.example.Oboe.Entity.Blog;
+import com.example.Oboe.Entity.BaiViet;
 import com.example.Oboe.Entity.Comment;
 import com.example.Oboe.Entity.NguoiDung;
 import com.example.Oboe.Entity.Notifications;
@@ -131,10 +131,10 @@ public class CommentService {
         boolean isBlog = false;
 
         //  Xác định loại nội dung
-        Optional<Blog> blogOpt = blogRepository.findById(teamId);
+        Optional<BaiViet> blogOpt = blogRepository.findById(teamId);
         if (blogOpt.isPresent()) {
             isBlog = true;
-            receiver = blogOpt.get().getUser();
+            receiver = blogOpt.get().getNguoiDung();
         } else if (
                 !kanjiRepository.existsById(teamId) &&
                         !grammarRepository.existsById(teamId) &&

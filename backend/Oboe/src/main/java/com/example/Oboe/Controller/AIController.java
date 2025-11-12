@@ -45,7 +45,7 @@ public class AIController {
         if (!boTheList.isEmpty()) {
             List<String> wordMeaningList = new ArrayList<>();
             for (BoThe flashCard : boTheList) {
-                for (MucThe mucThe : flashCard.getCardItems()) {
+                for (MucThe mucThe : flashCard.getMucThes()) {
                     String word = mucThe.getWord();
                     String meaning = mucThe.getMeaning();
                     if (word != null && meaning != null) {

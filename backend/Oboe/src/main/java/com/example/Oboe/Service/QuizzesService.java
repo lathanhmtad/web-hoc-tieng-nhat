@@ -4,7 +4,7 @@ import com.example.Oboe.DTOs.QuestionDTO;
 import com.example.Oboe.DTOs.QuizDTO;
 import com.example.Oboe.DTOs.QuizWithQuestionsDTO;
 import com.example.Oboe.Entity.NguoiDung;
-import com.example.Oboe.Entity.Quizzes;
+import com.example.Oboe.Entity.BaiKiemTra;
 import com.example.Oboe.Repository.QuizzesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -41,7 +41,7 @@ public class QuizzesService {
     public List<QuizDTO> getAllByUserId(UUID userId) {
         Optional<NguoiDung> userOpt = userService.findById(userId);
         if (userOpt.isEmpty()) return List.of(); // Trả về danh sách rỗng thay vì null
-        List<Quizzes> quizzes = quizzesRepository.findQuizzesByUserId(userId);
+        List<BaiKiemTra> quizzes = quizzesRepository.findQuizzesByUserId(userId);
         return quizzes.stream()
                 .map(this::toDTO)
                 .toList();
@@ -54,7 +54,7 @@ public class QuizzesService {
 
     public Page<QuizDTO> getQuizzesByUser(UUID userId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Quizzes> quizzesPage = quizzesRepository.findQuizzesByUserIds(userId, pageable);
+        Page<BaiKiemTra> quizzesPage = quizzesRepository.findQuizzesByUserIds(userId, pageable);
         List<QuizDTO> dtoList = quizzesPage.stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
@@ -63,7 +63,7 @@ public class QuizzesService {
     public QuizDTO create(QuizDTO dto , UUID userId ) {
         Optional<NguoiDung> userOpt = userService.findById(userId);
         if (userOpt.isEmpty()) return null;
-        Quizzes quiz = new Quizzes();
+        BaiKiemTra quiz = new BaiKiemTra();
         quiz.setTitle(dto.getTitle());
         quiz.setDescription(dto.getDescription());
         quiz.setUser(userOpt.get());
@@ -71,7 +71,7 @@ public class QuizzesService {
     }
 
     public QuizDTO update(UUID id, QuizDTO dto, UUID userId) {
-        Quizzes quiz = quizzesRepository.findById(id)
+        BaiKiemTra quiz = quizzesRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Quiz not found"));
         //  Kiểm tra quyền sở hữu
         if (!quiz.getUser().getUser_id().equals(userId)) {
@@ -85,7 +85,7 @@ public class QuizzesService {
 
 
     public void delete(UUID id, UUID userId) {
-        Quizzes quiz = quizzesRepository.findById(id)
+        BaiKiemTra quiz = quizzesRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Quiz not found"));
 
         //  Kiểm tra quyền sở hữu
@@ -96,7 +96,7 @@ public class QuizzesService {
         quizzesRepository.delete(quiz);
     }
     public QuizWithQuestionsDTO getQuizById(UUID id) {
-        Quizzes quiz = quizzesRepository.findById(id)
+        BaiKiemTra quiz = quizzesRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Quiz not found"));
 
         QuizWithQuestionsDTO dto = new QuizWithQuestionsDTO();
@@ -139,7 +139,7 @@ public class QuizzesService {
 
 
     // Convert Entity -> DTO
-    private QuizDTO toDTO(Quizzes entity) {
+    private QuizDTO toDTO(BaiKiemTra entity) {
         QuizDTO dto = new QuizDTO();
         dto.setQuizzesID(entity.getQuizzesID());
         dto.setTitle(entity.getTitle());

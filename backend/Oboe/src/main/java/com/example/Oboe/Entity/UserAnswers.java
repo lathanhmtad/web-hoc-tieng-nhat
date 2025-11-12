@@ -17,7 +17,7 @@ public class UserAnswers {
 
     @ManyToOne
     @JoinColumn(name = "QuestionID", nullable = false)
-    private Questions question;
+    private CauHoi question;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -25,7 +25,7 @@ public class UserAnswers {
 
     @ManyToOne
     @JoinColumn(name = "QuizzesID", nullable = false)
-    private Quizzes quiz;
+    private BaiKiemTra quiz;
 
     public int getAttemptNumber() {
         return attemptNumber;
@@ -63,11 +63,11 @@ public class UserAnswers {
         isCorrect = correct;
     }
 
-    public Questions getQuestion() {
+    public CauHoi getQuestion() {
         return question;
     }
 
-    public void setQuestion(Questions question) {
+    public void setQuestion(CauHoi question) {
         this.question = question;
     }
 
@@ -79,11 +79,11 @@ public class UserAnswers {
         this.nguoiDung = nguoiDung;
     }
 
-    public Quizzes getQuiz() {
+    public BaiKiemTra getQuiz() {
         return quiz;
     }
 
-    public void setQuiz(Quizzes quiz) {
+    public void setQuiz(BaiKiemTra quiz) {
         this.quiz = quiz;
     }
 }

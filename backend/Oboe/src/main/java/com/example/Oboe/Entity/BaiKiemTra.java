@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "Quizzes")
-public class Quizzes {
+@Table(name = "bai_kiem_tra")
+public class BaiKiemTra {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -21,7 +21,7 @@ public class Quizzes {
     private NguoiDung nguoiDung;
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Questions> questions;
+    private List<CauHoi> questions;
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<QuizResults> quizResults;
@@ -60,11 +60,11 @@ public class Quizzes {
         this.nguoiDung = nguoiDung;
     }
 
-    public List<Questions> getQuestions() {
+    public List<CauHoi> getQuestions() {
         return questions;
     }
 
-    public void setQuestions(List<Questions> questions) {
+    public void setQuestions(List<CauHoi> questions) {
         this.questions = questions;
     }
 

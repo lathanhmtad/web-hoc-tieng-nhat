@@ -23,6 +23,10 @@ public class QuizController {
 
     @Autowired
     private QuizzesService quizzesService;
+
+    @Autowired
+    private QuizzesService quizService;
+
     @Autowired
     private UserAnswerService userAnswerService;
 
@@ -30,6 +34,7 @@ public class QuizController {
     public List<QuizDTO> getAll() {
         return quizzesService.getAll();
     }
+
     // get quizby id cả question
     @GetMapping("/user/{id}")
     public ResponseEntity<QuizWithQuestionsDTO> getQuizById(@PathVariable UUID id) {
@@ -37,11 +42,11 @@ public class QuizController {
         return ResponseEntity.ok(quizDTO);
     }
 
-
     @GetMapping("/{id}")
     public QuizDTO getById(@PathVariable UUID id) {
         return quizzesService.getById(id);
     }
+
     @PostMapping
     public QuizDTO create(@RequestBody QuizDTO quizDTO, Authentication authentication) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -49,6 +54,7 @@ public class QuizController {
 
         return quizzesService.create(quizDTO, userId); //  chỉ gọi 1 lần, truyền đúng userId
     }
+
     @PutMapping("/{id}")
     public QuizDTO update(@PathVariable UUID id,
                           @RequestBody QuizDTO quizDTO,
@@ -56,6 +62,7 @@ public class QuizController {
         UUID userId = ((CustomUserDetails) authentication.getPrincipal()).getUserID();
         return quizzesService.update(id, quizDTO, userId); // truyền userId
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable UUID id,
                                          Authentication authentication) {
@@ -63,6 +70,7 @@ public class QuizController {
         quizzesService.delete(id, userId); // truyền userId
         return ResponseEntity.ok("Xóa Quizzes thành công");
     }
+
     @GetMapping("/user")
     public ResponseEntity<?> getQuizzesByUser(
             Authentication authentication,
@@ -86,7 +94,6 @@ public class QuizController {
     }
 
 
-
     @PostMapping("/{quizId}/submit-answers")
     public ResponseEntity<?> submitAnswers(
             @PathVariable UUID quizId,
@@ -99,12 +106,5 @@ public class QuizController {
         QuizResultDTO resultDTO = userAnswerService.saveUserAnswer(submission.getAnswers(), userId, quizId);
         return ResponseEntity.ok(resultDTO);
     }
-
-
-
-    @Autowired
-    private QuizzesService quizService;
-
-
 
 }

@@ -28,8 +28,8 @@ public class Report {
     @ManyToOne
     @JoinColumn(name = "blog_id", nullable = true) // Cho phép null nếu không report blog
     @JsonBackReference
+    private BaiViet baiViet;
 
-    private Blog blog;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ReportStatus status = ReportStatus.PENDING;
@@ -83,11 +83,11 @@ public class Report {
         this.status = status;
     }
 
-    public Blog getBlog() {
-        return blog;
+    public BaiViet getBlog() {
+        return baiViet;
     }
 
-    public void setBlog(Blog blog) {
-        this.blog = blog;
+    public void setBlog(BaiViet baiViet) {
+        this.baiViet = baiViet;
     }
 }

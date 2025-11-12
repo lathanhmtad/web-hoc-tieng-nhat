@@ -48,9 +48,9 @@ public class ReportService {
 
         // Nếu có blogId thì đây là report blog
         if (reportDtos.getBlogId() != null) {
-            Blog blog = blogRepository.findById(reportDtos.getBlogId()).orElse(null);
-            if (blog != null) {
-                report.setBlog(blog);
+            BaiViet baiViet = blogRepository.findById(reportDtos.getBlogId()).orElse(null);
+            if (baiViet != null) {
+                report.setBlog(baiViet);
             }
         }
 
@@ -112,7 +112,7 @@ public class ReportService {
             case WARNING:
                 if (report.getUser() != null) {
                     NguoiDung nguoiDung = report.getUser();
-                    Blog blog = report.getBlog();
+                    BaiViet baiViet = report.getBlog();
                     Notifications notification = new Notifications();
                     notification.setUser(nguoiDung);
                     notification.setText_notification("Bạn đã nhận cảnh cáo từ admin: " + note);
@@ -125,8 +125,8 @@ public class ReportService {
                 break;
             case DELETE_POST:
                 if (report.getBlog() != null) {
-                    Blog blog = report.getBlog();
-                    blogRepository.delete(blog);
+                    BaiViet baiViet = report.getBlog();
+                    blogRepository.delete(baiViet);
                 }
                 break;
             case BAN_USER:

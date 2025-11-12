@@ -7,7 +7,8 @@ let onNotificationCallback = null;
 
 function connect(id) {
   userId = id;
-  const wsUrl = `wss://oboeru.me/ws-raw?userId=${userId}`;
+  // const wsUrl = `wss://oboeru.me/ws-raw?userId=${userId}`;
+  const wsUrl = `ws://localhost:8080/ws-raw?userId=${userId}`;
   socket = new WebSocket(wsUrl);
 
   socket.onopen = () => {

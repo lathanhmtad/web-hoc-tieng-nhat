@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "blogs")
-public class Blog {
+@Table(name = "bai_viet")
+public class BaiViet {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "blog_id", updatable = false, nullable = false)
@@ -35,7 +35,6 @@ public class Blog {
     private String tags; // Ví dụ: "java,spring,backend"
 
 
-
     @Column(name = "topics")
     private String topics; // Ví dụ: "Spring Boot,Cơ sở dữ liệu"
 
@@ -44,27 +43,27 @@ public class Blog {
     @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference("user-blogs") // Tương ứng với @JsonManagedReference trong User
     private NguoiDung nguoiDung;
-    @OneToMany(mappedBy = "blog", cascade = CascadeType.ALL, orphanRemoval = true)
+
+    @OneToMany(mappedBy = "baiViet", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Report> reports = new ArrayList<>();
 
     // Constructor mặc định
-    public Blog() {
+    public BaiViet() {
     }
 
     // Constructor với các trường cơ bản
-    public Blog(String title, String content, NguoiDung nguoiDung) {
+    public BaiViet(String title, String content, NguoiDung nguoiDung) {
         this.title = title;
         this.content = content;
         this.nguoiDung = nguoiDung;
     }
-    public Blog(String title, String content, NguoiDung nguoiDung, String tags, String topics) {
+    public BaiViet(String title, String content, NguoiDung nguoiDung, String tags, String topics) {
         this.title = title;
         this.content = content;
         this.nguoiDung = nguoiDung;
         this.tags = tags;
         this.topics = topics;
     }
-
 
 
     @PreUpdate
@@ -115,13 +114,14 @@ public class Blog {
         this.updatedAt = updatedAt;
     }
 
-    public NguoiDung getUser() {
+    public NguoiDung getNguoiDung() {
         return nguoiDung;
     }
 
-    public void setUser(NguoiDung nguoiDung) {
+    public void setNguoiDung(NguoiDung nguoiDung) {
         this.nguoiDung = nguoiDung;
     }
+
     public String getTags() {
         return tags;
     }

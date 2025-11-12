@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "Questions")
-public class Questions {
+@Table(name = "cau_hoi")
+public class CauHoi {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -18,7 +18,7 @@ public class Questions {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "QuizzesID")
-    private Quizzes quiz;
+    private BaiKiemTra quiz;
 
     public UUID getQuestionID() {
         return questionID;
@@ -52,11 +52,11 @@ public class Questions {
         this.options = options;
     }
 
-    public Quizzes getQuiz() {
+    public BaiKiemTra getQuiz() {
         return quiz;
     }
 
-    public void setQuiz(Quizzes quiz) {
+    public void setQuiz(BaiKiemTra quiz) {
         this.quiz = quiz;
     }
 }

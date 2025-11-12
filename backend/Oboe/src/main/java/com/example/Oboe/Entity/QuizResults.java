@@ -18,7 +18,7 @@ public class QuizResults {
 
     @ManyToOne
     @JoinColumn(name = "QuizzesID", nullable = false)
-    private Quizzes quiz;
+    private BaiKiemTra quiz;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -48,11 +48,11 @@ public class QuizResults {
         this.takenAt = takenAt;
     }
 
-    public Quizzes getQuiz() {
+    public BaiKiemTra getQuiz() {
         return quiz;
     }
 
-    public void setQuiz(Quizzes quiz) {
+    public void setQuiz(BaiKiemTra quiz) {
         this.quiz = quiz;
     }
 
