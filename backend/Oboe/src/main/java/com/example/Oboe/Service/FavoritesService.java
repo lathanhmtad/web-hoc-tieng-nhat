@@ -80,30 +80,30 @@ public class FavoritesService {
         favorites.setUser(nguoiDung);
 
         if (dto.getKanjiId() != null) {
-            Kanji kanji = kanjiRepository.findById(dto.getKanjiId())
+            HanTu hanTu = kanjiRepository.findById(dto.getKanjiId())
                     .orElseThrow(() -> new RuntimeException("Kanji not found"));
-            favorites.setKanji(kanji);
-            favorites.setTitle(kanji.getCharacter_name());
-            favorites.setContent(kanji.getMeaning());
+            favorites.setHanTu(hanTu);
+            favorites.setTitle(hanTu.getCharacter_name());
+            favorites.setContent(hanTu.getMeaning());
         } else if (dto.getGrammaId() != null) {
-            Grammar grammar = grammarRepository.findById(dto.getGrammaId())
+            NguPhap nguPhap = grammarRepository.findById(dto.getGrammaId())
                     .orElseThrow(() -> new RuntimeException("Grammar not found"));
-            favorites.setGramma(grammar);
-            favorites.setTitle(grammar.getStructure());
-            favorites.setContent(grammar.getExplanation());
+            favorites.setGramma(nguPhap);
+            favorites.setTitle(nguPhap.getStructure());
+            favorites.setContent(nguPhap.getExplanation());
         }  else if (dto.getVocabularyId() != null) {
-        Vocabulary vocabulary = vocabularyRepository.findById(dto.getVocabularyId())
+        TuVung tuVung = vocabularyRepository.findById(dto.getVocabularyId())
                 .orElseThrow(() -> new RuntimeException("Vocabulary not found"));
-            favorites.setVocabulary(vocabulary);
-            favorites.setTitle(vocabulary.getWords());
-            favorites.setContent(vocabulary.getMeanning());
+            favorites.setTuVung(tuVung);
+            favorites.setTitle(tuVung.getWords());
+            favorites.setContent(tuVung.getMeanning());
         }
         else if (dto.getSampleSentenceId() != null)  {
-                SampleSentence sampleSentence = sampleSentenceRepository.findById(dto.getSampleSentenceId())
+                MauCau mauCau = sampleSentenceRepository.findById(dto.getSampleSentenceId())
                         .orElseThrow(() -> new RuntimeException("SampleSentence not found"));
-            favorites.setSentence(sampleSentence);
-            favorites.setTitle(sampleSentence.getJapaneseText());
-            favorites.setContent(sampleSentence.getVietnameseMeaning());
+            favorites.setSentence(mauCau);
+            favorites.setTitle(mauCau.getJapaneseText());
+            favorites.setContent(mauCau.getVietnameseMeaning());
         }
 
         else {
@@ -121,9 +121,9 @@ public class FavoritesService {
         return list.stream()
                 .filter(fav -> {
                     return switch (type.toLowerCase()) {
-                        case "kanji" -> fav.getKanji() != null;
+                        case "kanji" -> fav.getHanTu() != null;
                         case "grammar" -> fav.getGramma() != null;
-                        case "vocabulary" -> fav.getVocabulary() != null;
+                        case "vocabulary" -> fav.getTuVung() != null;
                         case "samplesentence" -> fav.getSentence() != null;
                         default -> false;
                     };
@@ -143,11 +143,11 @@ public class FavoritesService {
                 .map(fav -> {
                     FavoritesDTO dto = toDTO(fav);
 
-                    if (fav.getKanji() != null) {
+                    if (fav.getHanTu() != null) {
                         dto.setType("kanji");
                     } else if (fav.getGramma() != null) {
                         dto.setType("grammar");
-                    } else if (fav.getVocabulary() != null) {
+                    } else if (fav.getTuVung() != null) {
                         dto.setType("vocabulary");
                     } else if (fav.getSentence() != null) {
                         dto.setType("samplesentence");
@@ -184,16 +184,16 @@ public class FavoritesService {
                 favorites.getFavories_at(),
                 favorites.getUser() != null ? favorites.getUser().getUser_id() : null,
                 favorites.getGramma() != null ? favorites.getGramma().getGrammaID() : null,
-                favorites.getKanji() != null ? favorites.getKanji().getKanjiId() : null,
+                favorites.getHanTu() != null ? favorites.getHanTu().getKanjiId() : null,
                 favorites.getSentence() != null ? favorites.getSentence().getSample_sentence_id() : null,
-                favorites.getVocabulary() != null ? favorites.getVocabulary().getVocalbId() : null
+                favorites.getTuVung() != null ? favorites.getTuVung().getVocalbId() : null
         );
         // Xác định type
-        if (favorites.getKanji() != null) {
+        if (favorites.getHanTu() != null) {
             dto.setType("kanji");
         } else if (favorites.getGramma() != null) {
             dto.setType("grammar");
-        } else if (favorites.getVocabulary() != null) {
+        } else if (favorites.getTuVung() != null) {
             dto.setType("vocabulary");
         } else if (favorites.getSentence() != null) {
             dto.setType("samplesentence");

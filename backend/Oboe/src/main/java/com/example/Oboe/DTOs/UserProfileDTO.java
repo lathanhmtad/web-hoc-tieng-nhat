@@ -16,8 +16,8 @@ public class UserProfileDTO {
     private LocalDate day_of_birth;
     private AuthProvider authProvider;
     private boolean verified;
-    private AccountType accountType;
-    private Role role;
+    private LoaiTaiKhoan loaiTaiKhoan;
+    private VaiTro vaiTro;
     private Status status;
     private LocalDateTime create_at;
     private LocalDateTime update_at;
@@ -33,8 +33,8 @@ public class UserProfileDTO {
         this.day_of_birth = nguoiDung.getDay_of_birth();
         this.authProvider = nguoiDung.getAuthProvider();
         this.verified = nguoiDung.isVerified();
-        this.accountType = nguoiDung.getAccountType();
-        this.role = nguoiDung.getRole();
+        this.loaiTaiKhoan = nguoiDung.getAccountType();
+        this.vaiTro = nguoiDung.getRole();
         this.create_at = nguoiDung.getCreate_at();
         this.update_at = nguoiDung.getUpdate_at();
         this.status = nguoiDung.getStatus();
@@ -120,20 +120,20 @@ public class UserProfileDTO {
         this.verified = verified;
     }
 
-    public AccountType getAccountType() {
-        return accountType;
+    public LoaiTaiKhoan getAccountType() {
+        return loaiTaiKhoan;
     }
 
-    public void setAccountType(AccountType accountType) {
-        this.accountType = accountType;
+    public void setAccountType(LoaiTaiKhoan loaiTaiKhoan) {
+        this.loaiTaiKhoan = loaiTaiKhoan;
     }
 
-    public Role getRole() {
-        return role;
+    public VaiTro getRole() {
+        return vaiTro;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void setRole(VaiTro vaiTro) {
+        this.vaiTro = vaiTro;
     }
 
     public LocalDateTime getCreate_at() {

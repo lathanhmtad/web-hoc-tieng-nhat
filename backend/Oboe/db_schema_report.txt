@@ -1,0 +1,59 @@
+DB Schema Report - Generated from Java Entities
+Generated on: 2025-11-13
+Source: src/main/java/com/example/Oboe/Entity
+
+Format: TABLE: table_name - column_name (JavaType) [PRIMARY KEY/FOREIGN KEY if applicable]
+
+TABLE: UserAnswers - UserAnswersId (UUID) [PRIMARY KEY]; answer (String); isCorrect (boolean); QuestionID (UUID) [FOREIGN KEY -> cau_hoi.QuestionID]; user_id (UUID) [FOREIGN KEY -> nguoi_dung.user_id]; QuizzesID (UUID) [FOREIGN KEY -> bai_kiem_tra.QuizzesID]; attempt_number (int)
+
+TABLE: tu_vung - Vocalb_id (UUI
+
+
+D) [PRIMARY KEY]; words (String); meanning (String); vietnamese_pronunciation (String); wordType (String); scriptType (String); kanjiId (UUID) [FOREIGN KEY -> han_tu.kanji_id]
+
+TABLE: sample_sentence - sample_sentence_id (UUID) [PRIMARY KEY]; japanese_text (String); vietnamese_meaning (String); vietnamese_pronunciation (String)
+
+TABLE: report_actions - action_id (UUID) [PRIMARY KEY]; reportid (UUID) [FOREIGN KEY -> Reports.reportID]; action_type (ActionType / Enum); note (String); created_at (LocalDateTime)
+
+TABLE: Reports - reportID (UUID) [PRIMARY KEY]; title (String); content (String); report_at (LocalDate); user_id (UUID) [FOREIGN KEY -> nguoi_dung.user_id]; blog_id (UUID) [FOREIGN KEY -> bai_viet.blog_id]; status (ReportStatus / Enum)
+
+TABLE: reading - readingid (UUID) [PRIMARY KEY]; reading_text (String); reading_type (String); owner_type (String); owner_id (UUID)
+
+TABLE: QuizResults - ResultID (UUID) [PRIMARY KEY]; score (double); takenAt (LocalDateTime); QuizzesID (UUID) [FOREIGN KEY -> bai_kiem_tra.QuizzesID]; user_id (UUID) [FOREIGN KEY -> nguoi_dung.user_id]
+
+TABLE: Payment - PaymentID (UUID) [PRIMARY KEY]; amount (int); status (String); paymentDate (LocalDate); transaction_id (String); payment_method (String); order_code (Long); user_id (UUID) [FOREIGN KEY -> nguoi_dung.user_id]; paid_at (LocalDateTime)
+
+TABLE: Notifications - NotifiId (UUID) [PRIMARY KEY]; user_id (UUID) [FOREIGN KEY -> nguoi_dung.user_id]; text_notification (String); is_read (boolean); target_id (UUID); target_type (String); update_at (LocalDateTime)
+
+TABLE: nguoi_dung - user_id (UUID) [PRIMARY KEY]; userName (String); passWord (String); lastName (String); firstName (String); day_of_birth (LocalDate); address (String); avatarUrl (String); vaiTro (Role / Enum); verified (boolean); loaiTaiKhoan (AccountType / Enum); auth_provider (AuthProvider / Enum); provider_id (String); status (Status / Enum); create_at (LocalDateTime); update_at (LocalDateTime)
+
+TABLE: muc_the - CardItemId (UUID) [PRIMARY KEY]; word (String); meaning (String); set_id (UUID) [FOREIGN KEY -> bo_the.set_id]
+
+TABLE: Message - messageid (UUID) [PRIMARY KEY]; sent_message (String); sent_at (LocalDateTime); senderid (UUID) [FOREIGN KEY -> nguoi_dung.user_id]; receiverid (UUID) [FOREIGN KEY -> nguoi_dung.user_id]
+
+TABLE: han_tu - kanji_id (UUID) [PRIMARY KEY]; character_name (String); meaning (String); strokes (String); vietnamese_pronunciation (String)
+
+TABLE: Gramma - grammaID (UUID) [PRIMARY KEY]; structure (String); explanation (String); example (String); grammarType (String); vietnamese_pronunciation (String)
+
+TABLE: feedbacks - feedbackId (UUID) [PRIMARY KEY]; fullName (String); email (String); title (String); topic (String); content (String); createdAt (LocalDateTime)
+
+TABLE: Favorites - FavoritesID (UUID) [PRIMARY KEY]; title (String); content (String); favories_at (LocalDate); user_id (UUID) [FOREIGN KEY -> nguoi_dung.user_id]; grammaID (UUID) [FOREIGN KEY -> Gramma.grammaID]; kanjiId (UUID) [FOREIGN KEY -> han_tu.kanji_id]; CardId (UUID) [FOREIGN KEY -> bo_the.set_id]; Vocalb_id (UUID) [FOREIGN KEY -> tu_vung.Vocalb_id]; sample_sentence_id (UUID) [FOREIGN KEY -> sample_sentence.sample_sentence_id]
+
+TABLE: comments - comment_id (UUID) [PRIMARY KEY]; title (String); content (String); createdAt (LocalDateTime); user_id (UUID) [FOREIGN KEY -> nguoi_dung.user_id]; reference_Id (UUID); parent_comment_id (UUID) [FOREIGN KEY -> comments.comment_id]
+
+TABLE: cau_hoi - QuestionID (UUID) [PRIMARY KEY]; questionName (String); correctAnswer (String); options (String); QuizzesID (UUID) [FOREIGN KEY -> bai_kiem_tra.QuizzesID]
+
+TABLE: bo_the - set_id (UUID) [PRIMARY KEY]; term (String); description (String); user_id (UUID) [FOREIGN KEY -> nguoi_dung.user_id]; created (LocalDateTime)
+
+TABLE: bai_viet - blog_id (UUID) [PRIMARY KEY]; title (String); content (String); createdAt (LocalDateTime); updatedAt (LocalDateTime); tags (String); topics (String); user_id (UUID) [FOREIGN KEY -> nguoi_dung.user_id]
+
+TABLE: bai_kiem_tra - QuizzesID (UUID) [PRIMARY KEY]; title (String); description (String); user_id (UUID) [FOREIGN KEY -> nguoi_dung.user_id]
+
+TABLE: ai_phan_hoi_bai_viet - id (UUID) [PRIMARY KEY]; blog_id (UUID) [FOREIGN KEY -> bai_viet.blog_id]; content (String); created_at (LocalDateTime)
+
+TABLE: ai_comment_reply - id (UUID) [PRIMARY KEY]; comment_id (UUID) [FOREIGN KEY -> comments.comment_id]; content (String); created_at (LocalDateTime)
+
+Notes:
+- Enum fields listed as their Enum type (e.g., Role, AccountType) — the DB column stores string per @Enumerated(EnumType.STRING) where present.
+- FK target column names were inferred from the referenced entity's @Column on its @Id field when available.
+

@@ -1,6 +1,5 @@
 package com.example.Oboe.Service;
 
-import com.example.Oboe.DTOs.*;
 import com.example.Oboe.Entity.*;
 import com.example.Oboe.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +49,7 @@ public class SearchService {
 
         switch (type.toLowerCase()) {
             case "vocabulary":
-                for (Vocabulary v : vocabularyRepository.searchVocabulary(keyword)) {
+                for (TuVung v : vocabularyRepository.searchVocabulary(keyword)) {
                     Map<String, String> item = new HashMap<>();
                     item.put("type", "vocabulary");
                     item.put("word", v.getWords());
@@ -62,7 +61,7 @@ public class SearchService {
                 break;
 
             case "kanji":
-                for (Kanji k : kanjiRepository.searchKanji(keyword)) {
+                for (HanTu k : kanjiRepository.searchKanji(keyword)) {
                     Map<String, String> item = new HashMap<>();
                     item.put("type", "kanji");
                     item.put("word", k.getCharacter_name());
@@ -74,7 +73,7 @@ public class SearchService {
                 break;
 
             case "grammar":
-                for (Grammar g : grammarRepository.searchGrammar(keyword)) {
+                for (NguPhap g : grammarRepository.searchGrammar(keyword)) {
                     Map<String, String> item = new HashMap<>();
                     item.put("type", "grammar");
                     item.put("word", g.getStructure());
@@ -86,7 +85,7 @@ public class SearchService {
                 break;
 
             case "sentence":
-                for (SampleSentence s : sampleSentenceRepository.searchByVietnameseMeaning(keyword)) {
+                for (MauCau s : sampleSentenceRepository.searchByVietnameseMeaning(keyword)) {
                     Map<String, String> item = new HashMap<>();
                     item.put("type", "sentence");
                     item.put("word", s.getJapaneseText());

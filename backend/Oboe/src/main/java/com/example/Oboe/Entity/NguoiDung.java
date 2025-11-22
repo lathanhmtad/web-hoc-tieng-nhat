@@ -53,14 +53,14 @@ public class NguoiDung {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private Role role = Role.ROLE_USER;
+    private VaiTro vaiTro = VaiTro.ROLE_USER;
 
     @Column(nullable = false)
     private boolean verified = false;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private AccountType accountType = AccountType.FREE;
+    private LoaiTaiKhoan loaiTaiKhoan = LoaiTaiKhoan.FREE;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "auth_provider", nullable = false)
@@ -183,12 +183,12 @@ public class NguoiDung {
         this.address = address;
     }
 
-    public Role getRole() {
-        return role;
+    public VaiTro getRole() {
+        return vaiTro;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void setRole(VaiTro vaiTro) {
+        this.vaiTro = vaiTro;
     }
 
     public boolean isVerified() {
@@ -215,12 +215,12 @@ public class NguoiDung {
         this.update_at = update_at;
     }
 
-    public AccountType getAccountType() {
-        return accountType;
+    public LoaiTaiKhoan getAccountType() {
+        return loaiTaiKhoan;
     }
 
-    public void setAccountType(AccountType accountType) {
-        this.accountType = accountType;
+    public void setAccountType(LoaiTaiKhoan loaiTaiKhoan) {
+        this.loaiTaiKhoan = loaiTaiKhoan;
     }
 
     public List<BaiViet> getBaiViets() {

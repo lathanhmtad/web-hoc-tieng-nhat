@@ -319,7 +319,7 @@ const loadUserFlashcards = async () => {
       id: flashcard.set_id,
       title: flashcard.term || 'Flashcard', // Use term as title
       description: flashcard.description || '', // Add description field
-      cardCount: flashcard.cardItems?.length || 0,
+      cardCount: flashcard.cardItems?.length || flashcard.mucThes?.length || 0,
       updatedAt: flashcard.created,
       createdAt: flashcard.created, // Add created timestamp
       creator: {

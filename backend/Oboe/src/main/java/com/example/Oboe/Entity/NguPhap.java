@@ -6,7 +6,19 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "Gramma")
-public class Grammar {
+public class NguPhap {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "grammaID", updatable = false, nullable = false)
+    private UUID grammaID;
+    private String structure;
+    private String explanation;
+    private String example;
+    private String grammarType;
+    @Column(name = "vietnamese_pronunciation")
+    private String vietnamesePronunciation;
+
     public UUID getGrammaID() {
         return grammaID;
     }
@@ -54,16 +66,4 @@ public class Grammar {
     public void setVietnamesePronunciation(String vietnamesePronunciation) {
         this.vietnamesePronunciation = vietnamesePronunciation;
     }
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "grammaID", updatable = false, nullable = false)
-    private UUID grammaID;
-    private String structure;
-    private String explanation;
-    private String example;
-    private String grammarType;
-    @Column(name = "vietnamese_pronunciation")
-    private String vietnamesePronunciation;
-
 }

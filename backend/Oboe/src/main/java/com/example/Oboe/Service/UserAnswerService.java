@@ -70,7 +70,7 @@ public class UserAnswerService {
             // Kiểm tra đúng/sai
             boolean isCorrect = dto.getAnswer().equalsIgnoreCase(question.getCorrectAnswer());
 
-            UserAnswers userAnswer = new UserAnswers();
+            CauTraLoiNguoiDung userAnswer = new CauTraLoiNguoiDung();
             userAnswer.setQuiz(quiz);
             userAnswer.setUser(nguoiDung);
             userAnswer.setQuestion(question);

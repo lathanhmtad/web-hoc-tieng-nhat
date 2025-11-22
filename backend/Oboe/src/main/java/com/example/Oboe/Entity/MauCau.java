@@ -7,7 +7,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "sample_sentence")
-public class SampleSentence {
+public class MauCau {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "sample_sentence_id", updatable = false, nullable = false)
@@ -33,9 +33,9 @@ public class SampleSentence {
 
 
     // Constructors
-    public SampleSentence() {}
+    public MauCau() {}
 
-    public SampleSentence(String japaneseText, String vietnameseMeaning) {
+    public MauCau(String japaneseText, String vietnameseMeaning) {
         this.japaneseText = japaneseText;
         this.vietnameseMeaning = vietnameseMeaning;
 

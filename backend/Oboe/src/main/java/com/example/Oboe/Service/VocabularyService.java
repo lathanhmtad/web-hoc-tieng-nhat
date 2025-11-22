@@ -2,7 +2,7 @@ package com.example.Oboe.Service;
 
 import com.example.Oboe.DTOs.VocabularyDTOs;
 import com.example.Oboe.DTOs.ReadingDTO;
-import com.example.Oboe.Entity.Vocabulary;
+import com.example.Oboe.Entity.TuVung;
 import com.example.Oboe.Entity.Reading;
 import com.example.Oboe.Repository.KanjiRepository;
 import com.example.Oboe.Repository.VocabularyRepository;
@@ -34,7 +34,7 @@ public class VocabularyService {
     // Get all vocabularies with pagination
     public Map<String, Object> getAllVocabulary(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Vocabulary> vocabPage = vocabularyRepository.findAll(pageable);
+        Page<TuVung> vocabPage = vocabularyRepository.findAll(pageable);
 
         List<VocabularyDTOs> vocabDTOs = vocabPage.getContent().stream()
                 .map(this::vocabToDTO) .collect(Collectors.toList());
@@ -54,17 +54,17 @@ public class VocabularyService {
     public VocabularyDTOs createVocabulary(VocabularyDTOs dto) {
         checkAdminAccess();
 
-        Vocabulary vocab = new Vocabulary();
+        TuVung vocab = new TuVung();
         vocab.setWords(dto.getWords());
         vocab.setMeanning(dto.getMeanning());
         vocab.setWordType(dto.getWordType());
         vocab.setScriptType(dto.getScriptType());
         vocab.setVietnamesePronunciation(dto.getVietnamese_pronunciation());
 
-        Vocabulary saved = vocabularyRepository.save(vocab);
+        TuVung saved = vocabularyRepository.save(vocab);
         if (dto.getKanjiId() != null) {
             kanjiRepository.findById(dto.getKanjiId())
-                    .ifPresent(vocab::setKanji);
+                    .ifPresent(vocab::setHanTu);
         }
 
         if (dto.getReadings() != null && !dto.getReadings().isEmpty()) {
@@ -81,7 +81,7 @@ public class VocabularyService {
 
     // Get by ID
     public VocabularyDTOs getVocabularyById(UUID id) {
-        Vocabulary vocab = vocabularyRepository.findById(id)
+        TuVung vocab = vocabularyRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy từ vựng với ID: " + id));
         return vocabToDTO(vocab);
     }
@@ -90,7 +90,7 @@ public class VocabularyService {
     public VocabularyDTOs updateVocabulary(UUID id, VocabularyDTOs dto) {
         checkAdminAccess();
 
-        Vocabulary vocab = vocabularyRepository.findById(id)
+        TuVung vocab = vocabularyRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Từ vựng không tồn tại"));
 
         if (dto.getWords() != null) vocab.setWords(dto.getWords());
@@ -99,7 +99,7 @@ public class VocabularyService {
         if (dto.getScriptType() != null) vocab.setScriptType(dto.getScriptType());
         if(dto.getVietnamese_pronunciation() != null ) vocab.setVietnamesePronunciation(dto.getVietnamese_pronunciation());
 
-        Vocabulary updated = vocabularyRepository.save(vocab);
+        TuVung updated = vocabularyRepository.save(vocab);
 
         // Xoá và thêm lại readings
         List<Reading> oldReadings = readingRepository.findByOwnerTypeAndOwnerId("vocabulary", id);
@@ -121,7 +121,7 @@ public class VocabularyService {
     public void deleteVocabulary(UUID id) {
         checkAdminAccess();
 
-        Vocabulary vocab = vocabularyRepository.findById(id)
+        TuVung vocab = vocabularyRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Từ vựng không tồn tại"));
 
         List<Reading> readings = readingRepository.findByOwnerTypeAndOwnerId("vocabulary", id);
@@ -132,12 +132,12 @@ public class VocabularyService {
 
     // Search
     public List<VocabularyDTOs> searchVocabulary(String keyword) {
-        List<Vocabulary> results = vocabularyRepository.searchVocabulary(keyword); // @Query cần định nghĩa
+        List<TuVung> results = vocabularyRepository.searchVocabulary(keyword); // @Query cần định nghĩa
         return results.stream().map(this::vocabToDTO).collect(Collectors.toList());
     }
 
     // 🔄 Entity → DTO
-    private VocabularyDTOs vocabToDTO(Vocabulary vocab) {
+    private VocabularyDTOs vocabToDTO(TuVung vocab) {
         VocabularyDTOs dto = new VocabularyDTOs();
         dto.setVocalbId(vocab.getVocalbId());
         dto.setWords(vocab.getWords());
@@ -146,7 +146,7 @@ public class VocabularyService {
         dto.setScriptType(vocab.getScriptType());
 
         // ✅ Sửa ở đây để tránh lỗi nếu kanji là null
-        dto.setKanjiId(vocab.getKanji() != null ? vocab.getKanji().getKanjiId() : null);
+        dto.setKanjiId(vocab.getHanTu() != null ? vocab.getHanTu().getKanjiId() : null);
 
         dto.setVietnamese_pronunciation(vocab.getVietnamesePronunciation());
 

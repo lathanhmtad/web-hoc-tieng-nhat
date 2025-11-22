@@ -24,11 +24,11 @@ public class Favorites {
 
     @ManyToOne
     @JoinColumn(name ="grammaID")
-    private Grammar gramma;
+    private NguPhap gramma;
 
     @ManyToOne
     @JoinColumn(name ="kanjiId")
-    private Kanji kanji;
+    private HanTu hanTu;
 
     @ManyToOne
     @JoinColumn(name ="CardId")
@@ -36,17 +36,17 @@ public class Favorites {
 
     @ManyToOne
     @JoinColumn(name ="Vocalb_id")
-    private Vocabulary vocabulary;
+    private TuVung tuVung;
 
     @ManyToOne
     @JoinColumn(name = "sample_sentence_id")
-    private SampleSentence sentence;
+    private MauCau sentence;
 
-    public SampleSentence getSentence() {
+    public MauCau getSentence() {
         return sentence;
     }
 
-    public void setSentence(SampleSentence sentence) {
+    public void setSentence(MauCau sentence) {
         this.sentence = sentence;
     }
 
@@ -105,28 +105,28 @@ public class Favorites {
         this.nguoiDung = nguoiDung;
     }
 
-    public Grammar getGramma() {
+    public NguPhap getGramma() {
         return gramma;
     }
 
-    public void setGramma(Grammar gramma) {
+    public void setGramma(NguPhap gramma) {
         this.gramma = gramma;
     }
 
-    public Kanji getKanji() {
-        return kanji;
+    public HanTu getHanTu() {
+        return hanTu;
     }
 
-    public void setKanji(Kanji kanji) {
-        this.kanji = kanji;
+    public void setHanTu(HanTu hanTu) {
+        this.hanTu = hanTu;
     }
 
-    public Vocabulary getVocabulary() {
-        return vocabulary;
+    public TuVung getTuVung() {
+        return tuVung;
     }
 
-    public void setVocabulary(Vocabulary vocabulary) {
-        this.vocabulary = vocabulary;
+    public void setTuVung(TuVung tuVung) {
+        this.tuVung = tuVung;
     }
 
 

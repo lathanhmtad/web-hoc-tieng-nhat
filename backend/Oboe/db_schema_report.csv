@@ -1,0 +1,148 @@
+table,column,java_type,constraints
+UserAnswers,UserAnswersId,UUID,PRIMARY KEY
+UserAnswers,answer,String,
+UserAnswers,isCorrect,boolean,
+UserAnswers,QuestionID,UUID,FOREIGN KEY -> cau_hoi.QuestionID
+UserAnswers,user_id,UUID,FOREIGN KEY -> nguoi_dung.user_id
+UserAnswers,QuizzesID,UUID,FOREIGN KEY -> bai_kiem_tra.QuizzesID
+UserAnswers,attempt_number,int,
+tu_vung,Vocalb_id,UUID,PRIMARY KEY
+tu_vung,words,String,
+tu_vung,meanning,String,
+tu_vung,vietnamese_pronunciation,String,
+tu_vung,wordType,String,
+tu_vung,scriptType,String,
+tu_vung,kanjiId,UUID,FOREIGN KEY -> han_tu.kanji_id
+sample_sentence,sample_sentence_id,UUID,PRIMARY KEY
+sample_sentence,japanese_text,String,
+sample_sentence,vietnamese_meaning,String,
+sample_sentence,vietnamese_pronunciation,String,
+report_actions,action_id,UUID,PRIMARY KEY
+report_actions,reportid,UUID,FOREIGN KEY -> Reports.reportID
+report_actions,action_type,ActionType,
+report_actions,note,String,
+report_actions,created_at,LocalDateTime,
+Reports,reportID,UUID,PRIMARY KEY
+Reports,title,String,
+Reports,content,String,
+Reports,report_at,LocalDate,
+Reports,user_id,UUID,FOREIGN KEY -> nguoi_dung.user_id
+Reports,blog_id,UUID,FOREIGN KEY -> bai_viet.blog_id
+Reports,status,ReportStatus,
+reading,readingid,UUID,PRIMARY KEY
+reading,reading_text,String,
+reading,reading_type,String,
+reading,owner_type,String,
+reading,owner_id,UUID,
+QuizResults,ResultID,UUID,PRIMARY KEY
+QuizResults,score,double,
+QuizResults,takenAt,LocalDateTime,
+QuizResults,QuizzesID,UUID,FOREIGN KEY -> bai_kiem_tra.QuizzesID
+QuizResults,user_id,UUID,FOREIGN KEY -> nguoi_dung.user_id
+Payment,PaymentID,UUID,PRIMARY KEY
+Payment,amount,int,
+Payment,status,String,
+Payment,paymentDate,LocalDate,
+Payment,transaction_id,String,
+Payment,payment_method,String,
+Payment,order_code,Long,
+Payment,user_id,UUID,FOREIGN KEY -> nguoi_dung.user_id
+Payment,paid_at,LocalDateTime,
+Notifications,NotifiId,UUID,PRIMARY KEY
+Notifications,user_id,UUID,FOREIGN KEY -> nguoi_dung.user_id
+Notifications,text_notification,String,
+Notifications,is_read,boolean,
+Notifications,target_id,UUID,
+Notifications,target_type,String,
+Notifications,update_at,LocalDateTime,
+nguoi_dung,user_id,UUID,PRIMARY KEY
+nguoi_dung,userName,String,
+nguoi_dung,passWord,String,
+nguoi_dung,lastName,String,
+nguoi_dung,firstName,String,
+nguoi_dung,day_of_birth,LocalDate,
+nguoi_dung,address,String,
+nguoi_dung,avatarUrl,String,
+nguoi_dung,vaiTro,Role,
+nguoi_dung,verified,boolean,
+nguoi_dung,loaiTaiKhoan,AccountType,
+nguoi_dung,auth_provider,AuthProvider,
+nguoi_dung,provider_id,String,
+nguoi_dung,status,Status,
+nguoi_dung,create_at,LocalDateTime,
+nguoi_dung,update_at,LocalDateTime,
+muc_the,CardItemId,UUID,PRIMARY KEY
+muc_the,word,String,
+muc_the,meaning,String,
+muc_the,set_id,UUID,FOREIGN KEY -> bo_the.set_id
+Message,messageid,UUID,PRIMARY KEY
+Message,sent_message,String,
+Message,sent_at,LocalDateTime,
+Message,senderid,UUID,FOREIGN KEY -> nguoi_dung.user_id
+Message,receiverid,UUID,FOREIGN KEY -> nguoi_dung.user_id
+han_tu,kanji_id,UUID,PRIMARY KEY
+han_tu,character_name,String,
+han_tu,meaning,String,
+han_tu,strokes,String,
+han_tu,vietnamese_pronunciation,String,
+Gramma,grammaID,UUID,PRIMARY KEY
+Gramma,structure,String,
+Gramma,explanation,String,
+Gramma,example,String,
+Gramma,grammarType,String,
+Gramma,vietnamese_pronunciation,String,
+feedbacks,feedbackId,UUID,PRIMARY KEY
+feedbacks,fullName,String,
+feedbacks,email,String,
+feedbacks,title,String,
+feedbacks,topic,String,
+feedbacks,content,String,
+feedbacks,createdAt,LocalDateTime,
+Favorites,FavoritesID,UUID,PRIMARY KEY
+Favorites,title,String,
+Favorites,content,String,
+Favorites,favories_at,LocalDate,
+Favorites,user_id,UUID,FOREIGN KEY -> nguoi_dung.user_id
+Favorites,grammaID,UUID,FOREIGN KEY -> Gramma.grammaID
+Favorites,kanjiId,UUID,FOREIGN KEY -> han_tu.kanji_id
+Favorites,CardId,UUID,FOREIGN KEY -> bo_the.set_id
+Favorites,Vocalb_id,UUID,FOREIGN KEY -> tu_vung.Vocalb_id
+Favorites,sample_sentence_id,UUID,FOREIGN KEY -> sample_sentence.sample_sentence_id
+comments,comment_id,UUID,PRIMARY KEY
+comments,title,String,
+comments,content,String,
+comments,createdAt,LocalDateTime,
+comments,user_id,UUID,FOREIGN KEY -> nguoi_dung.user_id
+comments,reference_Id,UUID,
+comments,parent_comment_id,UUID,FOREIGN KEY -> comments.comment_id
+cau_hoi,QuestionID,UUID,PRIMARY KEY
+cau_hoi,questionName,String,
+cau_hoi,correctAnswer,String,
+cau_hoi,options,String,
+cau_hoi,QuizzesID,UUID,FOREIGN KEY -> bai_kiem_tra.QuizzesID
+bo_the,set_id,UUID,PRIMARY KEY
+bo_the,term,String,
+bo_the,description,String,
+bo_the,user_id,UUID,FOREIGN KEY -> nguoi_dung.user_id
+bo_the,created,LocalDateTime,
+bai_viet,blog_id,UUID,PRIMARY KEY
+bai_viet,title,String,
+bai_viet,content,String,
+bai_viet,createdAt,LocalDateTime,
+bai_viet,updatedAt,LocalDateTime,
+bai_viet,tags,String,
+bai_viet,topics,String,
+bai_viet,user_id,UUID,FOREIGN KEY -> nguoi_dung.user_id
+bai_kiem_tra,QuizzesID,UUID,PRIMARY KEY
+bai_kiem_tra,title,String,
+bai_kiem_tra,description,String,
+bai_kiem_tra,user_id,UUID,FOREIGN KEY -> nguoi_dung.user_id
+ai_phan_hoi_bai_viet,id,UUID,PRIMARY KEY
+ai_phan_hoi_bai_viet,blog_id,UUID,FOREIGN KEY -> bai_viet.blog_id
+ai_phan_hoi_bai_viet,content,String,
+ai_phan_hoi_bai_viet,created_at,LocalDateTime,
+ai_comment_reply,id,UUID,PRIMARY KEY
+ai_comment_reply,comment_id,UUID,FOREIGN KEY -> comments.comment_id
+ai_comment_reply,content,String,
+ai_comment_reply,created_at,LocalDateTime
+

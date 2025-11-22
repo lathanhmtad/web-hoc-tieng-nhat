@@ -3,7 +3,7 @@ package com.example.Oboe.Controller;
 import com.example.Oboe.DTOs.UserDTOs;
 import com.example.Oboe.DTOs.UserProfileDTO;
 import com.example.Oboe.Entity.NguoiDung;
-import com.example.Oboe.Entity.Role;
+import com.example.Oboe.Entity.VaiTro;
 import com.example.Oboe.Entity.Status;
 import com.example.Oboe.Service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class AdminController {
     public ResponseEntity<?> createUser(@RequestBody UserDTOs dto) {
         try {
             NguoiDung created = adminService.createUser(dto);
-            if (created == null && dto.getRole() == Role.ROLE_USER) {
+            if (created == null && dto.getRole() == VaiTro.ROLE_USER) {
                 return ResponseEntity.ok("Đã gửi email xác minh cho tài khoản người dùng.");
             }
             return ResponseEntity.ok(created);
@@ -71,9 +71,9 @@ public class AdminController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/change-role/{id}")
-    public ResponseEntity<?> changeRole(@PathVariable UUID id, @RequestParam Role role) {
+    public ResponseEntity<?> changeRole(@PathVariable UUID id, @RequestParam VaiTro vaiTro) {
         try {
-            return ResponseEntity.ok(adminService.changeRole(id, role));
+            return ResponseEntity.ok(adminService.changeRole(id, vaiTro));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

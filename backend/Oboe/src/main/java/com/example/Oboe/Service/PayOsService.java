@@ -1,7 +1,7 @@
 package com.example.Oboe.Service;
 
 import com.example.Oboe.Config.PayOsConfig;
-import com.example.Oboe.Entity.AccountType;
+import com.example.Oboe.Entity.LoaiTaiKhoan;
 import com.example.Oboe.Entity.Payment;
 import com.example.Oboe.Entity.NguoiDung;
 import com.example.Oboe.Repository.PaymentRepository;
@@ -87,8 +87,8 @@ public class PayOsService {
                     status = "SUCCESS";
                     payment.setPaidAt(LocalDateTime.now());
                     NguoiDung nguoiDung = payment.getUser();
-                    if (nguoiDung.getAccountType() != AccountType.PREMIUM) {
-                        nguoiDung.setAccountType(AccountType.PREMIUM);
+                    if (nguoiDung.getAccountType() != LoaiTaiKhoan.PREMIUM) {
+                        nguoiDung.setAccountType(LoaiTaiKhoan.PREMIUM);
 
                         userRepository.save(nguoiDung);
                     }

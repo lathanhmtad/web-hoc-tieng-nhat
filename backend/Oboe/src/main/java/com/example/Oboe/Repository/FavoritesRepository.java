@@ -16,14 +16,14 @@ import java.util.UUID;
     List<Favorites> findByUserId(@Param("userId") UUID userId);
 
 
-    @Query("SELECT f FROM Favorites f WHERE f.nguoiDung.user_id = :userId AND f.kanji.kanjiId = :kanjiId")
+    @Query("SELECT f FROM Favorites f WHERE f.nguoiDung.user_id = :userId AND f.hanTu.kanjiId = :kanjiId")
     Optional<Favorites> findFavoriteKanji(@Param("userId") UUID userId, @Param("kanjiId") UUID kanjiId);
 
 
     @Query("SELECT f FROM Favorites f WHERE f.nguoiDung.user_id = :userId AND f.gramma.grammaID = :grammaid")
     Optional<Favorites> findFavoriteGramma(@Param("userId") UUID userId, @Param("grammaid") UUID grammaId);
 
-    @Query("SELECT f FROM Favorites f WHERE f.nguoiDung.user_id = :userId AND f.vocabulary.vocalbId = :vocabId")
+    @Query("SELECT f FROM Favorites f WHERE f.nguoiDung.user_id = :userId AND f.tuVung.vocalbId = :vocabId")
     Optional<Favorites> findFavoriteVocabulary(@Param("userId") UUID userId, @Param("vocabId") UUID vocabId);
 
 

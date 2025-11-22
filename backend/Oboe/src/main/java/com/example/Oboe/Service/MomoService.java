@@ -1,6 +1,6 @@
 package com.example.Oboe.Service;
 
-import com.example.Oboe.Entity.AccountType;
+import com.example.Oboe.Entity.LoaiTaiKhoan;
 import com.example.Oboe.Entity.Payment;
 import com.example.Oboe.Entity.NguoiDung;
 import com.example.Oboe.Repository.PaymentRepository;
@@ -123,7 +123,7 @@ public class MomoService {
                 UUID userId = UUID.fromString(extraData);
 
                 userRepository.findById(userId).ifPresent(user -> {
-                    user.setAccountType(AccountType.PREMIUM);
+                    user.setAccountType(LoaiTaiKhoan.PREMIUM);
                     userRepository.save(user);
 
                     Payment payment = new Payment();
