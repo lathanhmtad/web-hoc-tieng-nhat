@@ -43,7 +43,7 @@ public interface BlogRepository extends JpaRepository<BaiViet, UUID> {
         b.title AS title,
         COUNT(c.comment_id) AS commentCount
     FROM bai_viet b
-    JOIN comments c ON b.blog_id = c.reference_id
+    JOIN binhLuans c ON b.blog_id = c.reference_id
     GROUP BY b.blog_id, b.title
     ORDER BY commentCount DESC
     LIMIT 3

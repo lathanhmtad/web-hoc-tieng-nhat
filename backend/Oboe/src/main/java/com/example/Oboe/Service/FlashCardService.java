@@ -37,9 +37,9 @@ public class FlashCardService {
         if (nguoiDung == null) return null;
 
         BoThe boThe = new BoThe();
-        boThe.setTerm(dto.getTerm());
-        boThe.setDescription(dto.getDescription());
-        boThe.setUser(nguoiDung);
+        boThe.setTenBoThe(dto.getTerm());
+        boThe.setMoTa(dto.getDescription());
+        boThe.setNguoiDung(nguoiDung);
 
         if (dto.getCardItems() != null) {
             for (CardItemDto itemDto : dto.getCardItems()) {
@@ -55,7 +55,7 @@ public class FlashCardService {
     }
 
     public Page<BoThe> getFlashCardsByUser(UUID userId, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "created"));
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "ngayTao"));
         return flashCardRepository.findByUser(userId, pageable);
     }
     public List<FlashCardDto> getFlashcardById(UUID flashcardId) {
@@ -87,7 +87,7 @@ public class FlashCardService {
         if (optionalCard.isEmpty()) return false;
 
         BoThe card = optionalCard.get();
-        if (!card.getUser().getUser_id().equals(userId)) return false;
+        if (!card.getNguoiDung().getUser_id().equals(userId)) return false;
 
         flashCardRepository.delete(card);
         return true;
@@ -115,10 +115,10 @@ public class FlashCardService {
         if (optionalCard.isEmpty()) return null;
 
         BoThe boThe = optionalCard.get();
-        if (!boThe.getUser().getUser_id().equals(userId)) return null;
+        if (!boThe.getNguoiDung().getUser_id().equals(userId)) return null;
 
-        boThe.setTerm(dto.getTerm());
-        boThe.setDescription(dto.getDescription());
+        boThe.setTenBoThe(dto.getTerm());
+        boThe.setMoTa(dto.getDescription());
         boThe.getMucThes().clear();
 
         if (dto.getCardItems() != null) {
@@ -136,9 +136,9 @@ public class FlashCardService {
 
     private FlashCardDto convertToDto(BoThe boThe) {
         FlashCardDto dto = new FlashCardDto();
-        dto.setTerm(boThe.getTerm());
-        dto.setDescription(boThe.getDescription());
-        dto.setFlashcardID(boThe.getSet_id());
+        dto.setTerm(boThe.getTenBoThe());
+        dto.setDescription(boThe.getMoTa());
+        dto.setFlashcardID(boThe.getMaBoThe());
         List<CardItemDto> itemDtos = boThe.getMucThes().stream()
                 .map(item -> {
                     CardItemDto itemDto = new CardItemDto();

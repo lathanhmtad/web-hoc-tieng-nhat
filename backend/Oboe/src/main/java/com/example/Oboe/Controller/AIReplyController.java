@@ -4,7 +4,7 @@ import com.example.Oboe.DTOs.AIBlogReplyDTO;
 import com.example.Oboe.Entity.AIPhanHoiBaiViet;
 import com.example.Oboe.Entity.AICommentReply;
 import com.example.Oboe.Entity.BaiViet;
-import com.example.Oboe.Entity.Comment;
+import com.example.Oboe.Entity.BinhLuan;
 import com.example.Oboe.Repository.AIBlogReplyRepository;
 import com.example.Oboe.Repository.AICommentReplyRepository;
 import com.example.Oboe.Repository.BlogRepository;
@@ -91,22 +91,22 @@ public class AIReplyController {
 
     @PostMapping("/comment/{commentId}")
     public ResponseEntity<?> replyToComment(@PathVariable UUID commentId) {
-        Comment comment = commentRepository.findById(commentId).orElse(null);
-        if (comment == null) {
+        BinhLuan binhLuan = commentRepository.findById(commentId).orElse(null);
+        if (binhLuan == null) {
             Map<String, String> error = new HashMap<>();
             error.put("error", "Comment not found with ID: " + commentId);
             return ResponseEntity.status(404).body(error);
         }
 
         String prompt = "Bạn là một AI chuyên phản hồi các bình luận trên blog. Hãy phản hồi lại bình luận sau:\n" +
-                comment.getContent() +
+                binhLuan.getContent() +
                 "\n\nHãy trả lời lịch sự, thân thiện, phù hợp ngữ cảnh. Không dùng markdown.";
 
         String response = geminiService.generateTextFromPrompt(prompt);
 
         AICommentReply reply = new AICommentReply();
         reply.setId(UUID.randomUUID());
-        reply.setComment(comment);
+        reply.setComment(binhLuan);
         reply.setContent(response);
         reply.setCreatedAt(LocalDateTime.now());
 

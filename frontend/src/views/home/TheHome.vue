@@ -167,11 +167,11 @@ const loadRecentSets = async () => {
     
     // Transform API response to match component format
     recentSets.value = response.map(item => ({
-      id: item.set_id,
-      title: item.term,
-      description: item.description,
-      cardCount: item.cardItems ? item.cardItems.length : 0,
-      created: item.created,
+      id: item.maBoThe,
+      title: item.tenBoThe || 'Flashcard',
+      description: item.moTa,
+      cardCount: item.mucThes ? item.mucThes.length : 0,
+      created: item.ngayTao,
       cardItems: item.cardItems || []
     }));
     

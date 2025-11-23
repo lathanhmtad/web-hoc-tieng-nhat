@@ -1,5 +1,7 @@
 package com.example.Oboe.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -18,19 +20,21 @@ public class Message {
 
     private LocalDateTime sent_at = LocalDateTime.now();
 
-    @PreUpdate
-    public void preUpdate() {
-        this.sent_at = LocalDateTime.now();
-    }
-
     // Message relationships
     @ManyToOne
     @JoinColumn(name = "senderid")
+    @JsonBackReference("user-sent-messages")
     private NguoiDung sender;
 
     @ManyToOne
     @JoinColumn(name = "receiverid")
+    @JsonBackReference("user-received-messages")
     private NguoiDung receiver;
+
+    @PreUpdate
+    public void preUpdate() {
+        this.sent_at = LocalDateTime.now();
+    }
 
     // Getters & Setters
 

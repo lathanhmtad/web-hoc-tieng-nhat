@@ -1,6 +1,5 @@
 package com.example.Oboe.Repository;
 
-import com.example.Oboe.Entity.Comment;
 import com.example.Oboe.Entity.Favorites;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

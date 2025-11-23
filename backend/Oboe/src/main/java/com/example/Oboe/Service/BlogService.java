@@ -216,7 +216,7 @@ public class BlogService {
         commentRepository.findTopByReferenceIdOrderByCreatedAtDesc(baiViet.getBlogId())
                 .ifPresent(latestComment -> {
                     dto.setLatestCommentTime(latestComment.getCreatedAt());
-                    dto.setLatestCommenterName(latestComment.getUser().getUserName());
+                    dto.setLatestCommenterName(latestComment.getNguoiDung().getUserName());
 
                 });
 

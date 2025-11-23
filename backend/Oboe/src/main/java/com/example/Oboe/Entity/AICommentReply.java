@@ -14,7 +14,7 @@ public class AICommentReply {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_id", referencedColumnName = "comment_id")
-    private Comment comment;
+    private BinhLuan binhLuan;
 
     @Lob
     private String content;
@@ -37,12 +37,12 @@ public class AICommentReply {
         this.id = id;
     }
 
-    public Comment getComment() {
-        return comment;
+    public BinhLuan getComment() {
+        return binhLuan;
     }
 
-    public void setComment(Comment comment) {
-        this.comment = comment;
+    public void setComment(BinhLuan binhLuan) {
+        this.binhLuan = binhLuan;
     }
 
     public String getContent() {

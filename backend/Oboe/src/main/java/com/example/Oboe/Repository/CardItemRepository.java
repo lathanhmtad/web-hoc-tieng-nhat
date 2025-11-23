@@ -12,6 +12,6 @@ import java.util.UUID;
 
 @Repository
 public interface CardItemRepository extends JpaRepository<MucThe, UUID> {
-    @Query("SELECT new com.example.Oboe.DTOs.CardItemDto(c.word, c.meaning) FROM MucThe c WHERE c.boThe.set_id = :setId")
+    @Query("SELECT new com.example.Oboe.DTOs.CardItemDto(c.word, c.meaning) FROM MucThe c WHERE c.boThe.maBoThe = :setId")
     List<CardItemDto> findAllByFlashCardId(@Param("setId") UUID setId);
 } 

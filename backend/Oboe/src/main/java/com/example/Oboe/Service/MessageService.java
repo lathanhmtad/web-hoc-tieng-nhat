@@ -5,7 +5,7 @@
     import com.example.Oboe.DTOs.UserSummaryDTO;
     import com.example.Oboe.Entity.Message;
     import com.example.Oboe.Entity.NguoiDung;
-    import com.example.Oboe.Entity.Notifications;
+    import com.example.Oboe.Entity.ThongBao;
     import com.example.Oboe.Repository.MessageRepository;
     import com.example.Oboe.Repository.NotificationsRepository;
     import com.example.Oboe.Repository.UserRepository;
@@ -62,8 +62,8 @@
             Message savedMessage = messageRepository.save(message);
 
             // Tạo thông báo
-            Notifications notification = new Notifications();
-            notification.setUser(receiver);
+            ThongBao notification = new ThongBao();
+            notification.setNguoiDung(receiver);
             notification.setText_notification("Bạn nhận được một tin nhắn mới từ " + sender.getUserName());
             notification.setRead(false);
             notification.setUpdate_at(localDateTimeVN);

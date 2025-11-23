@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "Notifications")
-public class Notifications {
+public class ThongBao {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -36,10 +36,10 @@ public class Notifications {
     private LocalDateTime update_at = LocalDateTime.now();
 
     // Constructors
-    public Notifications() {
+    public ThongBao() {
     }
 
-    public Notifications(NguoiDung nguoiDung, String text_notification, boolean isRead, UUID targetId, String targetType) {
+    public ThongBao(NguoiDung nguoiDung, String text_notification, boolean isRead, UUID targetId, String targetType) {
         this.nguoiDung = nguoiDung;
         this.text_notification = text_notification;
         this.isRead = isRead;
@@ -61,11 +61,11 @@ public class Notifications {
         NotifiId = notifiId;
     }
 
-    public NguoiDung getUser() {
+    public NguoiDung getNguoiDung() {
         return nguoiDung;
     }
 
-    public void setUser(NguoiDung nguoiDung) {
+    public void setNguoiDung(NguoiDung nguoiDung) {
         this.nguoiDung = nguoiDung;
     }
 

@@ -1,8 +1,7 @@
 package com.example.Oboe.Service;
 
 import com.example.Oboe.DTOs.NotificationsDTO;
-import com.example.Oboe.Entity.Notifications;
-import com.example.Oboe.Repository.MessageRepository;
+import com.example.Oboe.Entity.ThongBao;
 import com.example.Oboe.Repository.NotificationsRepository;
 import com.example.Oboe.Repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -27,7 +26,7 @@ public class NotificationsService {
 
     public List<NotificationsDTO> getAllNotification(UUID userId) {
         Pageable top30 = PageRequest.of(0, 30); // chỉ lấy 30 thông báo mới nhất
-        List<Notifications> notifications = notificationsRepository.findConversation(userId, top30);
+        List<ThongBao> notifications = notificationsRepository.findConversation(userId, top30);
         return notifications.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
@@ -40,7 +39,7 @@ public class NotificationsService {
 
     @Transactional
     public boolean markNotificationAsRead(UUID notificationId) {
-        Notifications read = notificationsRepository.findById(notificationId).orElse(null);
+        ThongBao read = notificationsRepository.findById(notificationId).orElse(null);
         if (read != null && !read.isRead()) {
             read.setRead(true); // Đánh dấu đã đọc
             notificationsRepository.save(read); // Lưu lại
@@ -49,15 +48,15 @@ public class NotificationsService {
         return false;
     }
 
-    public NotificationsDTO convertToDTO(Notifications notifications) {
+    public NotificationsDTO convertToDTO(ThongBao thongBao) {
         return new NotificationsDTO(
-                notifications.getNotifiId(),
-                notifications.getUser().getUser_id(),
-                notifications.getText_notification(),
-                notifications.isRead(),
-                notifications.getUpdate_at(),
-                notifications.getTargetId(),     // ← thêm mới
-                notifications.getTargetType()    // ← thêm mới
+                thongBao.getNotifiId(),
+                thongBao.getNguoiDung().getUser_id(),
+                thongBao.getText_notification(),
+                thongBao.isRead(),
+                thongBao.getUpdate_at(),
+                thongBao.getTargetId(),     // ← thêm mới
+                thongBao.getTargetType()    // ← thêm mới
         );
     }
 }

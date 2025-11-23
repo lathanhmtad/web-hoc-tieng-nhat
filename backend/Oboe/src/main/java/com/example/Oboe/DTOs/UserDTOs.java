@@ -1,8 +1,8 @@
 package com.example.Oboe.DTOs;
 
-import com.example.Oboe.Entity.LoaiTaiKhoan;
+import com.example.Oboe.Entity.AccountType;
 import com.example.Oboe.Entity.AuthProvider;
-import com.example.Oboe.Entity.VaiTro;
+import com.example.Oboe.Entity.Role;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,9 +18,9 @@ public class UserDTOs {
     private String avatar;
     private String providerId;
 
-    private VaiTro vaiTro = VaiTro.ROLE_USER;   // Mặc định là USER
+    private Role role = Role.ROLE_USER;   // Mặc định là USER
     private boolean verified = false;     // Mặc định chưa xác minh
-    private LoaiTaiKhoan loaiTaiKhoan = LoaiTaiKhoan.FREE; // Mặc định tài khoản FREE
+    private AccountType accountType = AccountType.FREE; // Mặc định tài khoản FREE
     private LocalDateTime create_at = LocalDateTime.now();
     private LocalDateTime update_at = LocalDateTime.now();
 
@@ -92,12 +92,12 @@ public class UserDTOs {
         this.address = address;
     }
 
-    public VaiTro getRole() {
-        return vaiTro;
+    public Role getRole() {
+        return role;
     }
 
-    public void setRole(VaiTro vaiTro) {
-        this.vaiTro = vaiTro;
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public boolean isVerified() {
@@ -108,12 +108,12 @@ public class UserDTOs {
         this.verified = verified;
     }
 
-    public LoaiTaiKhoan getAccountType() {
-        return loaiTaiKhoan;
+    public AccountType getAccountType() {
+        return accountType;
     }
 
-    public void setAccountType(LoaiTaiKhoan loaiTaiKhoan) {
-        this.loaiTaiKhoan = loaiTaiKhoan;
+    public void setAccountType(AccountType accountType) {
+        this.accountType = accountType;
     }
 
     public LocalDateTime getCreate_at() {

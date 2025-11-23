@@ -113,8 +113,8 @@ public class ReportService {
                 if (report.getUser() != null) {
                     NguoiDung nguoiDung = report.getUser();
                     BaiViet baiViet = report.getBlog();
-                    Notifications notification = new Notifications();
-                    notification.setUser(nguoiDung);
+                    ThongBao notification = new ThongBao();
+                    notification.setNguoiDung(nguoiDung);
                     notification.setText_notification("Bạn đã nhận cảnh cáo từ admin: " + note);
                     notification.setRead(false);
                     notification.setTargetId(report.getReportID());

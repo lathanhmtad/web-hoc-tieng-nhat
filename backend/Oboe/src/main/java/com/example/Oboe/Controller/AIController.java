@@ -172,7 +172,7 @@ public class AIController {
                     },
                     ...
                   ],
-                  "comment": "Hãy viết phần nhận xét tổng thể theo phong cách thân thiện, rõ ràng và mang tính hỗ trợ học tập. Nội dung cần có:
+                  "binhLuan": "Hãy viết phần nhận xét tổng thể theo phong cách thân thiện, rõ ràng và mang tính hỗ trợ học tập. Nội dung cần có:
                   1. Đánh giá trình độ hiện tại (ví dụ: bạn đang ở khoảng N5 hoặc đầu N4).
                   2. Nhận xét các phần làm tốt (ví dụ: bạn làm tốt phần từ vựng chủ đề trường học).
                   3. Phân tích các lỗi sai chính, ví dụ: sai mẫu ngữ pháp như ～ている hoặc hiểu sai nghĩa của từ đồng âm.

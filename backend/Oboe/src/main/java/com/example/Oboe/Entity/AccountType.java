@@ -1,7 +1,7 @@
 package com.example.Oboe.Entity;
 
 
-public enum LoaiTaiKhoan {
+public enum AccountType {
     FREE,
     PREMIUM
 }

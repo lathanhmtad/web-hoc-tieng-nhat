@@ -1,6 +1,6 @@
 package com.example.Oboe.Entity;
 
-public enum VaiTro {
+public enum Role {
     ROLE_ADMIN,
     ROLE_USER,
 }

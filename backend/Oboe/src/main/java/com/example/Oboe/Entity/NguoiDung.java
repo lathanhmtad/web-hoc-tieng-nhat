@@ -53,14 +53,14 @@ public class NguoiDung {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private VaiTro vaiTro = VaiTro.ROLE_USER;
+    private Role role = Role.ROLE_USER;
 
     @Column(nullable = false)
     private boolean verified = false;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private LoaiTaiKhoan loaiTaiKhoan = LoaiTaiKhoan.FREE;
+    private AccountType accountType = AccountType.FREE;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "auth_provider", nullable = false)
@@ -90,17 +90,19 @@ public class NguoiDung {
 
     @OneToMany(mappedBy = "nguoiDung", cascade = CascadeType.ALL)
     @JsonManagedReference("users-Notifications")
-    private List<Notifications> notifications = new ArrayList<>();
+    private List<ThongBao> notifications = new ArrayList<>();
 
     // Mối quan hệ 1-nhiều với Comment
     @OneToMany(mappedBy = "nguoiDung", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference("user-comments")
-    private List<Comment> comments = new ArrayList<>();
+    private List<BinhLuan> binhLuans = new ArrayList<>();
 
     @OneToMany(mappedBy = "sender")
+    @JsonManagedReference("user-sent-messages")
     private List<Message> sentMessages;
 
     @OneToMany(mappedBy = "receiver")
+    @JsonManagedReference("user-received-messages")
     private List<Message> receivedMessages;
 
     public Status getStatus() {
@@ -183,12 +185,12 @@ public class NguoiDung {
         this.address = address;
     }
 
-    public VaiTro getRole() {
-        return vaiTro;
+    public Role getRole() {
+        return role;
     }
 
-    public void setRole(VaiTro vaiTro) {
-        this.vaiTro = vaiTro;
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public boolean isVerified() {
@@ -215,12 +217,12 @@ public class NguoiDung {
         this.update_at = update_at;
     }
 
-    public LoaiTaiKhoan getAccountType() {
-        return loaiTaiKhoan;
+    public AccountType getAccountType() {
+        return accountType;
     }
 
-    public void setAccountType(LoaiTaiKhoan loaiTaiKhoan) {
-        this.loaiTaiKhoan = loaiTaiKhoan;
+    public void setAccountType(AccountType accountType) {
+        this.accountType = accountType;
     }
 
     public List<BaiViet> getBaiViets() {
@@ -231,12 +233,12 @@ public class NguoiDung {
         this.baiViets = baiViets;
     }
 
-    public List<Comment> getComments() {
-        return comments;
+    public List<BinhLuan> getComments() {
+        return binhLuans;
     }
 
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
+    public void setComments(List<BinhLuan> binhLuans) {
+        this.binhLuans = binhLuans;
     }
 
     public List<Message> getSentMessages() {
@@ -255,11 +257,11 @@ public class NguoiDung {
         this.receivedMessages = receivedMessages;
     }
 
-    public List<Notifications> getNotifications() {
+    public List<ThongBao> getNotifications() {
         return notifications;
     }
 
-    public void setNotifications(List<Notifications> notifications) {
+    public void setNotifications(List<ThongBao> notifications) {
         this.notifications = notifications;
     }
 

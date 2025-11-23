@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "comments")
-public class Comment {
+public class BinhLuan {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -37,24 +37,24 @@ public class Comment {
     private NguoiDung nguoiDung;
 
     //  Gộp mục tiêu vào 1 trường referenceId
-        @Column(name = "reference_Id", nullable = false)
+    @Column(name = "reference_Id", nullable = false)
     private UUID referenceId;
 
     // Quan hệ tự tham chiếu - comment cha
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_comment_id")
     @JsonBackReference("comment-parent")
-    private Comment parentComment;
+    private BinhLuan parentBinhLuan;
 
     // Danh sách comment con (replies)
-    @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "parentBinhLuan", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference("comment-parent")
-    private List<Comment> replies = new ArrayList<>();
+    private List<BinhLuan> replies = new ArrayList<>();
 
     // Constructors
-    public Comment() {}
+    public BinhLuan() {}
 
-    public Comment(String title, String content, NguoiDung nguoiDung, UUID teamId) {
+    public BinhLuan(String title, String content, NguoiDung nguoiDung, UUID teamId) {
         this.title = title;
         this.content = content;
         this.nguoiDung = nguoiDung;
@@ -94,11 +94,11 @@ public class Comment {
         this.createdAt = createdAt;
     }
 
-    public NguoiDung getUser() {
+    public NguoiDung getNguoiDung() {
         return nguoiDung;
     }
 
-    public void setUser(NguoiDung nguoiDung) {
+    public void setNguoiDung(NguoiDung nguoiDung) {
         this.nguoiDung = nguoiDung;
     }
 
@@ -110,19 +110,19 @@ public class Comment {
         this.referenceId = teamId;
     }
 
-    public Comment getParentComment() {
-        return parentComment;
+    public BinhLuan getParentBinhLuan() {
+        return parentBinhLuan;
     }
 
-    public void setParentComment(Comment parentComment) {
-        this.parentComment = parentComment;
+    public void setParentBinhLuan(BinhLuan parentBinhLuan) {
+        this.parentBinhLuan = parentBinhLuan;
     }
 
-    public List<Comment> getReplies() {
+    public List<BinhLuan> getReplies() {
         return replies;
     }
 
-    public void setReplies(List<Comment> replies) {
+    public void setReplies(List<BinhLuan> replies) {
         this.replies = replies;
     }
 }

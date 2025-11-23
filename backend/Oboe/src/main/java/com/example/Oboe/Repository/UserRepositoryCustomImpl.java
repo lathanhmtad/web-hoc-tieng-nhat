@@ -18,14 +18,14 @@ public class UserRepositoryCustomImpl  implements  UserRepositoryCustom{
     @Transactional
     public void deleteUserWithDependencies(UUID userId){
         em.createNativeQuery("""
-        DELETE c1 FROM comments c1
+        DELETE c1 FROM binhLuans c1
         INNER JOIN (
-            SELECT comment_id FROM comments WHERE user_id = :id
+            SELECT comment_id FROM binhLuans WHERE user_id = :id
         ) AS c2 ON c1.parent_comment_id = c2.comment_id
     """).setParameter("id", userId).executeUpdate();
 
 
-        em.createNativeQuery("DELETE FROM comments WHERE user_id = :id")
+        em.createNativeQuery("DELETE FROM binhLuans WHERE user_id = :id")
                 .setParameter("id", userId).executeUpdate();
 
         // Các bảng khác
@@ -38,7 +38,7 @@ public class UserRepositoryCustomImpl  implements  UserRepositoryCustom{
         em.createNativeQuery("DELETE FROM reports WHERE user_id = :id").setParameter("id", userId).executeUpdate();
 
         // Xoá flashcard & quiz liên quan
-        em.createNativeQuery("DELETE FROM card_items WHERE set_id IN (SELECT set_id FROM flash_cards WHERE user_id = :id)")
+        em.createNativeQuery("DELETE FROM muc_the WHERE ma_bo_the IN (SELECT ma_bo_the FROM bo_the WHERE user_id = :id)")
                 .setParameter("id", userId).executeUpdate();
 
         em.createNativeQuery("DELETE FROM questions WHERE quizzesid IN (SELECT quizzesid FROM quizzes WHERE user_id = :id)")

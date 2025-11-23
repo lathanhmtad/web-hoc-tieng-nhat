@@ -18,7 +18,7 @@ public class MucThe {
         private String meaning;
 
         @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "set_id", nullable = false)
+        @JoinColumn(name = "maBoThe", nullable = false)
         @JsonBackReference("set-carditems")
         private BoThe boThe;
 

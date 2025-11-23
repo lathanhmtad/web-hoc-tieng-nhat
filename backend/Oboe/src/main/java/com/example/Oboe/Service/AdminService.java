@@ -83,9 +83,9 @@ public class AdminService {
         nguoiDung.setLastName(dto.getLastName());
         nguoiDung.setDay_of_birth(dto.getDay_of_birth());
         nguoiDung.setAddress(dto.getAddress());
-        nguoiDung.setRole(VaiTro.ROLE_USER);
+        nguoiDung.setRole(Role.ROLE_USER);
         nguoiDung.setVerified(dto.isVerified());
-        nguoiDung.setAccountType(LoaiTaiKhoan.FREE);
+        nguoiDung.setAccountType(AccountType.FREE);
         nguoiDung.setProviderId(dto.getProviderId());
         nguoiDung.setCreate_at(LocalDateTime.now());
         nguoiDung.setUpdate_at(LocalDateTime.now());
@@ -141,9 +141,9 @@ public class AdminService {
 
 
     // Đổi role
-    public NguoiDung changeRole(UUID id, VaiTro newVaiTro) {
+    public NguoiDung changeRole(UUID id, Role newRole) {
         NguoiDung nguoiDung = getUserById(id);
-        nguoiDung.setRole(newVaiTro);
+        nguoiDung.setRole(newRole);
         nguoiDung.setUpdate_at(LocalDateTime.now());
         return userRepository.save(nguoiDung);
     }
