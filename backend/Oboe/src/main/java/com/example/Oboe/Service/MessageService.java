@@ -64,9 +64,9 @@
             // Tạo thông báo
             ThongBao notification = new ThongBao();
             notification.setNguoiDung(receiver);
-            notification.setText_notification("Bạn nhận được một tin nhắn mới từ " + sender.getUserName());
+            notification.setText_notification("Bạn nhận được một tin nhắn mới từ " + sender.getEmail());
             notification.setRead(false);
-            notification.setUpdate_at(localDateTimeVN);
+            notification.setNgayCapNhat(localDateTimeVN);
 
             // Gán targetId & targetType cho thông báo
             notification.setTargetId(savedMessage.getReceiverId());
@@ -77,7 +77,7 @@
             // Gửi WebSocket đến client
             MessageDTO dto = toDTO(savedMessage);
 
-            WebSocketSession receiverSession = SessionManager.getSession(receiver.getUser_id());
+            WebSocketSession receiverSession = SessionManager.getSession(receiver.getMaNguoiDung());
 
             try {
                 ObjectMapper mapper = new ObjectMapper();
@@ -96,7 +96,7 @@
                 }
             } catch (IOException e) {
                 System.out.println("Lỗi khi gửi WebSocket: " + e.getMessage());
-                SessionManager.removeSession(receiver.getUser_id());
+                SessionManager.removeSession(receiver.getMaNguoiDung());
             }
 
             return dto;
@@ -112,17 +112,17 @@
 
             return nguoiDungs.stream().map(user -> {
                 Message lastMsg = messageRepository
-                        .findMessageNew(userId, user.getUser_id(), limitOne)
+                        .findMessageNew(userId, user.getMaNguoiDung(), limitOne)
                         .stream().findFirst().orElse(null);
 
                 return new UserSummaryDTO(
-                        user.getUser_id(),
-                        user.getFirstName(),
-                        user.getLastName(),
-                        user.getUserName(),
+                        user.getMaNguoiDung(),
+                        user.getHo(),
+                        user.getTen(),
+                        user.getEmail(),
                         lastMsg != null ? lastMsg.getSent_message() : null,
                         lastMsg != null ? lastMsg.getSent_at() : null,
-                        user.getAvatarUrl() //  avatar
+                        user.getAnhDaiDien() //  avatar
                 );
             }).collect(Collectors.toList());
         }
@@ -141,7 +141,7 @@
         public boolean deleteMessage(UUID messageId, UUID userId) {
             Message message = getMessage(messageId);
             // Kiểm tra quyền: chỉ sender mới được xóa
-            if (!message.getSender().getUser_id().equals(userId)) {
+            if (!message.getSender().getMaNguoiDung().equals(userId)) {
                 return false;
             }
             messageRepository.delete(message);
@@ -155,13 +155,13 @@
         private MessageDTO toDTO(Message message) {
             MessageDTO dto = new MessageDTO();
             dto.setMessageId(message.getMessageID());
-            dto.setSenderId(message.getSender().getUser_id());
-            dto.setReceiverId(message.getReceiver().getUser_id());
+            dto.setSenderId(message.getSender().getMaNguoiDung());
+            dto.setReceiverId(message.getReceiver().getMaNguoiDung());
             dto.setSentMessage(message.getSent_message());
             dto.setSentDateTime(message.getSent_at());
-            dto.setSenderName(message.getSender().getUserName());
-            dto.setAvatarUrlSender(message.getSender().getAvatarUrl());
-            dto.setAvatarUrlReceiver(message.getReceiver().getAvatarUrl());
+            dto.setSenderName(message.getSender().getEmail());
+            dto.setAvatarUrlSender(message.getSender().getAnhDaiDien());
+            dto.setAvatarUrlReceiver(message.getReceiver().getAnhDaiDien());
             return dto;
         }
 

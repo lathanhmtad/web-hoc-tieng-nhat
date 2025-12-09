@@ -73,7 +73,7 @@ public class CommentDTOs {
         this.userId = userId;
     }
 
-    public String getUserName() {
+    public String getEmail() {
         return userName;
     }
 

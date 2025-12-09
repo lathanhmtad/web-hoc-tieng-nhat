@@ -45,12 +45,12 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useStore } from 'vuex';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import ExitTestButton from '@/components/layout/button-exit/ExitTestButton.vue';
 
 const store = useStore();
 const router = useRouter();
-
+const route = useRoute();
 const allFlashcards = ref([]);
 const gridItems = ref([]); // Array of { id, content, cardId, type, isMatched, isVisible, isError }
 const selectedCell1 = ref(null);
@@ -221,8 +221,10 @@ const playAgain = () => {
 };
 
 const returnToLearnPage = () => {
-  router.push({ name: 'flashcardLearn' });
+  const { setId, title, description, source } = route.query;
+
   // FlashcardLearn component should handle restoring its state
+  router.push({ name: 'flashcardLearn', query: { title, description, setId, source } });
 };
 
 const goBackToLearn = () => {

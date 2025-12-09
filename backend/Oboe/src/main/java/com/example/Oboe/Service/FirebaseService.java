@@ -1,11 +1,11 @@
 package com.example.Oboe.Service;
 
 import com.example.Oboe.Entity.NguoiDung;
-import com.example.Oboe.Entity.Status;
+import com.example.Oboe.Entity.PhuongThucXacThuc;
+import com.example.Oboe.Entity.TrangThaiTaiKhoan;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
-import com.example.Oboe.Entity.AuthProvider;
 import com.example.Oboe.DTOs.UserDTOs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,11 +25,11 @@ public class FirebaseService {
         String email = decodedToken.getEmail();
         String name = decodedToken.getName();
         String picture = decodedToken.getPicture();
-        String providerId = decodedToken.getUid();
+//        String providerId = decodedToken.getUid();
         
         // Xác định provider dựa trên firebase provider
         Object firebaseObj = decodedToken.getClaims().get("firebase");
-        AuthProvider authProvider = AuthProvider.GOOGLE; // Default
+        PhuongThucXacThuc phuongThucXacThuc = PhuongThucXacThuc.GOOGLE; // Default
         
         if (firebaseObj != null) {
             Map<String, Object> firebaseData = (Map<String, Object>) firebaseObj;
@@ -37,9 +37,9 @@ public class FirebaseService {
             if (identitiesObj != null) {
                 Map<String, Object> identities = (Map<String, Object>) identitiesObj;
                 if (identities.containsKey("facebook.com")) {
-                    authProvider = AuthProvider.FACEBOOK;
+                    phuongThucXacThuc = PhuongThucXacThuc.FACEBOOK;
                 } else if (identities.containsKey("google.com")) {
-                    authProvider = AuthProvider.GOOGLE;
+                    phuongThucXacThuc = PhuongThucXacThuc.GOOGLE;
                 }
             }
         }
@@ -56,15 +56,15 @@ public class FirebaseService {
         }
 
         // Kiểm tra user đã tồn tại chưa
-        var existingUsers = userService.findByUserNameAndAuthProvider(email, authProvider);
+        var existingUsers = userService.findByUserNameAndAuthProvider(email, phuongThucXacThuc);
         if (!existingUsers.isEmpty()) {
             NguoiDung existingNguoiDung = existingUsers.get(0);
 
-            if (existingNguoiDung.getStatus() == Status.BAN) {
+            if (existingNguoiDung.getTrangThaiTaiKhoan() == TrangThaiTaiKhoan.BAN) {
                 throw new RuntimeException("User is banned");
             }
             if (picture != null && !picture.isEmpty()) {
-                existingNguoiDung.setAvatarUrl(picture);
+                existingNguoiDung.setAnhDaiDien(picture);
                 return userService.saveUser(existingNguoiDung);
             }
             return existingNguoiDung;
@@ -75,8 +75,8 @@ public class FirebaseService {
         userDTO.setUserName(email);
         userDTO.setFirstName(firstName);
         userDTO.setLastName(lastName);
-        userDTO.setAuthProvider(authProvider);
-        userDTO.setProviderId(providerId);
+        userDTO.setAuthProvider(phuongThucXacThuc);
+//        userDTO.setProviderId(providerId);
         userDTO.setVerified(true); // Firebase users are already verified
         userDTO.setPassWord(null); // No password for OAuth users
 
@@ -84,7 +84,7 @@ public class FirebaseService {
         
         // Set avatar URL if available
         if (picture != null && !picture.isEmpty()) {
-            newNguoiDung.setAvatarUrl(picture);
+            newNguoiDung.setAnhDaiDien(picture);
             return userService.saveUser(newNguoiDung);
         }
         

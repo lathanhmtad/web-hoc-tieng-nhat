@@ -11,22 +11,22 @@ import java.util.Optional;
 import java.util.UUID;
 @Repository
     public interface FavoritesRepository extends JpaRepository<Favorites, UUID> {
-    @Query("SELECT f FROM Favorites f WHERE f.nguoiDung.user_id = :userId")
+    @Query("SELECT f FROM Favorites f WHERE f.nguoiDung.maNguoiDung = :userId")
     List<Favorites> findByUserId(@Param("userId") UUID userId);
 
 
-    @Query("SELECT f FROM Favorites f WHERE f.nguoiDung.user_id = :userId AND f.hanTu.kanjiId = :kanjiId")
+    @Query("SELECT f FROM Favorites f WHERE f.nguoiDung.maNguoiDung = :userId AND f.hanTu.kanjiId = :kanjiId")
     Optional<Favorites> findFavoriteKanji(@Param("userId") UUID userId, @Param("kanjiId") UUID kanjiId);
 
 
-    @Query("SELECT f FROM Favorites f WHERE f.nguoiDung.user_id = :userId AND f.gramma.grammaID = :grammaid")
+    @Query("SELECT f FROM Favorites f WHERE f.nguoiDung.maNguoiDung = :userId AND f.gramma.grammaID = :grammaid")
     Optional<Favorites> findFavoriteGramma(@Param("userId") UUID userId, @Param("grammaid") UUID grammaId);
 
-    @Query("SELECT f FROM Favorites f WHERE f.nguoiDung.user_id = :userId AND f.tuVung.vocalbId = :vocabId")
+    @Query("SELECT f FROM Favorites f WHERE f.nguoiDung.maNguoiDung = :userId AND f.tuVung.vocalbId = :vocabId")
     Optional<Favorites> findFavoriteVocabulary(@Param("userId") UUID userId, @Param("vocabId") UUID vocabId);
 
 
-    @Query("SELECT f FROM Favorites f WHERE f.nguoiDung.user_id = :userId AND f.sentence.sample_sentence_id = :sentenceId")
+    @Query("SELECT f FROM Favorites f WHERE f.nguoiDung.maNguoiDung = :userId AND f.sentence.sample_sentence_id = :sentenceId")
     Optional<Favorites> findFavoriteSentence(@Param("userId") UUID userId, @Param("sentenceId") UUID sentenceId);
 
 

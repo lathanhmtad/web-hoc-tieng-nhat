@@ -102,7 +102,7 @@ public class BlogService {
         BaiViet baiViet = blogOpt.get();
         NguoiDung currentNguoiDung = userOpt.get();
 
-        if (baiViet.getNguoiDung() == null || !baiViet.getNguoiDung().getUser_id().equals(currentNguoiDung.getUser_id())) {
+        if (baiViet.getNguoiDung() == null || !baiViet.getNguoiDung().getMaNguoiDung().equals(currentNguoiDung.getMaNguoiDung())) {
             return null;
         }
         baiViet.setTitle(blogDTO.getTitle());
@@ -129,7 +129,7 @@ public class BlogService {
         NguoiDung nguoiDung = userOpt.get();
 
         // Kiểm tra quyền sở hữu
-        if (baiViet.getNguoiDung() == null || !baiViet.getNguoiDung().getUser_id().equals(nguoiDung.getUser_id())) {
+        if (baiViet.getNguoiDung() == null || !baiViet.getNguoiDung().getMaNguoiDung().equals(nguoiDung.getMaNguoiDung())) {
             return false;
         }
 
@@ -203,9 +203,9 @@ public class BlogService {
         dto.setTopics(baiViet.getTopics());
 
         if (baiViet.getNguoiDung() != null) {
-            dto.setUserId(baiViet.getNguoiDung().getUser_id());
-            dto.setAuthor(baiViet.getNguoiDung().getUserName());
-            dto.setAvatarUrl(baiViet.getNguoiDung().getAvatarUrl());
+            dto.setUserId(baiViet.getNguoiDung().getMaNguoiDung());
+            dto.setAuthor(baiViet.getNguoiDung().getEmail());
+            dto.setAvatarUrl(baiViet.getNguoiDung().getAnhDaiDien());
         }
 
         // Đếm số comment
@@ -216,7 +216,7 @@ public class BlogService {
         commentRepository.findTopByReferenceIdOrderByCreatedAtDesc(baiViet.getBlogId())
                 .ifPresent(latestComment -> {
                     dto.setLatestCommentTime(latestComment.getCreatedAt());
-                    dto.setLatestCommenterName(latestComment.getNguoiDung().getUserName());
+                    dto.setLatestCommenterName(latestComment.getNguoiDung().getEmail());
 
                 });
 

@@ -21,7 +21,7 @@ public class Report {
     private LocalDate report_at = LocalDate.now();
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "maNguoiDung")
     @JsonBackReference
     private NguoiDung nguoiDung;
 

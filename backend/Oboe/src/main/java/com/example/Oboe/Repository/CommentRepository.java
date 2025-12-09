@@ -16,20 +16,20 @@ import java.util.UUID;
 public interface CommentRepository extends JpaRepository<BinhLuan, UUID> {
     List<BinhLuan> findByReferenceId(UUID referenceId);
     Long countByReferenceId(UUID referenceId);
-    @Query("SELECT b FROM BinhLuan b WHERE b.nguoiDung.user_id = :userId")
+    @Query("SELECT b FROM BinhLuan b WHERE b.nguoiDung.maNguoiDung = :userId")
     List<BinhLuan> findCommentByUserId(UUID userId);
 
-    @Query("SELECT b FROM BinhLuan b WHERE b.nguoiDung.user_id = :userId")
+    @Query("SELECT b FROM BinhLuan b WHERE b.nguoiDung.maNguoiDung = :userId")
     Page<BinhLuan> findCommentByUserIds(UUID userId, Pageable pageabl);
     //Để thêm người comment gần nhất cho một bài blog
     Optional<BinhLuan> findTopByReferenceIdOrderByCreatedAtDesc(UUID referenceId);
 
     @Modifying
     @Transactional
-    @Query("DELETE FROM BinhLuan c WHERE c.nguoiDung.user_id = :userId")
+    @Query("DELETE FROM BinhLuan c WHERE c.nguoiDung.maNguoiDung = :userId")
     void deleteUserbyComment(@Param("userId") UUID userId);
 
-    @Query("SELECT COUNT(c) FROM BinhLuan c WHERE c.nguoiDung.user_id = :userId")
+    @Query("SELECT COUNT(c) FROM BinhLuan c WHERE c.nguoiDung.maNguoiDung = :userId")
     long countCommentsByUserId(@Param("userId") UUID userId);
 
 }

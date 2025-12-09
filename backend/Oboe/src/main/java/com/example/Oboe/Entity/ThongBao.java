@@ -16,7 +16,7 @@ public class ThongBao {
     private UUID NotifiId;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "maNguoiDung", nullable = false)
     @JsonBackReference("users-Notifications")
     private NguoiDung nguoiDung;
 
@@ -101,11 +101,11 @@ public class ThongBao {
         this.targetType = targetType;
     }
 
-    public LocalDateTime getUpdate_at() {
+    public LocalDateTime getNgayCapNhat() {
         return update_at;
     }
 
-    public void setUpdate_at(LocalDateTime update_at) {
+    public void setNgayCapNhat(LocalDateTime update_at) {
         this.update_at = update_at;
     }
 }

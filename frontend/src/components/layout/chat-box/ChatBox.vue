@@ -94,9 +94,9 @@
       // First try to get from profile API which might have more complete user info
       const profileResponse = await api.profile.getProfile()
       
-      if (profileResponse?.user_id) {
-        localStorage.setItem('currentUserId', profileResponse.user_id)
-        return profileResponse.user_id
+      if (profileResponse?.maNguoiDung) {
+        localStorage.setItem('currentUserId', profileResponse.maNguoiDung)
+        return profileResponse.maNguoiDung
       }
       
       // Fallback: try to decode JWT token to get user ID
@@ -127,7 +127,7 @@
     // Get current user ID using the same logic as MyMessages.vue
     let currentUserIdValue = currentUser.value?.id || 
                             currentUser.value?.userId || 
-                            currentUser.value?.user_id ||
+                            currentUser.value?.maNguoiDung ||
                             currentUser.value?.user?.id ||
                             currentUser.value?.user?.userId ||
                             localStorage.getItem('currentUserId') ||
@@ -211,7 +211,7 @@
         // Try to get current user ID from different sources (same logic as MyMessages.vue)
         let currentUserIdValue = currentUser.value?.id || 
                                 currentUser.value?.userId || 
-                                currentUser.value?.user_id ||
+                                currentUser.value?.maNguoiDung ||
                                 currentUser.value?.user?.id ||
                                 currentUser.value?.user?.userId ||
                                 localStorage.getItem('currentUserId') ||

@@ -59,8 +59,8 @@ public class LearningMaterialService {
         LearningMaterialDTO dto = new LearningMaterialDTO();
 
         if (quiz.getUser() != null) {
-            dto.setAuthor(quiz.getUser().getUserName());
-            dto.setAvatarUrl(quiz.getUser().getAvatarUrl());
+            dto.setAuthor(quiz.getUser().getEmail());
+            dto.setAvatarUrl(quiz.getUser().getAnhDaiDien());
         } else {
             dto.setAuthor("Unknown");
             dto.setAvatarUrl(null);

@@ -362,19 +362,14 @@ const saveFlashcard = async () => {
     };
 
 
-
     let response;
     if (isEditing.value && originalDeckId.value) {
       // Update existing flashcard set
-
       response = await flashcardApi.update(originalDeckId.value, flashcardData);
     } else {
       // Create new flashcard set
-
       response = await flashcardApi.create(flashcardData);
     }
-
-
 
     // Show success message
     store.dispatch('message/showMessage', {
@@ -386,46 +381,48 @@ const saveFlashcard = async () => {
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem('flashcardLearnState');
 
+
     // Navigate based on source
     if (fromLearningPage.value) {
+
       // Convert updated flashcard response to format expected by FlashcardLearn
-      const updatedItems = response.cardItems ? response.cardItems.map((item, index) => {
+      const updatedItems = response.chiTietThes ? response.chiTietThes.map((item, index) => {
         // Try to preserve original type from cards if available
         const originalCard = cards.value[index];
         const itemType = originalCard?.type || 'word';
         
         // Map back to proper format based on type
         let mappedItem = {
-          id: `item-${index}-${item.word}`,
+          id: `item-${index}-${item.tuVung}`,
           type: itemType,
           status: 'learning'
         };
         
         switch (itemType) {
           case 'kanji':
-            mappedItem.kanji = item.word;
-            mappedItem.kanjiname = item.meaning;
-            mappedItem.content = item.word;
-            mappedItem.backcontent = item.meaning;
+            mappedItem.kanji = item.tuVung;
+            mappedItem.kanjiname = item.nghia;
+            mappedItem.content = item.tuVung;
+            mappedItem.backcontent = item.nghia;
             break;
           case 'grammar':
-            mappedItem.kana = item.word;
-            mappedItem.meaning = item.meaning;
-            mappedItem.content = item.word;
-            mappedItem.backcontent = item.meaning;
+            mappedItem.kana = item.tuVung;
+            mappedItem.meaning = item.nghia;
+            mappedItem.content = item.tuVung;
+            mappedItem.backcontent = item.nghia;
             break;
           case 'sentence':
-            mappedItem.sentence = item.word;
-            mappedItem.translation = item.meaning;
-            mappedItem.content = item.word;
-            mappedItem.backcontent = item.meaning;
+            mappedItem.sentence = item.tuVung;
+            mappedItem.translation = item.nghia;
+            mappedItem.content = item.tuVung;
+            mappedItem.backcontent = item.nghia;
             break;
           case 'word':
           default:
-            mappedItem.content = item.word;
-            mappedItem.backcontent = item.meaning;
-            mappedItem.kanji = item.word;
-            mappedItem.meaning = item.meaning;
+            mappedItem.content = item.tuVung;
+            mappedItem.backcontent = item.nghia;
+            mappedItem.kanji = item.tuVung;
+            mappedItem.meaning = item.nghia;
         }
         
         return mappedItem;
@@ -433,15 +430,15 @@ const saveFlashcard = async () => {
 
       // Update store with new items
       await store.dispatch('flashcard/setLearningItems', updatedItems);
-      
+
       // Navigate back to learning page
       await router.push({
         name: 'flashcardLearn',
         query: {
           deckId: originalDeckId.value || response.flashcardID,
           source: route.query.source || 'library',
-          title: response.term || title.value,
-          description: response.description || description.value,
+          title: response.tenBoThe || title.value,
+          description: response.moTa || description.value,
           updated: 'true' // Flag to indicate data was updated
         }
       });

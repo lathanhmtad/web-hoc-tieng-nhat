@@ -1,8 +1,8 @@
 package com.example.Oboe.Service;
 
 import com.example.Oboe.Config.PayOsConfig;
-import com.example.Oboe.Entity.AccountType;
-import com.example.Oboe.Entity.Payment;
+import com.example.Oboe.Entity.DonHang;
+import com.example.Oboe.Entity.LoaiTaiKhoan;
 import com.example.Oboe.Entity.NguoiDung;
 import com.example.Oboe.Repository.PaymentRepository;
 import com.example.Oboe.Repository.UserRepository;
@@ -37,7 +37,7 @@ public class PayOsService {
     }
 
     public CheckoutResponseData createPayment(int amount, String itemName, UUID userId) throws Exception {
-        int fixedAmount = 99000;
+        int fixedAmount = 2000;
 
         ItemData item = ItemData.builder()
                 .name(itemName)
@@ -47,6 +47,8 @@ public class PayOsService {
 
         long tempOrderCode = System.currentTimeMillis();
 
+        long expiredAt = (System.currentTimeMillis() / 1000) + (15 * 60);
+
         PaymentData paymentData = PaymentData.builder()
                 .orderCode(tempOrderCode)
                 .amount(fixedAmount)
@@ -54,17 +56,18 @@ public class PayOsService {
                 .returnUrl(config.getReturnUrl())
                 .cancelUrl(config.getCancelUrl())
                 .items(List.of(item))
+                .expiredAt(expiredAt)
                 .build();
 
         CheckoutResponseData response = payOS.createPaymentLink(paymentData);
 
         // Save to DB
-        Payment payment = new Payment();
-        payment.setOrderCode(tempOrderCode);
-        payment.setAmount(fixedAmount);
-        payment.setUser(userRepository.findById(userId).orElse(null));
-        payment.setStatus("PENDING");
-        paymentRepository.save(payment);
+        DonHang donHang = new DonHang();
+        donHang.setMaDonHang(tempOrderCode);
+        donHang.setSoTien(fixedAmount);
+        donHang.setNguoiDung(userRepository.findById(userId).orElse(null));
+        donHang.setTrangThai("PENDING");
+        paymentRepository.save(donHang);
 
         return response;
     }
@@ -78,17 +81,17 @@ public class PayOsService {
         long orderCode = data.getOrderCode();
         String code = data.getCode();
 
-        Payment payment = paymentRepository.findByOrderCode(orderCode);
-        if (payment != null) {
+        DonHang donHang = paymentRepository.findByMaDonHang(orderCode);
+        if (donHang != null) {
             String status;
 
             switch (code) {
                 case "00" -> {
                     status = "SUCCESS";
-                    payment.setPaidAt(LocalDateTime.now());
-                    NguoiDung nguoiDung = payment.getUser();
-                    if (nguoiDung.getAccountType() != AccountType.PREMIUM) {
-                        nguoiDung.setAccountType(AccountType.PREMIUM);
+                    donHang.setThoiGianThanhToan(LocalDateTime.now());
+                    NguoiDung nguoiDung = donHang.getNguoiDung();
+                    if (nguoiDung.getLoaiTaiKhoan() != LoaiTaiKhoan.PREMIUM) {
+                        nguoiDung.setLoaiTaiKhoan(LoaiTaiKhoan.PREMIUM);
 
                         userRepository.save(nguoiDung);
                     }
@@ -98,8 +101,8 @@ public class PayOsService {
             }
 
 
-            payment.setStatus(status);
-            paymentRepository.save(payment);
+            donHang.setTrangThai(status);
+            paymentRepository.save(donHang);
         }
 
         return data;

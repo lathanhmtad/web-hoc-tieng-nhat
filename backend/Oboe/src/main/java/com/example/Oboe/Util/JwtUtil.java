@@ -39,12 +39,12 @@ public class JwtUtil {
     }
 
 
-    public String getUsernameFromToken(String token) {
+    public String getEmailFromToken(String token) {
         return parseClaims(token).getSubject();
     }
 
 
-    public String getRolesFromToken(String token) {
+    public String getVaiTrosFromToken(String token) {
         return parseClaims(token).get("role", String.class);
     }
 

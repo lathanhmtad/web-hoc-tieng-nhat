@@ -13,10 +13,10 @@ import java.util.UUID;
 
 public interface NotificationsRepository extends JpaRepository<ThongBao, UUID> {
 
-    @Query("SELECT n FROM ThongBao n WHERE n.nguoiDung.user_id = :user_Id ORDER BY n.update_at DESC")
-    List<ThongBao> findConversation(@Param("user_Id") UUID user_id, Pageable pageable);
+    @Query("SELECT n FROM ThongBao n WHERE n.nguoiDung.maNguoiDung = :maNguoiDung ORDER BY n.update_at DESC")
+    List<ThongBao> findConversation(@Param("maNguoiDung") UUID maNguoiDung, Pageable pageable);
     @Modifying
-    @Query("UPDATE ThongBao n SET n.isRead = true WHERE n.nguoiDung.user_id = :userId AND n.isRead = false")
+    @Query("UPDATE ThongBao n SET n.isRead = true WHERE n.nguoiDung.maNguoiDung = :userId AND n.isRead = false")
     int markAllAsRead(@Param("userId") UUID userId);
 
 

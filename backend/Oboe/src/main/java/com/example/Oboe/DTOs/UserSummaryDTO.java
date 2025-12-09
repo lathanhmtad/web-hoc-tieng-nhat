@@ -36,7 +36,7 @@ public class UserSummaryDTO {
         this.userId = userId;
     }
 
-    public String getFirstName() {
+    public String getHo() {
         return firstName;
     }
 
@@ -52,7 +52,7 @@ public class UserSummaryDTO {
         this.lastName = lastName;
     }
 
-    public String getUserName() {
+    public String getEmail() {
         return userName;
     }
 

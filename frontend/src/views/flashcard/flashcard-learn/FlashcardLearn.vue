@@ -137,9 +137,9 @@
                 <div class="definition">{{ getItemDefinition(item) }}</div>
               </div>
               <div class="term-actions">
-                <!-- <button class="edit-btn" @click.stop="editTerm(item)">
+                <button class="edit-btn" @click.stop="editTerm(item)">
                   <i class="fas fa-pencil-alt"></i>
-                </button> -->
+                </button>
                 <button class="delete-btn" @click.stop="deleteTerm(item)">
                   <i class="fas fa-trash"></i>
                 </button>
@@ -546,13 +546,13 @@ const loadFlashcardData = async (setId) => {
     const items = flashcardData.cardItems?.map(item => ({
       id: item.cardItemId || item.id || Math.random().toString(36).substr(2, 9),
       type: 'word',
-      kanji: item.word || '',
+      kanji: item.tuVung || '',
       kana: '',
-      meaning: item.meaning || '',
-      content: item.word || '',
-      backcontent: item.meaning || '',
-      front: item.word || '',
-      back: item.meaning || '',
+      meaning: item.nghia || '',
+      content: item.tuVung || '',
+      backcontent: item.nghia || '',
+      front: item.tuVung || '',
+      back: item.nghia || '',
       status: 'learning'
     })) || [];
     if (items.length > 0) {
@@ -1431,6 +1431,7 @@ watch(() => store.getters['flashcard/getLearningItems'], (newItems) => {
 const editTerm = (slide, index) => {
   // TODO: Implement edit term functionality
 };
+
 const deleteTerm = async (itemToDelete) => {
   try {
     if (!itemToDelete) {
@@ -1456,7 +1457,7 @@ const deleteTerm = async (itemToDelete) => {
     if (setId && source !== 'flashcard-list') {
       // Chuẩn bị body cho API update
       const updateBody = {
-        title: deckTitle.value,
+        term: deckTitle.value,
         description: deckDescription.value,
         cardItems: updatedItems.map(item => ({
           word: item.content || item.front || item.kanji || '',
@@ -1551,7 +1552,7 @@ const navigateToTermCreation = () => {
   // Chuyển hướng đến trang tạo thuật ngữ với query params
   const navigationQuery = {
     fromLearn: 'true',
-    deckId: route.query.deckId || route.query.id || '',
+    deckId: route.query.deckId || route.query.id || route.query.setId || '',
     source: route.query.source || 'library',
     title: deckTitle.value,
     description: deckDescription.value

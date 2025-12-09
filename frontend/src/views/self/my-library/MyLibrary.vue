@@ -319,16 +319,16 @@ const loadUserFlashcards = async () => {
       id: flashcard.maBoThe,
       title: flashcard.term || flashcard.tenBoThe || 'Flashcard', // Use term as title
       description: flashcard.moTa || '', // Add description field
-      cardCount: flashcard.cardItems?.length || flashcard.mucThes?.length || 0,
+      cardCount: flashcard.chiTietThes?.length || 0,
       updatedAt: flashcard.ngayTao,
       createdAt: flashcard.ngayTao, // Add created timestamp
       creator: {
-        name: flashcard.user?.userName || flashcard.user?.firstName || t('common.user'),
+        name: flashcard.user?.userName || flashcard.user?.ho || t('common.user'),
         avatar: flashcard.user?.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(flashcard.user?.userName || 'User')}`
       },
-      cards: flashcard.cardItems?.map(item => ({
-        front: item.word,
-        back: item.meaning
+      cards: flashcard.chiTietThes?.map(item => ({
+        front: item.tuVung,
+        back: item.nghia
       })) || []
     }))
 

@@ -9,13 +9,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 public interface ReportRepository extends JpaRepository<Report, UUID> {
-    @Query("SELECT r FROM Report r WHERE r.nguoiDung.user_id = :userId")
+    @Query("SELECT r FROM Report r WHERE r.nguoiDung.maNguoiDung = :userId")
     List<Report> findByUserId(@Param("userId") UUID userId);
 
     @Query("SELECT r FROM Report r WHERE r.baiViet.blogId = :blogId")
@@ -40,15 +38,15 @@ public interface ReportRepository extends JpaRepository<Report, UUID> {
         r.reportID,
         b.title,
         b.content,
-        u.userName,
-        u.authProvider,
-        u.avatarUrl,
+        u.email,
+        u.phuongThucXacThuc,
+        u.anhDaiDien,
         r.title,
         r.content,
         r.status,
         r.report_at,
         b.blogId,
-        (SELECT COUNT(r2) FROM Report r2 WHERE r2.nguoiDung.user_id = u.user_id)
+        (SELECT COUNT(r2) FROM Report r2 WHERE r2.nguoiDung.maNguoiDung = u.maNguoiDung)
     )
     FROM Report r
     JOIN r.baiViet b
@@ -63,20 +61,22 @@ public interface ReportRepository extends JpaRepository<Report, UUID> {
             @Param("type") String type,
             @Param("status") ReportStatus status
     );
+
+
     @Query("""
     SELECT new com.example.Oboe.DTOs.BlogReportDTO(
         r.reportID,
         b.title,
         b.content,
-        u.userName,
-        u.authProvider,
-        u.avatarUrl,
+        u.email,
+        u.phuongThucXacThuc,
+        u.anhDaiDien,
         r.title,
         r.content,
         r.status,
         r.report_at,
         b.blogId,
-        (SELECT COUNT(r2) FROM Report r2 WHERE r2.nguoiDung.user_id = u.user_id)
+        (SELECT COUNT(r2) FROM Report r2 WHERE r2.nguoiDung.maNguoiDung = u.maNguoiDung)
     )
     FROM Report r
     JOIN r.baiViet b

@@ -170,9 +170,9 @@ const loadRecentSets = async () => {
       id: item.maBoThe,
       title: item.tenBoThe || 'Flashcard',
       description: item.moTa,
-      cardCount: item.mucThes ? item.mucThes.length : 0,
+      cardCount: item.chiTietThes ? item.chiTietThes.length : 0,
       created: item.ngayTao,
-      cardItems: item.cardItems || []
+      cardItems: item.chiTietThes || []
     }));
     
   } catch (error) {
@@ -267,13 +267,13 @@ const startLearning = async (set) => {
       // Convert cardItems to learning format
       const learningItems = set.cardItems.map(item => ({
         type: 'word',
-        kanji: item.word || '',
+        kanji: item.tuVung || '',
         kana: '',
-        meaning: item.meaning || '',
-        content: item.word || '',
-        backcontent: item.meaning || '',
-        front: item.word || '',
-        back: item.meaning || ''
+        meaning: item.nghia || '',
+        content: item.tuVung || '',
+        backcontent: item.nghia || '',
+        front: item.tuVung || '',
+        back: item.nghia || ''
       }));
       
       // Save to store

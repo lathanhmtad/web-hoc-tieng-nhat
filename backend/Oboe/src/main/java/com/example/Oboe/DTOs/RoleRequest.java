@@ -3,10 +3,10 @@ package com.example.Oboe.DTOs;
 public class RoleRequest {
         private String role;
 
-        public String getRole() {
+        public String getVaiTro() {
             return role;
         }
-        public void setRole(String role) {
+        public void setVaiTro(String role) {
             this.role = role;
         }
 

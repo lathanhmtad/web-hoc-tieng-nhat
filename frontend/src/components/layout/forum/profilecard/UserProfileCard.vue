@@ -151,8 +151,8 @@ const isCurrentUser = computed(() => {
 
   
   // Primary comparison: ID-based
-  const currentUserId = currentUser.value.userId || currentUser.value.user_id || currentUser.value.id;
-  const profileUserId = userProfile.value.user_id;
+  const currentUserId = currentUser.value.userId || currentUser.value.maNguoiDung || currentUser.value.id;
+  const profileUserId = userProfile.value.maNguoiDung;
   
 
   
@@ -184,8 +184,8 @@ const profileLink = computed(() => {
   const queryParams = [];
   
   // Add userId to query params
-  if (userProfile.value.user_id) {
-    queryParams.push(`userId=${userProfile.value.user_id}`);
+  if (userProfile.value.maNguoiDung) {
+    queryParams.push(`userId=${userProfile.value.maNguoiDung}`);
   }
   
   if (props.postId && props.postTitle) {

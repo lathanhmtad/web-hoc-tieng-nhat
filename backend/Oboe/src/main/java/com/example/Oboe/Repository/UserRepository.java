@@ -1,7 +1,7 @@
 package com.example.Oboe.Repository;
 
 import com.example.Oboe.DTOs.UserSearchResultDTO;
-import com.example.Oboe.Entity.AuthProvider;
+import com.example.Oboe.Entity.PhuongThucXacThuc;
 import com.example.Oboe.Entity.NguoiDung;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,36 +17,33 @@ import java.util.UUID;
 @Repository
 public interface UserRepository extends JpaRepository<NguoiDung, UUID> {
 
-
-    @Query("SELECT u FROM NguoiDung u WHERE u.userName = :userName AND u.authProvider = :authProvider")
+    @Query("SELECT u FROM NguoiDung u WHERE u.email = :userName AND u.phuongThucXacThuc = :authProvider")
     List<NguoiDung> findAllByUserNameAndAuthProvider(@Param("userName") String userName,
-                                                     @Param("authProvider") AuthProvider authProvider);
+                                                     @Param("authProvider") PhuongThucXacThuc phuongThucXacThuc);
 
-    @Query(value = "SELECT * FROM nguoi_dung WHERE user_id = :userId", nativeQuery = true)
-    Optional<NguoiDung> findByUser_id(@Param("userId") UUID userId);
+    @Query(value = "SELECT * FROM nguoi_dung WHERE maNguoiDung = :userId", nativeQuery = true)
+    Optional<NguoiDung> findBymaNguoiDung(@Param("userId") UUID userId);
 
-    boolean existsByUserNameAndAuthProvider(String userName, AuthProvider authProvider);
+    boolean existsByEmailAndPhuongThucXacThuc(String email, PhuongThucXacThuc phuongThucXacThuc);
 
-    @Query("SELECT u FROM NguoiDung u WHERE LOWER(u.userName) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    @Query("SELECT u FROM NguoiDung u WHERE LOWER(u.email) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<NguoiDung> searchUsers(@Param("keyword") String keyword);
 
-
-
-    @Query("SELECT u FROM NguoiDung u WHERE u.user_id IN :ids")
+    @Query("SELECT u FROM NguoiDung u WHERE u.maNguoiDung IN :ids")
     List<NguoiDung> findByUserIdIn(@Param("ids") List<UUID> ids);
+
     @Query("SELECT COUNT(u) FROM NguoiDung u")
     Long countAllUsers();
 
-    @Query("SELECT COUNT(u) FROM NguoiDung u WHERE FUNCTION('MONTH', u.create_at) = FUNCTION('MONTH', CURRENT_DATE)")
+    @Query("SELECT COUNT(u) FROM NguoiDung u WHERE FUNCTION('MONTH', u.ngayTao) = FUNCTION('MONTH', CURRENT_DATE)")
     Long countUsersThisMonth();
 
-    @Query("SELECT u.userName, u.create_at FROM NguoiDung u ORDER BY u.create_at DESC")
+    @Query("SELECT u.email, u.ngayTao FROM NguoiDung u ORDER BY u.ngayTao DESC")
     List<Object[]> findLatestRegisteredUser();
 
-@Query("SELECT new com.example.Oboe.DTOs.UserSearchResultDTO(u.user_id, u.userName, u.avatarUrl, COUNT(f)) " +
-            "FROM NguoiDung u LEFT JOIN BoThe f ON f.nguoiDung.user_id = u.user_id " +
-            "WHERE LOWER(u.userName) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-            "GROUP BY u.user_id, u.userName, u.avatarUrl")
+    @Query("SELECT new com.example.Oboe.DTOs.UserSearchResultDTO(u.maNguoiDung, u.email, u.anhDaiDien, COUNT(f)) " +
+            "FROM NguoiDung u LEFT JOIN BoTheGhiNho f ON f.nguoiDung.maNguoiDung = u.maNguoiDung " +
+            "WHERE LOWER(u.email) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "GROUP BY u.maNguoiDung, u.email, u.anhDaiDien")
     Page<UserSearchResultDTO> searchUsersWithFlashcardCount(@Param("keyword") String keyword, Pageable pageable);
-
 }

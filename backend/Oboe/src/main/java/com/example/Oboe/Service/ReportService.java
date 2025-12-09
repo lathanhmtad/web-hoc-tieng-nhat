@@ -132,7 +132,7 @@ public class ReportService {
             case BAN_USER:
                 if (report.getUser() != null) {
                     NguoiDung nguoiDung = report.getUser();
-                    nguoiDung.setStatus(Status.BAN);
+                    nguoiDung.setTrangThaiTaiKhoan(TrangThaiTaiKhoan.BAN);
                     userRepository.save(nguoiDung);
                 }
                 break;

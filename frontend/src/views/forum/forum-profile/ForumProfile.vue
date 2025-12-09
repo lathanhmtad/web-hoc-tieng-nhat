@@ -167,7 +167,7 @@ const handleSendMessage = (userData) => {
   router.push({
     name: 'messages',
     query: { 
-      userId: userData.user_id || userData.userId || userData.id,
+      userId: userData.maNguoiDung || userData.userId || userData.id,
       userName: userData.userName || userData.username,
       fullName: userData.fullName || userData.userName || userData.username,
       avatarUrlReceiver: userData.avatarUrl || userData.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.fullName || userData.userName || userData.username)}&background=random`

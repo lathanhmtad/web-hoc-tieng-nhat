@@ -1,7 +1,7 @@
     package com.example.Oboe.Controller;
 
     import com.example.Oboe.DTOs.FlashCardDto;
-    import com.example.Oboe.Entity.BoThe;
+    import com.example.Oboe.Entity.BoTheGhiNho;
     import com.example.Oboe.Service.FlashCardService;
     import com.example.Oboe.Util.JwtUtil;
     import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@
         @PostMapping
         public ResponseEntity<?> createFlashCard(@RequestBody FlashCardDto dto,
                                                  @AuthenticationPrincipal(expression = "userID") UUID userId) {
-            BoThe created = flashCardService.createFlashCard(dto, userId);
+            BoTheGhiNho created = flashCardService.createFlashCard(dto, userId);
             return ResponseEntity.ok(created);
         }
 
@@ -53,7 +53,7 @@
                                                  @RequestBody FlashCardDto dto,
                                                  @AuthenticationPrincipal(expression = "userID") UUID userId
         ) {
-            BoThe updated = flashCardService.updateFlashCard(id, dto, userId);
+            BoTheGhiNho updated = flashCardService.updateFlashCard(id, dto, userId);
             if (updated == null) return ResponseEntity.notFound().build();
             return ResponseEntity.ok(updated);
         }

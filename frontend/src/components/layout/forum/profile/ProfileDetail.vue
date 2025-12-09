@@ -422,7 +422,7 @@ async function prevPage() {
           response = await statisticsApi.getUserActivity(currentPage, 50); // Larger page size
         } else {
           // For other users, use profile API with user ID
-          const userId = props.user.user_id || props.user.userId;
+          const userId = props.user.maNguoiDung || props.user.userId;
           if (!userId) {
             throw new Error('User ID not found');
           }
@@ -611,9 +611,9 @@ async function prevPage() {
   function handleSendMessage() {
     // Prepare user data for ChatBox
     const chatUser = {
-      user_id: props.user.user_id || props.user.userId,
-      userId: props.user.user_id || props.user.userId,
-      id: props.user.user_id || props.user.userId,
+      maNguoiDung: props.user.maNguoiDung || props.user.userId,
+      userId: props.user.maNguoiDung || props.user.userId,
+      id: props.user.maNguoiDung || props.user.userId,
       userName: props.user.userName || props.user.username,
       fullName: props.user.fullName,
       avatarUrl: props.user.avatarUrl || props.user.avatar,

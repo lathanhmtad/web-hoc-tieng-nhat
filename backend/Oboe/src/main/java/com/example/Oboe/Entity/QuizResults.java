@@ -21,7 +21,7 @@ public class QuizResults {
     private BaiKiemTra quiz;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "maNguoiDung", nullable = false)
     private NguoiDung nguoiDung;
 
     public UUID getResultID() {

@@ -33,5 +33,5 @@ public class TuVung {
     private HanTu hanTu;
 
     @OneToMany(mappedBy = "tuVung")
-    private List<TuVungHanTu> chiTietHanTu;
+    private List<ChiTietTuVung> chiTietHanTu;
 }

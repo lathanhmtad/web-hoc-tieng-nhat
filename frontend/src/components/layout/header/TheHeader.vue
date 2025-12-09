@@ -113,7 +113,7 @@
                     alt="User Avatar" 
                     class="menu-avatar" />
                   <div class="user-details">
-                    <span class="user-name">{{ currentUser?.displayName || currentUser?.userName || 'User' }}</span>
+                    <span class="user-name">{{ currentUser?.displayName || (currentUser.lastName || '') + ' ' + (currentUser.firstName || '') || currentUser?.userName || 'User' }}</span>
                     <span class="user-email">{{ currentUser?.email }}</span>
                   </div>
                 </div>
@@ -382,7 +382,7 @@ onMounted(() => {
   if (isAuthenticated.value) {
     loadNotifications()
     console.log('currentUser', currentUser.value)
-    WebSocketService.connect(currentUser.value?.userId || currentUser.value?.id || currentUser.value?.user_id)
+    WebSocketService.connect(currentUser.value?.userId || currentUser.value?.id || currentUser.value?.maNguoiDung)
 
     WebSocketService.onMessage((msg) => {
       console.log("[ Message Received]", msg);

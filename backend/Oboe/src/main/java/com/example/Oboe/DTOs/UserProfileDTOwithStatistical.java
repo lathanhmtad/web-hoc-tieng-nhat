@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public class UserProfileDTOwithStatistical {
 
-    private UUID user_id;
+    private UUID maNguoiDung;
     private String userName;
     private String firstName;
     private String lastName;
@@ -30,29 +30,29 @@ public class UserProfileDTOwithStatistical {
 
     // Constructor nhận User entity
     public UserProfileDTOwithStatistical(NguoiDung nguoiDung) {
-        this.user_id = nguoiDung.getUser_id();
-        this.userName = nguoiDung.getUserName();
-        this.firstName = nguoiDung.getFirstName();
-        this.lastName = nguoiDung.getLastName();
-        this.fullName = nguoiDung.getFirstName() + " " + nguoiDung.getLastName();
-        this.avatarUrl = nguoiDung.getAvatarUrl();
-        this.address = nguoiDung.getAddress();
-        this.day_of_birth = nguoiDung.getDay_of_birth();
-        this.verified = nguoiDung.isVerified();
-        this.create_at = nguoiDung.getCreate_at();
-        this.update_at = nguoiDung.getUpdate_at();
+        this.maNguoiDung = nguoiDung.getMaNguoiDung();
+        this.userName = nguoiDung.getEmail();
+        this.firstName = nguoiDung.getHo();
+        this.lastName = nguoiDung.getTen();
+        this.fullName = nguoiDung.getHo() + " " + nguoiDung.getTen();
+        this.avatarUrl = nguoiDung.getAnhDaiDien();
+        this.address = nguoiDung.getDiaChi();
+        this.day_of_birth = nguoiDung.getNgaySinh();
+        this.verified = nguoiDung.isDaXacThuc();
+        this.create_at = nguoiDung.getNgayTao();
+        this.update_at = nguoiDung.getNgayCapNhat();
     }
 
     // Getters and Setters
-    public UUID getUser_id() {
-        return user_id;
+    public UUID getMaNguoiDung() {
+        return maNguoiDung;
     }
 
-    public void setUser_id(UUID user_id) {
-        this.user_id = user_id;
+    public void setmaNguoiDung(UUID maNguoiDung) {
+        this.maNguoiDung = maNguoiDung;
     }
 
-    public String getUserName() {
+    public String getEmail() {
         return userName;
     }
 
@@ -60,7 +60,7 @@ public class UserProfileDTOwithStatistical {
         this.userName = userName;
     }
 
-    public String getFirstName() {
+    public String getHo() {
         return firstName;
     }
 
@@ -117,7 +117,7 @@ public class UserProfileDTOwithStatistical {
         this.verified = verified;
     }
 
-    public LocalDateTime getCreate_at() {
+    public LocalDateTime getNgayTao() {
         return create_at;
     }
 
@@ -125,11 +125,11 @@ public class UserProfileDTOwithStatistical {
         this.create_at = create_at;
     }
 
-    public LocalDateTime getUpdate_at() {
+    public LocalDateTime getNgayCapNhat() {
         return update_at;
     }
 
-    public void setUpdate_at(LocalDateTime update_at) {
+    public void setNgayCapNhat(LocalDateTime update_at) {
         this.update_at = update_at;
     }
 

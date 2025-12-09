@@ -74,7 +74,7 @@ public class QuizzesService {
         BaiKiemTra quiz = quizzesRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Quiz not found"));
         //  Kiểm tra quyền sở hữu
-        if (!quiz.getUser().getUser_id().equals(userId)) {
+        if (!quiz.getUser().getMaNguoiDung().equals(userId)) {
             throw new RuntimeException("Unauthorized to update this quiz");
         }
         quiz.setTitle(dto.getTitle());
@@ -89,7 +89,7 @@ public class QuizzesService {
                 .orElseThrow(() -> new RuntimeException("Quiz not found"));
 
         //  Kiểm tra quyền sở hữu
-        if (!quiz.getUser().getUser_id().equals(userId)) {
+        if (!quiz.getUser().getMaNguoiDung().equals(userId)) {
             throw new RuntimeException("Unauthorized to delete this quiz");
         }
 
@@ -146,7 +146,7 @@ public class QuizzesService {
         dto.setDescription(entity.getDescription());
         //  Lấy UUID từ User entity
         if (entity.getUser() != null) {
-            dto.setUserID(entity.getUser().getUser_id());
+            dto.setUserID(entity.getUser().getMaNguoiDung());
         }
         return dto;
     }

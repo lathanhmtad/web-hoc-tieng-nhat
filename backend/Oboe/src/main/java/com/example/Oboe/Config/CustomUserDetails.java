@@ -1,9 +1,9 @@
 package com.example.Oboe.Config;
 
-import com.example.Oboe.Entity.AccountType;
-import com.example.Oboe.Entity.AuthProvider;
+import com.example.Oboe.Entity.LoaiTaiKhoan;
+import com.example.Oboe.Entity.PhuongThucXacThuc;
 import com.example.Oboe.Entity.NguoiDung;
-import com.example.Oboe.Entity.Status;
+import com.example.Oboe.Entity.TrangThaiTaiKhoan;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,34 +21,35 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(nguoiDung.getRole().name()));
+        return List.of(new SimpleGrantedAuthority(nguoiDung.getVaiTro().name()));
     }
 
     @Override
     public String getPassword() {
 
-        return nguoiDung.getPassWord() != null ? nguoiDung.getPassWord() : "";
+        return nguoiDung.getMatKhau() != null ? nguoiDung.getMatKhau() : "";
     }
 
     @Override
     public String getUsername() {
-        return nguoiDung.getUserName();
+        return nguoiDung.getEmail();
     }
-    public AuthProvider getAuthProvider() {
-        return nguoiDung.getAuthProvider();
+
+    public PhuongThucXacThuc getAuthProvider() {
+        return nguoiDung.getPhuongThucXacThuc();
     }
     public UUID getUserID() {
-        return nguoiDung.getUser_id();
+        return nguoiDung.getMaNguoiDung();
     }
     @Override public boolean isAccountNonExpired() { return true; }
     @Override public boolean isAccountNonLocked() { return true; }
     @Override public boolean isCredentialsNonExpired() { return true; }
     @Override
     public boolean isEnabled() {
-        return nguoiDung.getStatus() != null && nguoiDung.getStatus() != Status.BAN;
+        return nguoiDung.getTrangThaiTaiKhoan() != null && nguoiDung.getTrangThaiTaiKhoan() != TrangThaiTaiKhoan.BAN;
     }
-    public AccountType getAccountType() {
-        return nguoiDung.getAccountType();
+    public LoaiTaiKhoan getLoaiTaiKhoan() {
+        return nguoiDung.getLoaiTaiKhoan();
     }
 }
 

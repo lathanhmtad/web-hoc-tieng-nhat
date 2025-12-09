@@ -79,10 +79,10 @@ public class Message {
     }
 
     public UUID getSenderId() {
-        return sender != null ? sender.getUser_id() : null;
+        return sender != null ? sender.getMaNguoiDung() : null;
     }
 
     public UUID getReceiverId() {
-        return receiver != null ? receiver.getUser_id() : null;
+        return receiver != null ? receiver.getMaNguoiDung() : null;
     }
 }

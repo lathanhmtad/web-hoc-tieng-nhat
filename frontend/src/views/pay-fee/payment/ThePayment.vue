@@ -47,7 +47,7 @@
                 </div>
                 <div class="info-item">
                   <span class="label">{{ $t('payment.accountHolder') }}:</span>
-                  <span class="value">NGUYEN HUU NGHIA</span>
+                  <span class="value">NGUYEN DANG DUY</span>
                 </div>
                 <div class="info-item">
                   <span class="label">{{ $t('payment.accountNumber') }}:</span>

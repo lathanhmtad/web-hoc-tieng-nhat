@@ -181,9 +181,9 @@ const getCurrentUserId = async () => {
     // First try to get from profile API which might have more complete user info
     const profileResponse = await api.profile.getProfile()
     
-    if (profileResponse?.user_id) {
-      localStorage.setItem('currentUserId', profileResponse.user_id)
-      return profileResponse.user_id
+    if (profileResponse?.maNguoiDung) {
+      localStorage.setItem('currentUserId', profileResponse.maNguoiDung)
+      return profileResponse.maNguoiDung
     }
     
     // Fallback: try to decode JWT token to get user ID
@@ -219,10 +219,10 @@ const loadChatPartners = async () => {
     
          // Map API data to conversation format based on actual UserSummaryDTO
      const mappedConversations = (Array.isArray(partnersData) ? partnersData : []).map(partner => {
-       // Build full name from firstName and lastName
-       const firstName = partner.firstName || ''
+       // Build full name from ho and lastName
+       const ho = partner.ho || ''
        const lastName = partner.lastName || ''
-       const fullName = `${firstName} ${lastName}`.trim() || partner.userName || t('myMessages.defaultUser')
+       const fullName = `${ho} ${lastName}`.trim() || partner.userName || t('myMessages.defaultUser')
        
        return {
          id: partner.userId,
@@ -327,7 +327,7 @@ const selectChat = async (chat) => {
       // Try to get current user ID from different sources
       let currentUserId = currentUser.value?.id || 
                           currentUser.value?.userId || 
-                          currentUser.value?.user_id ||
+                          currentUser.value?.maNguoiDung ||
                           currentUser.value?.user?.id ||
                           currentUser.value?.user?.userId ||
                           localStorage.getItem('currentUserId')

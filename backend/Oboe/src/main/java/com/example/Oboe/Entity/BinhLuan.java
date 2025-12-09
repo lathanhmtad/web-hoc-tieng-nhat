@@ -32,7 +32,7 @@ public class BinhLuan {
 
     // Nhiều - Một với User
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "maNguoiDung", nullable = false)
     @JsonBackReference("user-comments")
     private NguoiDung nguoiDung;
 

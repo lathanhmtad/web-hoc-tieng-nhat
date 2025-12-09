@@ -35,5 +35,5 @@ public class HanTu {
     private String vietnamesePronunciation;
 
     @OneToMany(mappedBy = "hanTu")
-    private List<TuVungHanTu> cacTuVungLienQuan;
+    private List<ChiTietTuVung> cacTuVungLienQuan;
 }

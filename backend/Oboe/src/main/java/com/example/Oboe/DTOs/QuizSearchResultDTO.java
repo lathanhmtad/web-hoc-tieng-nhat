@@ -21,7 +21,7 @@ public class QuizSearchResultDTO {
         this.avatarUrl = avatarUrl;
     }
 
-    public String getUserName() {
+    public String getEmail() {
         return userName;
     }
 

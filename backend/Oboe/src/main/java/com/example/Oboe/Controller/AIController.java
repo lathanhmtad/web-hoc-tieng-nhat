@@ -2,8 +2,8 @@ package com.example.Oboe.Controller;
 
 import com.example.Oboe.DTOs.AnsweredQuestionDTO;
 import com.example.Oboe.DTOs.QuestionDTO;
-import com.example.Oboe.Entity.MucThe;
-import com.example.Oboe.Entity.BoThe;
+import com.example.Oboe.Entity.ChiTietThe;
+import com.example.Oboe.Entity.BoTheGhiNho;
 import com.example.Oboe.Repository.CardItemRepository;
 import com.example.Oboe.Repository.FlashCardRepository;
 import com.example.Oboe.Service.GeminiService;
@@ -39,15 +39,15 @@ public class AIController {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         UUID userId = userDetails.getUserID();
 
-        List<BoThe> boTheList = flashCardRepository.findflashcardByUserId(userId);
+        List<BoTheGhiNho> boTheGhiNhoList = flashCardRepository.findflashcardByUserId(userId);
 
         // Nếu có flashcard → xử lý theo logic cũ
-        if (!boTheList.isEmpty()) {
+        if (!boTheGhiNhoList.isEmpty()) {
             List<String> wordMeaningList = new ArrayList<>();
-            for (BoThe flashCard : boTheList) {
-                for (MucThe mucThe : flashCard.getMucThes()) {
-                    String word = mucThe.getWord();
-                    String meaning = mucThe.getMeaning();
+            for (BoTheGhiNho flashCard : boTheGhiNhoList) {
+                for (ChiTietThe chiTietThe : flashCard.getChiTietThes()) {
+                    String word = chiTietThe.getTuVung();
+                    String meaning = chiTietThe.getNghia();
                     if (word != null && meaning != null) {
                         wordMeaningList.add(word + " : " + meaning);
                     }
@@ -94,18 +94,18 @@ public class AIController {
         }
 
         // Nếu không có flashcard → fallback random CardItem
-        List<MucThe> allMucThes = cardItemRepository.findAll();
-        if (allMucThes.isEmpty()) {
+        List<ChiTietThe> allChiTietThes = cardItemRepository.findAll();
+        if (allChiTietThes.isEmpty()) {
             throw new RuntimeException("Không tìm thấy CardItem nào trong cơ sở dữ liệu.");
         }
 
         Random random = new Random();
-        MucThe randomMucThe = allMucThes.get(random.nextInt(allMucThes.size()));
-        String prompt = buildPrompt(randomMucThe);
+        ChiTietThe randomChiTietThe = allChiTietThes.get(random.nextInt(allChiTietThes.size()));
+        String prompt = buildPrompt(randomChiTietThe);
         return geminiService.generateQuestion(prompt);
     }
 
-    private String buildPrompt(MucThe mucThe) {
+    private String buildPrompt(ChiTietThe chiTietThe) {
         return """
         Tạo ra đúng 10 câu hỏi trắc nghiệm tiếng Nhật dựa trên từ vựng sau:
 
@@ -131,7 +131,7 @@ public class AIController {
         ]
 
         Không thêm giải thích hay văn bản nào ngoài JSON.
-        """.formatted(mucThe.getWord(), mucThe.getMeaning());
+        """.formatted(chiTietThe.getTuVung(), chiTietThe.getNghia());
     }
 
     @PremiumOnly

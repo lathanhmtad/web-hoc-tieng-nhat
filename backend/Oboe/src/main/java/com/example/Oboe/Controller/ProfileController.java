@@ -4,7 +4,7 @@ import com.example.Oboe.Config.CustomUserDetails;
 import com.example.Oboe.DTOs.ActivityDTO;
 import com.example.Oboe.DTOs.UserProfileDTO;
 import com.example.Oboe.DTOs.UserProfileDTOwithStatistical;
-import com.example.Oboe.Entity.AuthProvider;
+import com.example.Oboe.Entity.PhuongThucXacThuc;
 import com.example.Oboe.Entity.NguoiDung;
 import com.example.Oboe.Service.StatisticalUserSerivce;
 import com.example.Oboe.Service.UserService;
@@ -43,9 +43,9 @@ public class ProfileController {
         }
 
         String username = customUserDetails.getUsername();
-        AuthProvider authProvider = customUserDetails.getAuthProvider();
+        PhuongThucXacThuc phuongThucXacThuc = customUserDetails.getAuthProvider();
 
-        List<NguoiDung> nguoiDungs = userService.findByUserNameAndAuthProvider(username, authProvider);
+        List<NguoiDung> nguoiDungs = userService.findByUserNameAndAuthProvider(username, phuongThucXacThuc);
 
         if (nguoiDungs.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");

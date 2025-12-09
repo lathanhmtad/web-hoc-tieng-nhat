@@ -4,10 +4,10 @@ import com.example.Oboe.Config.CustomUserDetails;
 import com.example.Oboe.DTOs.PassWordChangeDTOs;
 import com.example.Oboe.DTOs.UserDTOs;
 import com.example.Oboe.DTOs.UserProfileDTOwithStatistical;
-import com.example.Oboe.Entity.AccountType;
-import com.example.Oboe.Entity.AuthProvider;
+import com.example.Oboe.Entity.LoaiTaiKhoan;
+import com.example.Oboe.Entity.PhuongThucXacThuc;
 import com.example.Oboe.Entity.NguoiDung;
-import com.example.Oboe.Entity.Role;
+import com.example.Oboe.Entity.VaiTro;
 import com.example.Oboe.Repository.BlogRepository;
 import com.example.Oboe.Repository.CommentRepository;
 import com.example.Oboe.Repository.FlashCardRepository;
@@ -43,16 +43,16 @@ public class UserService implements UserDetailsService {
     private String domain;
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, MailService mailService ,BlogRepository blogRepository,CommentRepository commentRepository,
-                       FlashCardRepository flashCardRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, MailService mailService, BlogRepository blogRepository, CommentRepository commentRepository, FlashCardRepository flashCardRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.mailService = mailService;
-        this.blogRepository =blogRepository;
-        this.commentRepository =commentRepository;
-        this.flashCardRepository =flashCardRepository;
+        this.blogRepository = blogRepository;
+        this.commentRepository = commentRepository;
+        this.flashCardRepository = flashCardRepository;
 
     }
+
     @Autowired
     private S3Service s3Service;
 
@@ -68,10 +68,9 @@ public class UserService implements UserDetailsService {
             String verificationToken = UUID.randomUUID().toString();
             VerificationHolder.getInstance().addToken(verificationToken, userDTOs);
 
-            String verificationLink = domain+"/api/auth/verify?token=" + verificationToken;
+            String verificationLink = domain + "/api/auth/verify?token=" + verificationToken;
 
-            mailService.sendMail(username, "Xác minh tài khoản",
-                    "Click vào liên kết để xác minh tài khoản của bạn: " + verificationLink);
+            mailService.sendMail(username, "Xác minh tài khoản", "Click vào liên kết để xác minh tài khoản của bạn: " + verificationLink);
         } else if (isValidPhone(username)) {
             // Không cần gửi email, xác minh luôn
             userDTOs.setVerified(true);
@@ -80,8 +79,6 @@ public class UserService implements UserDetailsService {
             throw new IllegalArgumentException("Tên đăng nhập phải là email hoặc số điện thoại hợp lệ.");
         }
     }
-
-
 
     public NguoiDung verifyAccount(String token) {
         UserDTOs signupRequest = VerificationHolder.getInstance().getSignupRequest(token);
@@ -93,13 +90,13 @@ public class UserService implements UserDetailsService {
     }
 
     public NguoiDung addUser(UserDTOs userDTOs) {
-        AuthProvider provider = userDTOs.getAuthProvider();
+        PhuongThucXacThuc provider = userDTOs.getAuthProvider();
         String username = userDTOs.getUserName();
 
         // Cho phép trùng username nếu khác provider
         List<NguoiDung> existingNguoiDungs = userRepository.findAllByUserNameAndAuthProvider(username, provider);
         if (!existingNguoiDungs.isEmpty()) {
-            if (provider == AuthProvider.EMAIL) {
+            if (provider == PhuongThucXacThuc.EMAIL) {
                 throw new IllegalStateException("Tài khoản email đã được sử dụng.");
             } else {
                 return existingNguoiDungs.get(0); // Google/Facebook → dùng lại
@@ -108,44 +105,41 @@ public class UserService implements UserDetailsService {
 
         // Tạo mới nếu chưa tồn tại
         NguoiDung nguoiDung = new NguoiDung();
-        nguoiDung.setUserName(username);
-        nguoiDung.setAuthProvider(provider);
-        nguoiDung.setFirstName(userDTOs.getFirstName());
-        nguoiDung.setLastName(userDTOs.getLastName());
-        nguoiDung.setDay_of_birth(userDTOs.getDay_of_birth());
-        nguoiDung.setAddress(userDTOs.getAddress());
-        nguoiDung.setRole(Role.ROLE_USER);
-        nguoiDung.setVerified(userDTOs.isVerified());
-        nguoiDung.setAccountType(AccountType.FREE);
-        nguoiDung.setProviderId(userDTOs.getProviderId());
-        nguoiDung.setCreate_at(LocalDateTime.now());
-        nguoiDung.setUpdate_at(LocalDateTime.now());
-        nguoiDung.setAvatarUrl(defaultAvatar);
-        if (provider == AuthProvider.EMAIL) {
+        nguoiDung.setEmail(username);
+        nguoiDung.setPhuongThucXacThuc(provider);
+        nguoiDung.setHo(userDTOs.getFirstName());
+        nguoiDung.setTen(userDTOs.getLastName());
+        nguoiDung.setNgaySinh(userDTOs.getDay_of_birth());
+        nguoiDung.setDiaChi(userDTOs.getAddress());
+        nguoiDung.setVaiTro(VaiTro.ROLE_USER);
+        nguoiDung.setDaXacThuc(userDTOs.isVerified());
+        nguoiDung.setLoaiTaiKhoan(LoaiTaiKhoan.FREE);
+//        nguoiDung.setProviderId(userDTOs.getProviderId());
+        nguoiDung.setNgayTao(LocalDateTime.now());
+        nguoiDung.setNgayCapNhat(LocalDateTime.now());
+        nguoiDung.setAnhDaiDien(defaultAvatar);
+        if (provider == PhuongThucXacThuc.EMAIL) {
             if (userDTOs.getPassWord() == null || userDTOs.getPassWord().length() < 8) {
                 throw new IllegalArgumentException("Mật khẩu phải ít nhất 8 ký tự.");
             }
-            nguoiDung.setPassWord(passwordEncoder.encode(userDTOs.getPassWord()));
+            nguoiDung.setMatKhau(passwordEncoder.encode(userDTOs.getPassWord()));
         } else {
-            nguoiDung.setPassWord(null);
+            nguoiDung.setMatKhau(null);
         }
 
         return userRepository.save(nguoiDung);
     }
 
-
     public List<NguoiDung> findByUserName(String userName) {
         return userRepository.searchUsers(userName);
     }
 
-
-    public List<NguoiDung> findByUserNameAndAuthProvider(String userName, AuthProvider provider) {
+    public List<NguoiDung> findByUserNameAndAuthProvider(String userName, PhuongThucXacThuc provider) {
         return userRepository.findAllByUserNameAndAuthProvider(userName, provider);
     }
 
     public UserProfileDTOwithStatistical getUserByIds(UUID userId) {
-        NguoiDung nguoiDung = userRepository.findByUser_id(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+        NguoiDung nguoiDung = userRepository.findBymaNguoiDung(userId).orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
 
         // Thống kê số lượng nội dung của user
         long blogCount = blogRepository.countBlogsByUserId(userId);
@@ -162,8 +156,7 @@ public class UserService implements UserDetailsService {
     }
 
     public void deleteUser(UUID userId) {
-        NguoiDung nguoiDung = userRepository.findByUser_id(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        NguoiDung nguoiDung = userRepository.findBymaNguoiDung(userId).orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         // Xóa comment của user
         commentRepository.deleteUserbyComment(userId);
@@ -178,14 +171,12 @@ public class UserService implements UserDetailsService {
         userRepository.delete(nguoiDung);
     }
 
-
-
     public List<NguoiDung> findAllByUserName(String userName) {
         return userRepository.searchUsers(userName);
     }
 
     public UserDetails loadUserByUsername(String username) {
-        List<NguoiDung> nguoiDungs = userRepository.findAllByUserNameAndAuthProvider(username, AuthProvider.EMAIL);
+        List<NguoiDung> nguoiDungs = userRepository.findAllByUserNameAndAuthProvider(username, PhuongThucXacThuc.EMAIL);
 
         if (nguoiDungs.isEmpty()) {
             throw new UsernameNotFoundException("User not found (EMAIL)");
@@ -196,19 +187,18 @@ public class UserService implements UserDetailsService {
 
         NguoiDung nguoiDung = nguoiDungs.get(0);
 
-        if (!nguoiDung.isVerified()) {
+        if (!nguoiDung.isDaXacThuc()) {
             throw new UsernameNotFoundException("Tài khoản chưa xác minh email.");
         }
 
-        if (nguoiDung.getStatus() != null && nguoiDung.getStatus().toString().equalsIgnoreCase("BANNED")) {
+        if (nguoiDung.getTrangThaiTaiKhoan() != null && nguoiDung.getTrangThaiTaiKhoan().toString().equalsIgnoreCase("BANNED")) {
             throw new UsernameNotFoundException("Tài khoản đã bị khóa.");
         }
 
         return buildPrincipal(nguoiDung);
     }
 
-
-    public UserDetails loadUserByUsernameAndProvider(String username, AuthProvider provider) {
+    public UserDetails loadUserByUsernameAndProvider(String username, PhuongThucXacThuc provider) {
         List<NguoiDung> nguoiDungs = userRepository.findAllByUserNameAndAuthProvider(username, provider);
 
         if (nguoiDungs.isEmpty()) {
@@ -220,27 +210,25 @@ public class UserService implements UserDetailsService {
 
         NguoiDung nguoiDung = nguoiDungs.get(0);
 
-        if (nguoiDung.getStatus() != null && nguoiDung.getStatus().toString().equalsIgnoreCase("BANNED")) {
+        if (nguoiDung.getTrangThaiTaiKhoan() != null && nguoiDung.getTrangThaiTaiKhoan().toString().equalsIgnoreCase("BANNED")) {
             throw new UsernameNotFoundException("Tài khoản đã bị khóa.");
         }
 
         return buildPrincipal(nguoiDung);
     }
 
-
     private UserDetails buildPrincipal(NguoiDung nguoiDung) {
-        String password = nguoiDung.getPassWord();
+        String password = nguoiDung.getMatKhau();
 
-        if (nguoiDung.getAuthProvider() == AuthProvider.EMAIL && (password == null || password.isBlank())) {
+        if (nguoiDung.getPhuongThucXacThuc() == PhuongThucXacThuc.EMAIL && (password == null || password.isBlank())) {
             throw new UsernameNotFoundException("Password is missing for email login.");
         }
 
         return new CustomUserDetails(nguoiDung);
     }
 
-
-    public NguoiDung updateMyOwnProfile(String username, AuthProvider authProvider, UserDTOs userDTOs) {
-        List<NguoiDung> nguoiDungs = userRepository.findAllByUserNameAndAuthProvider(username, authProvider);
+    public NguoiDung updateMyOwnProfile(String username, PhuongThucXacThuc phuongThucXacThuc, UserDTOs userDTOs) {
+        List<NguoiDung> nguoiDungs = userRepository.findAllByUserNameAndAuthProvider(username, phuongThucXacThuc);
 
         if (nguoiDungs.isEmpty()) {
             throw new UsernameNotFoundException("User not found");
@@ -251,19 +239,17 @@ public class UserService implements UserDetailsService {
 
         NguoiDung nguoiDung = nguoiDungs.get(0);
 
-        nguoiDung.setFirstName(userDTOs.getFirstName());
-        nguoiDung.setLastName(userDTOs.getLastName());
-        nguoiDung.setAddress(userDTOs.getAddress());
-        nguoiDung.setDay_of_birth(userDTOs.getDay_of_birth());
-        nguoiDung.setUpdate_at(LocalDateTime.now());
+        nguoiDung.setHo(userDTOs.getUserName());
+        nguoiDung.setTen(userDTOs.getLastName());
+        nguoiDung.setDiaChi(userDTOs.getAddress());
+        nguoiDung.setNgaySinh(userDTOs.getDay_of_birth());
+        nguoiDung.setNgayCapNhat(LocalDateTime.now());
 
         return userRepository.save(nguoiDung);
     }
 
-
-
     public void changePassword(String username, PassWordChangeDTOs passWordChange) {
-        List<NguoiDung> nguoiDungs = userRepository.findAllByUserNameAndAuthProvider(username, AuthProvider.EMAIL);
+        List<NguoiDung> nguoiDungs = userRepository.findAllByUserNameAndAuthProvider(username, PhuongThucXacThuc.EMAIL);
 
         if (nguoiDungs.isEmpty()) {
             throw new UsernameNotFoundException("User not found");
@@ -275,37 +261,34 @@ public class UserService implements UserDetailsService {
 
         NguoiDung nguoiDung = nguoiDungs.get(0);
 
-        if (nguoiDung.getAuthProvider() != AuthProvider.EMAIL) {
+        if (nguoiDung.getPhuongThucXacThuc() != PhuongThucXacThuc.EMAIL) {
             throw new IllegalArgumentException("Không thể đổi mật khẩu với tài khoản Google/Facebook.");
         }
 
-        if (!passwordEncoder.matches(passWordChange.getOldPassword(), nguoiDung.getPassWord())) {
+        if (!passwordEncoder.matches(passWordChange.getOldPassword(), nguoiDung.getMatKhau())) {
             throw new IllegalArgumentException("Old password is incorrect");
         }
 
         validatePassword(passWordChange.getNewPassword());
 
-        nguoiDung.setPassWord(passwordEncoder.encode(passWordChange.getNewPassword()));
+        nguoiDung.setMatKhau(passwordEncoder.encode(passWordChange.getNewPassword()));
         userRepository.save(nguoiDung);
     }
-
 
 //    public UserDTOs convertOAuthToDTO(String email, String firstName, String lastName, AuthProvider provider) {
 //        UserDTOs dto = new UserDTOs();
 //        dto.setUserName(email);
 //        dto.setFirstName(firstName);
-//        dto.setLastName(lastName);
-//        dto.setVerified(true);
-//        dto.setPassWord(null);
-//        dto.setRole(Role.ROLE_USER);
+//        dto.setTen(lastName);
+//        dto.setDaXacThuc(true);
+//        dto.setMatKhau(null);
+//        dto.setVaiTro(Role.ROLE_USER);
 //        dto.setAccountType(AccountType.FREE);
 //        dto.setCreate_at(LocalDateTime.now());
-//        dto.setUpdate_at(LocalDateTime.now());
+//        dto.setNgayCapNhat(LocalDateTime.now());
 //        dto.setAuthProvider(provider);
 //        return dto;
 //    }
-
-
 
     private void validatePassword(String password) {
         if (password == null || password.isBlank()) {
@@ -317,29 +300,22 @@ public class UserService implements UserDetailsService {
     }
 
     private boolean isStrongPassword(String password) {
-        return password.length() >= 8 &&
-                password.matches(".*[A-Z].*") &&
-                password.matches(".*[a-z].*") &&
-                password.matches(".*\\d.*") &&
-                password.matches(".*[!@#$%^&*()].*");
+        return password.length() >= 8 && password.matches(".*[A-Z].*") && password.matches(".*[a-z].*") && password.matches(".*\\d.*") && password.matches(".*[!@#$%^&*()].*");
     }
 
     private boolean isValidPhone(String phone) {
         return phone != null && phone.matches("^\\+?[0-9]{10,15}$");
     }
 
-
     private boolean isValidEmail(String email) {
         return email != null && email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
     }
 
     public NguoiDung getUserById(UUID id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + id));
+        return userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + id));
     }
 
-
-    public NguoiDung uploadAvatarForUser(String username, AuthProvider provider, MultipartFile file) throws Exception {
+    public NguoiDung uploadAvatarForUser(String username, PhuongThucXacThuc provider, MultipartFile file) throws Exception {
         List<NguoiDung> nguoiDungs = userRepository.findAllByUserNameAndAuthProvider(username, provider);
 
         if (nguoiDungs.isEmpty()) {
@@ -351,8 +327,8 @@ public class UserService implements UserDetailsService {
 
         NguoiDung nguoiDung = nguoiDungs.get(0);
         String avatarUrl = s3Service.uploadFile(file, "upload-avatar/");
-        nguoiDung.setAvatarUrl(avatarUrl);
-        nguoiDung.setUpdate_at(LocalDateTime.now());
+        nguoiDung.setAnhDaiDien(avatarUrl);
+        nguoiDung.setNgayCapNhat(LocalDateTime.now());
         return userRepository.save(nguoiDung);
     }
 
@@ -363,6 +339,4 @@ public class UserService implements UserDetailsService {
     public NguoiDung saveUser(NguoiDung nguoiDung) {
         return userRepository.save(nguoiDung);
     }
-
-
 }

@@ -166,7 +166,7 @@ public class FavoritesService {
                 .orElseThrow(() -> new RuntimeException("Favorite not found"));
 
         // Kiểm tra xem mục yêu thích này có thuộc về người dùng hiện tại không
-        if (!favorite.getUser().getUser_id().equals(userId)) {
+        if (!favorite.getUser().getMaNguoiDung().equals(userId)) {
             throw new RuntimeException("Bạn không có quyền xóa mục yêu thích này");
         }
 
@@ -182,7 +182,7 @@ public class FavoritesService {
                 favorites.getTitle(),
                 favorites.getContent(),
                 favorites.getFavories_at(),
-                favorites.getUser() != null ? favorites.getUser().getUser_id() : null,
+                favorites.getUser() != null ? favorites.getUser().getMaNguoiDung() : null,
                 favorites.getGramma() != null ? favorites.getGramma().getGrammaID() : null,
                 favorites.getHanTu() != null ? favorites.getHanTu().getKanjiId() : null,
                 favorites.getSentence() != null ? favorites.getSentence().getSample_sentence_id() : null,

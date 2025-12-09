@@ -9,7 +9,7 @@ $primary-color-2: #772C3F;
     justify-content: center;
     position: relative;
     width: 400px;
-    height: 400px; 
+    min-height: 400px; 
     flex-shrink: 0;
     border-radius: 5px;
     margin-left: 50%;
@@ -259,7 +259,7 @@ h1 {
 .styled-input {
     width: 100%;
     position: relative;
-    margin-bottom: 18px;
+    margin-bottom: 8px;
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 3px;
     transition: all 0.3s ease

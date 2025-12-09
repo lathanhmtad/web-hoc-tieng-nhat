@@ -1,7 +1,7 @@
 package com.example.Oboe.Service;
 
-import com.example.Oboe.Entity.AccountType;
-import com.example.Oboe.Entity.Payment;
+import com.example.Oboe.Entity.DonHang;
+import com.example.Oboe.Entity.LoaiTaiKhoan;
 import com.example.Oboe.Entity.NguoiDung;
 import com.example.Oboe.Repository.PaymentRepository;
 import com.example.Oboe.Repository.UserRepository;
@@ -55,7 +55,7 @@ public class MomoService {
 
         String orderId = UUID.randomUUID().toString();
         String requestId = UUID.randomUUID().toString();
-        String orderInfo = "Nâng cấp Premium cho người dùng: " + nguoiDung.getUserName();
+        String orderInfo = "Nâng cấp Premium cho người dùng: " + nguoiDung.getEmail();
         String extraData = userId.toString(); // ✅ truyền đúng extraData vào rawData
 
         String rawData = buildRawData(orderId, requestId, orderInfo, extraData);
@@ -69,7 +69,7 @@ public class MomoService {
         payload.put("partnerCode", partnerCode);
         payload.put("accessKey", accessKey);
         payload.put("requestId", requestId);
-        payload.put("amount", AMOUNT);
+        payload.put("soTien", AMOUNT);
         payload.put("orderId", orderId);
         payload.put("orderInfo", orderInfo);
         payload.put("redirectUrl", returnUrl);
@@ -101,7 +101,7 @@ public class MomoService {
 
     private String buildRawData(String orderId, String requestId, String orderInfo, String extraData) {
         return "accessKey=" + accessKey +
-                "&amount=" + AMOUNT +
+                "&soTien=" + AMOUNT +
                 "&extraData=" + extraData +
                 "&ipnUrl=" + notifyUrl +
                 "&orderId=" + orderId +
@@ -115,7 +115,7 @@ public class MomoService {
 
     public void handleMomoCallback(Map<String, String> payload) {
         String resultCode = payload.get("resultCode");
-        String amount = payload.get("amount");
+        String amount = payload.get("soTien");
         String extraData = payload.get("extraData");
 
         if ("0".equals(resultCode) && extraData != null && !extraData.isBlank()) {
@@ -123,14 +123,14 @@ public class MomoService {
                 UUID userId = UUID.fromString(extraData);
 
                 userRepository.findById(userId).ifPresent(user -> {
-                    user.setAccountType(AccountType.PREMIUM);
+                    user.setLoaiTaiKhoan(LoaiTaiKhoan.PREMIUM);
                     userRepository.save(user);
 
-                    Payment payment = new Payment();
-                    payment.setAmount(Integer.parseInt(amount));
-                    payment.setStatus("SUCCESS");
-                    payment.setUser(user);
-                    paymentRepository.save(payment);
+                    DonHang donHang = new DonHang();
+                    donHang.setSoTien(Integer.parseInt(amount));
+                    donHang.setTrangThai("SUCCESS");
+                    donHang.setNguoiDung(user);
+                    paymentRepository.save(donHang);
                 });
 
             } catch (IllegalArgumentException e) {

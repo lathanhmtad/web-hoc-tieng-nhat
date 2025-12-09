@@ -1,6 +1,6 @@
 package com.example.Oboe.Util;
 
-import com.example.Oboe.Entity.AuthProvider;
+import com.example.Oboe.Entity.PhuongThucXacThuc;
 import com.example.Oboe.Service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -47,11 +47,11 @@ public class JwtAuthencation extends OncePerRequestFilter {
         final String jwt = authHeader.substring(7);
 
         try {
-            final String username = jwtUtil.getUsernameFromToken(jwt);
+            final String username = jwtUtil.getEmailFromToken(jwt);
             final String providerStr = jwtUtil.getProviderFromToken(jwt);
 
             if (username != null && providerStr != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                AuthProvider provider = AuthProvider.valueOf(providerStr);
+                PhuongThucXacThuc provider = PhuongThucXacThuc.valueOf(providerStr);
 
                 UserDetails userDetails = userDetailsService.loadUserByUsernameAndProvider(username, provider);
 

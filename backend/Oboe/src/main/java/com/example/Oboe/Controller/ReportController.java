@@ -7,11 +7,9 @@ import com.example.Oboe.Entity.ActionType;
 import com.example.Oboe.Entity.Report;
 import com.example.Oboe.Entity.ReportStatus;
 import com.example.Oboe.Service.ReportService;
-import com.example.Oboe.annotation.PremiumOnly;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

@@ -17,7 +17,7 @@ public class BaiKiemTra {
     private String description;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id") // Liên kết với User
+    @JoinColumn(name = "maNguoiDung") // Liên kết với User
     private NguoiDung nguoiDung;
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)

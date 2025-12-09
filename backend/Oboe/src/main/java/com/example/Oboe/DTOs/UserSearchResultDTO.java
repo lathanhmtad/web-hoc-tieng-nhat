@@ -17,8 +17,8 @@ public class UserSearchResultDTO {
 
     private String avatarUrl;
 
-    public UserSearchResultDTO(UUID user_id, String userName, String avatarUrl, Long flashcardCount) {
-        this.userId = user_id;
+    public UserSearchResultDTO(UUID maNguoiDung, String userName, String avatarUrl, Long flashcardCount) {
+        this.userId = maNguoiDung;
         this.userName = userName;
         this.avatarUrl = avatarUrl;
         this.flashcardCount = flashcardCount != null ? flashcardCount : 0;
@@ -33,7 +33,7 @@ public class UserSearchResultDTO {
         this.userId = userId;
     }
 
-    public String getUserName() {
+    public String getEmail() {
         return userName;
     }
 

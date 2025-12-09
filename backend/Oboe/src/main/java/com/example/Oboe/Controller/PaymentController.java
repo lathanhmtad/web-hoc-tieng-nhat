@@ -1,8 +1,9 @@
 package com.example.Oboe.Controller;
 import com.example.Oboe.Config.CustomUserDetails;
-import com.example.Oboe.Entity.Payment;
+import com.example.Oboe.Entity.DonHang;
 import com.example.Oboe.Repository.PaymentRepository;
 import com.example.Oboe.Repository.UserRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import com.example.Oboe.Service.MomoService;
 import com.example.Oboe.Service.PayOsService;
@@ -16,14 +17,11 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api/payment")
+@AllArgsConstructor
 public class PaymentController {
-    @Autowired
     private PayOsService payOsService;
-    @Autowired
     private UserRepository userRepository;
-    @Autowired
     private MomoService momoService;
-    @Autowired
     private PaymentRepository paymentRepository;
 
     @PostMapping("/momo")
@@ -64,8 +62,8 @@ public class PaymentController {
 
             // Lấy lại payment từ orderCode
             long orderCode = result.getOrderCode();
-            Payment payment = paymentRepository.findByOrderCode(orderCode);
-            if (payment == null) {
+            DonHang donHang = paymentRepository.findByMaDonHang(orderCode);
+            if (donHang == null) {
                 return ResponseEntity.status(500).body(Map.of("error", "Không tìm thấy đơn hàng vừa tạo"));
             }
 
@@ -75,10 +73,10 @@ public class PaymentController {
             String qrUrl = result.getQrCode();
 
             Map<String, Object> body = new HashMap<>();
-            body.put("amount", payment.getAmount());
-            body.put("orderCode", payment.getOrderCode());
-            body.put("status", payment.getStatus());
-            body.put("paid_at", payment.getPaidAt());
+            body.put("amount", donHang.getSoTien());
+            body.put("orderCode", donHang.getMaDonHang());
+            body.put("status", donHang.getTrangThai());
+            body.put("paid_at", donHang.getThoiGianThanhToan());
             body.put("qrUrl", qrUrl);
             body.put("checkoutUrl", result.getCheckoutUrl());
 
@@ -95,7 +93,6 @@ public class PaymentController {
     }
 
 
-
     @PostMapping("/payos-notify")
     public ResponseEntity<?> handlePayOsCallback(@RequestBody String rawJson) {
         try {
@@ -103,8 +100,8 @@ public class PaymentController {
 
             var data = payOsService.handleWebhook(rawJson);
 
-            System.out.println("Payment status updated for orderCode: " + data.getOrderCode() +
-                    ", status code: " + data.getCode());
+            System.out.println("Payment trangThai updated for orderCode: " + data.getOrderCode() +
+                    ", trangThai code: " + data.getCode());
 
 
             return ResponseEntity.ok("Received");
@@ -137,11 +134,11 @@ public class PaymentController {
 
         try {
             Long orderCodeLong = Long.parseLong(orderCode);
-            Payment payment = paymentRepository.findByOrderCode(orderCodeLong);
+            DonHang donHang = paymentRepository.findByMaDonHang(orderCodeLong);
 
-            if (payment != null) {
-                payment.setStatus("CANCELLED");
-                paymentRepository.save(payment);
+            if (donHang != null) {
+                donHang.setTrangThai("CANCELLED");
+                paymentRepository.save(donHang);
             }
 
             return ResponseEntity.ok(Map.of(
@@ -155,16 +152,16 @@ public class PaymentController {
 
     @GetMapping("/status")
     public ResponseEntity<?> getPaymentStatus(@RequestParam Long orderCode) {
-        Payment payment = paymentRepository.findByOrderCode(orderCode);
-        if (payment == null) {
+        DonHang donHang = paymentRepository.findByMaDonHang(orderCode);
+        if (donHang == null) {
             return ResponseEntity.status(404).body(Map.of("error", "Không tìm thấy đơn hàng"));
         }
 
         return ResponseEntity.ok(Map.of(
-                "orderCode", payment.getOrderCode(),
-                "status", payment.getStatus(),
-                "amount", payment.getAmount(),
-                "user", payment.getUser().getUser_id()
+                "orderCode", donHang.getMaDonHang(),
+                "status", donHang.getTrangThai(),
+                "amount", donHang.getSoTien(),
+                "user", donHang.getNguoiDung().getMaNguoiDung()
         ));
     }
 }

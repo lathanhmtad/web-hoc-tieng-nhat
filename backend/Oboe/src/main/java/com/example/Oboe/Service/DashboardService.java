@@ -44,19 +44,19 @@ public class DashboardService {
         ));
         summary.put("post_reports", Map.of(
                 "count", reportRepository.countPendingBlogReports(),
-                "status", "Chờ xử lý"
+                "trangThai", "Chờ xử lý"
         ));
 
 
         summary.put("feedback", Map.of(
                 "count", feedbackRepository.countAllFeedbacks(),
-                "status", "Đã ghi nhận"
+                "trangThai", "Đã ghi nhận"
         ));
 
         // Trước đây dùng report để thống kê feedback:
         // summary.put("feedback", Map.of(
         //     "count", reportRepository.countPendingFeedbackReports(),
-        //     "status", "Chờ xử lý"
+        //     "trangThai", "Chờ xử lý"
         // ));
 
         // Hoạt động gần đây
@@ -81,7 +81,7 @@ public class DashboardService {
             if (r.getBlog() != null) {
                 message = "Bài viết (ID: " + r.getBlog().getBlogId() + ") đã bị báo cáo";
             } else if (r.getUser() != null) {
-                message = "Người dùng (ID: " + r.getUser().getUser_id() + ") đã bị phản ánh";
+                message = "Người dùng (ID: " + r.getUser().getMaNguoiDung() + ") đã bị phản ánh";
             } else {
                 message = "Báo cáo không xác định đối tượng";
             }

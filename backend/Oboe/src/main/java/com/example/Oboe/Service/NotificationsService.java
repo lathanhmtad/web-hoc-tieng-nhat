@@ -51,10 +51,10 @@ public class NotificationsService {
     public NotificationsDTO convertToDTO(ThongBao thongBao) {
         return new NotificationsDTO(
                 thongBao.getNotifiId(),
-                thongBao.getNguoiDung().getUser_id(),
+                thongBao.getNguoiDung().getMaNguoiDung(),
                 thongBao.getText_notification(),
                 thongBao.isRead(),
-                thongBao.getUpdate_at(),
+                thongBao.getNgayCapNhat(),
                 thongBao.getTargetId(),     // ← thêm mới
                 thongBao.getTargetType()    // ← thêm mới
         );

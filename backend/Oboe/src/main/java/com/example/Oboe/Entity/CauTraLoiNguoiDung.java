@@ -20,7 +20,7 @@ public class CauTraLoiNguoiDung {
     private CauHoi question;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "maNguoiDung", nullable = false)
     private NguoiDung nguoiDung;
 
     @ManyToOne

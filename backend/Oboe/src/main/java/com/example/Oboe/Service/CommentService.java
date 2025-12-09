@@ -160,20 +160,20 @@ public class CommentService {
 
         //  Nếu là comment blog → tạo thông báo và gửi WebSocket
         // Nếu là comment blog → tạo thông báo và gửi WebSocket
-        if (isBlog && receiver != null && !receiver.getUser_id().equals(sender.getUser_id())) {
+        if (isBlog && receiver != null && !receiver.getMaNguoiDung().equals(sender.getMaNguoiDung())) {
             // Tạo thông báo
             ThongBao notification = new ThongBao();
             notification.setNguoiDung(receiver);
-            notification.setText_notification("Bạn vừa nhận được một bình luận mới từ " + sender.getUserName());
+            notification.setText_notification("Bạn vừa nhận được một bình luận mới từ " + sender.getEmail());
             notification.setRead(false);
-            notification.setUpdate_at(vietnamTime);
+            notification.setNgayCapNhat(vietnamTime);
             notification.setTargetId(saved.getreferenceId());          // ID của comment
             notification.setTargetType("BLog");            // Kiểu: "Comment"
 
             ThongBao savedNoti = notificationsRepository.save(notification);
 
             // Gửi WebSocket nếu người nhận đang online
-            WebSocketSession receiverSession = SessionManager.getSession(receiver.getUser_id());
+            WebSocketSession receiverSession = SessionManager.getSession(receiver.getMaNguoiDung());
 
             if (receiverSession != null && receiverSession.isOpen()) {
                 try {
@@ -229,19 +229,19 @@ public class CommentService {
         NguoiDung receiver = parent.getNguoiDung();
 
         // Nếu người nhận khác người gửi → tạo và lưu thông báo
-        if (receiver != null && !receiver.getUser_id().equals(sender.getUser_id())) {
+        if (receiver != null && !receiver.getMaNguoiDung().equals(sender.getMaNguoiDung())) {
             ThongBao notification = new ThongBao();
             notification.setNguoiDung(receiver); // Gửi tới người nhận
-            notification.setText_notification("Bạn vừa nhận được một phản hồi từ " + sender.getUserName());
+            notification.setText_notification("Bạn vừa nhận được một phản hồi từ " + sender.getEmail());
             notification.setRead(false);
-            notification.setUpdate_at(vietnamTime);
+            notification.setNgayCapNhat(vietnamTime);
             notification.setTargetId(parent.getreferenceId());
             notification.setTargetType("BLog");
 
             ThongBao savedNoti = notificationsRepository.save(notification);
 
             // Gửi WebSocket nếu người nhận đang online
-            WebSocketSession receiverSession = SessionManager.getSession(receiver.getUser_id());
+            WebSocketSession receiverSession = SessionManager.getSession(receiver.getMaNguoiDung());
             if (receiverSession != null && receiverSession.isOpen()) {
                 try {
                     ObjectMapper mapper = new ObjectMapper();
@@ -280,7 +280,7 @@ public class CommentService {
         if (userOpt.isEmpty()) return null;
 
         // Chỉ cho phép sửa nếu là người tạo
-        if (!binhLuan.getNguoiDung().getUser_id().equals(userOpt.get().getUser_id())) return null;
+        if (!binhLuan.getNguoiDung().getMaNguoiDung().equals(userOpt.get().getMaNguoiDung())) return null;
 
         binhLuan.setTitle(dto.getTitle());
         binhLuan.setContent(dto.getContent());
@@ -297,7 +297,7 @@ public class CommentService {
         Optional<NguoiDung> userOpt = userService.findById(userId);
         if (userOpt.isEmpty()) return false;
 
-        if (!binhLuan.getNguoiDung().getUser_id().equals(userOpt.get().getUser_id())) return false;
+        if (!binhLuan.getNguoiDung().getMaNguoiDung().equals(userOpt.get().getMaNguoiDung())) return false;
 
         commentRepository.deleteById(commentId);
         return true;
@@ -347,9 +347,9 @@ public class CommentService {
         dto.setCreatedAt(binhLuan.getCreatedAt());
         // Gán thông tin người dùng
         if (binhLuan.getNguoiDung() != null) {
-            dto.setUserId(binhLuan.getNguoiDung().getUser_id());
-            dto.setUserName(binhLuan.getNguoiDung().getUserName());
-            dto.setAvatarUrl(binhLuan.getNguoiDung().getAvatarUrl());
+            dto.setUserId(binhLuan.getNguoiDung().getMaNguoiDung());
+            dto.setUserName(binhLuan.getNguoiDung().getEmail());
+            dto.setAvatarUrl(binhLuan.getNguoiDung().getAnhDaiDien());
         }
         // Nếu là phản hồi thì set comment cha
         if (binhLuan.getParentBinhLuan() != null) {
@@ -366,8 +366,8 @@ public class CommentService {
         dto.setContent(binhLuan.getContent());
         dto.setCreatedAt(binhLuan.getCreatedAt());
         if (binhLuan.getNguoiDung() != null) {
-            dto.setUserId(binhLuan.getNguoiDung().getUser_id());
-            dto.setUserName(binhLuan.getNguoiDung().getUserName());
+            dto.setUserId(binhLuan.getNguoiDung().getMaNguoiDung());
+            dto.setUserName(binhLuan.getNguoiDung().getEmail());
         }
         if (binhLuan.getParentBinhLuan() != null) {
             dto.setCommentIdParent(binhLuan.getParentBinhLuan().getCommentId());

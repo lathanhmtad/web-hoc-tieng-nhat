@@ -50,13 +50,13 @@ public class AdminService {
 
     // Tạo tài khoản mới (Admin hoặc User)
     public NguoiDung createUser(UserDTOs userDTO) {
-        AuthProvider provider = userDTO.getAuthProvider();
+        PhuongThucXacThuc provider = userDTO.getAuthProvider();
         String username = userDTO.getUserName();
 
         List<NguoiDung> existingNguoiDungs = userRepository.findAllByUserNameAndAuthProvider(username, provider);
 
         if (!existingNguoiDungs.isEmpty()) {
-            if (provider == AuthProvider.EMAIL) {
+            if (provider == PhuongThucXacThuc.EMAIL) {
                 throw new IllegalStateException("Tài khoản email đã được sử dụng.");
             }
             return existingNguoiDungs.get(0);
@@ -64,11 +64,11 @@ public class AdminService {
 
         NguoiDung nguoiDung = buildNewUser(userDTO);
 
-        if (provider == AuthProvider.EMAIL) {
+        if (provider == PhuongThucXacThuc.EMAIL) {
             validatePassword(userDTO.getPassWord());
-            nguoiDung.setPassWord(passwordEncoder.encode(userDTO.getPassWord()));
+            nguoiDung.setMatKhau(passwordEncoder.encode(userDTO.getPassWord()));
         } else {
-            nguoiDung.setPassWord(null);
+            nguoiDung.setMatKhau(null);
         }
 
         return userRepository.save(nguoiDung);
@@ -77,20 +77,20 @@ public class AdminService {
 
     private NguoiDung buildNewUser(UserDTOs dto) {
         NguoiDung nguoiDung = new NguoiDung();
-        nguoiDung.setUserName(dto.getUserName());
-        nguoiDung.setAuthProvider(dto.getAuthProvider());
-        nguoiDung.setFirstName(dto.getFirstName());
-        nguoiDung.setLastName(dto.getLastName());
-        nguoiDung.setDay_of_birth(dto.getDay_of_birth());
-        nguoiDung.setAddress(dto.getAddress());
-        nguoiDung.setRole(Role.ROLE_USER);
-        nguoiDung.setVerified(dto.isVerified());
-        nguoiDung.setAccountType(AccountType.FREE);
-        nguoiDung.setProviderId(dto.getProviderId());
-        nguoiDung.setCreate_at(LocalDateTime.now());
-        nguoiDung.setUpdate_at(LocalDateTime.now());
-        nguoiDung.setAvatarUrl(defaultAvatar);
-        nguoiDung.setVerified(true);
+        nguoiDung.setEmail(dto.getUserName());
+        nguoiDung.setPhuongThucXacThuc(dto.getAuthProvider());
+        nguoiDung.setHo(dto.getFirstName());
+        nguoiDung.setTen(dto.getLastName());
+        nguoiDung.setNgaySinh(dto.getDay_of_birth());
+        nguoiDung.setDiaChi(dto.getAddress());
+        nguoiDung.setVaiTro(VaiTro.ROLE_USER);
+        nguoiDung.setDaXacThuc(dto.isVerified());
+        nguoiDung.setLoaiTaiKhoan(LoaiTaiKhoan.FREE);
+//        nguoiDung.setProviderId(dto.getProviderId());
+        nguoiDung.setNgayTao(LocalDateTime.now());
+        nguoiDung.setNgayCapNhat(LocalDateTime.now());
+        nguoiDung.setAnhDaiDien(defaultAvatar);
+        nguoiDung.setDaXacThuc(true);
         return nguoiDung;
     }
 
@@ -99,8 +99,6 @@ public class AdminService {
             throw new IllegalArgumentException("Mật khẩu phải ít nhất 8 ký tự.");
         }
     }
-
-
 
     private boolean isValidEmail(String email) {
         String regex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
@@ -116,13 +114,13 @@ public class AdminService {
     // Cập nhật người dùng
     public NguoiDung updateUser(UUID id, UserDTOs dto) {
         NguoiDung nguoiDung = getUserById(id);
-        nguoiDung.setFirstName(dto.getFirstName());
-        nguoiDung.setLastName(dto.getLastName());
-        nguoiDung.setAddress(dto.getAddress());
-        nguoiDung.setDay_of_birth(dto.getDay_of_birth());
-        nguoiDung.setAccountType(dto.getAccountType());
-        nguoiDung.setRole(dto.getRole());
-        nguoiDung.setUpdate_at(LocalDateTime.now());
+        nguoiDung.setHo(dto.getFirstName());
+        nguoiDung.setTen(dto.getLastName());
+        nguoiDung.setDiaChi(dto.getAddress());
+        nguoiDung.setNgaySinh(dto.getDay_of_birth());
+        nguoiDung.setLoaiTaiKhoan(dto.getAccountType());
+        nguoiDung.setVaiTro(dto.getRole());
+        nguoiDung.setNgayCapNhat(LocalDateTime.now());
         return userRepository.save(nguoiDung);
     }
 
@@ -141,18 +139,18 @@ public class AdminService {
 
 
     // Đổi role
-    public NguoiDung changeRole(UUID id, Role newRole) {
+    public NguoiDung changeRole(UUID id, VaiTro newVaiTro) {
         NguoiDung nguoiDung = getUserById(id);
-        nguoiDung.setRole(newRole);
-        nguoiDung.setUpdate_at(LocalDateTime.now());
+        nguoiDung.setVaiTro(newVaiTro);
+        nguoiDung.setNgayCapNhat(LocalDateTime.now());
         return userRepository.save(nguoiDung);
     }
 
     // Ban hoặc unban
-    public NguoiDung updateStatus(UUID id, Status status) {
+    public NguoiDung updateStatus(UUID id, TrangThaiTaiKhoan trangThaiTaiKhoan) {
         NguoiDung nguoiDung = getUserById(id);
-        nguoiDung.setStatus(status);
-        nguoiDung.setUpdate_at(LocalDateTime.now());
+        nguoiDung.setTrangThaiTaiKhoan(trangThaiTaiKhoan);
+        nguoiDung.setNgayCapNhat(LocalDateTime.now());
         return userRepository.save(nguoiDung);
     }
 
@@ -162,8 +160,8 @@ public class AdminService {
             throw new IllegalArgumentException("Mật khẩu phải ít nhất 8 ký tự");
         }
         NguoiDung nguoiDung = getUserById(id);
-        nguoiDung.setPassWord(passwordEncoder.encode(newPassword));
-        nguoiDung.setUpdate_at(LocalDateTime.now());
+        nguoiDung.setMatKhau(passwordEncoder.encode(newPassword));
+        nguoiDung.setNgayCapNhat(LocalDateTime.now());
         return userRepository.save(nguoiDung);
     }
 

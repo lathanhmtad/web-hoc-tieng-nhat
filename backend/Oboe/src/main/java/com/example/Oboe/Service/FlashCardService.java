@@ -2,8 +2,8 @@ package com.example.Oboe.Service;
 
 import com.example.Oboe.DTOs.CardItemDto;
 import com.example.Oboe.DTOs.FlashCardDto;
-import com.example.Oboe.Entity.MucThe;
-import com.example.Oboe.Entity.BoThe;
+import com.example.Oboe.Entity.ChiTietThe;
+import com.example.Oboe.Entity.BoTheGhiNho;
 import com.example.Oboe.Entity.NguoiDung;
 import com.example.Oboe.Repository.FlashCardRepository;
 import com.example.Oboe.Repository.UserRepository;
@@ -32,29 +32,29 @@ public class FlashCardService {
     }
 
 
-    public BoThe createFlashCard(FlashCardDto dto, UUID userId) {
+    public BoTheGhiNho createFlashCard(FlashCardDto dto, UUID userId) {
         NguoiDung nguoiDung = userRepository.findById(userId).orElse(null);
         if (nguoiDung == null) return null;
 
-        BoThe boThe = new BoThe();
-        boThe.setTenBoThe(dto.getTerm());
-        boThe.setMoTa(dto.getDescription());
-        boThe.setNguoiDung(nguoiDung);
+        BoTheGhiNho boTheGhiNho = new BoTheGhiNho();
+        boTheGhiNho.setTenBoThe(dto.getTerm());
+        boTheGhiNho.setMoTa(dto.getDescription());
+        boTheGhiNho.setNguoiDung(nguoiDung);
 
         if (dto.getCardItems() != null) {
             for (CardItemDto itemDto : dto.getCardItems()) {
-                MucThe mucThe = new MucThe();
-                mucThe.setWord(itemDto.getWord());
-                mucThe.setMeaning(itemDto.getMeaning());
-                mucThe.setBoThe(boThe);
-                boThe.getMucThes().add(mucThe);
+                ChiTietThe chiTietThe = new ChiTietThe();
+                chiTietThe.setTuVung(itemDto.getWord());
+                chiTietThe.setNghia(itemDto.getMeaning());
+                chiTietThe.setBoTheGhiNho(boTheGhiNho);
+                boTheGhiNho.getChiTietThes().add(chiTietThe);
             }
         }
 
-        return flashCardRepository.save(boThe);
+        return flashCardRepository.save(boTheGhiNho);
     }
 
-    public Page<BoThe> getFlashCardsByUser(UUID userId, int page, int size) {
+    public Page<BoTheGhiNho> getFlashCardsByUser(UUID userId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "ngayTao"));
         return flashCardRepository.findByUser(userId, pageable);
     }
@@ -65,29 +65,29 @@ public class FlashCardService {
     }
 
 
-    public Page<BoThe> searchFlashCardsByTerm(UUID userId, String term, int page, int size) {
+    public Page<BoTheGhiNho> searchFlashCardsByTerm(UUID userId, String term, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "created"));
         return flashCardRepository.searchByUserIdAndTerm(userId, term, pageable);
     }
 
-     public List<BoThe> getTop5LatestFlashCards(UUID userId) {
+     public List<BoTheGhiNho> getTop5LatestFlashCards(UUID userId) {
          return flashCardRepository.findTop5ByUserIdOrderByCreatedDesc(userId)
                  .stream()
                  .limit(5)
                  .toList();
      }
 
-    public Optional<BoThe> getFlashCardById(UUID cardId) {
+    public Optional<BoTheGhiNho> getFlashCardById(UUID cardId) {
         return flashCardRepository.findById(cardId);
     }
 
     @Transactional
     public boolean deleteFlashCard(UUID cardId, UUID userId) {
-        Optional<BoThe> optionalCard = flashCardRepository.findById(cardId);
+        Optional<BoTheGhiNho> optionalCard = flashCardRepository.findById(cardId);
         if (optionalCard.isEmpty()) return false;
 
-        BoThe card = optionalCard.get();
-        if (!card.getNguoiDung().getUser_id().equals(userId)) return false;
+        BoTheGhiNho card = optionalCard.get();
+        if (!card.getNguoiDung().getMaNguoiDung().equals(userId)) return false;
 
         flashCardRepository.delete(card);
         return true;
@@ -97,53 +97,53 @@ public class FlashCardService {
         Optional<NguoiDung> userOpt = userService.findById(userId);
         if (userOpt.isEmpty()) return List.of();
 
-        List<BoThe> flashcards = flashCardRepository.findflashcardByUserId(userId);
+        List<BoTheGhiNho> flashcards = flashCardRepository.findflashcardByUserId(userId);
         return flashcards.stream()
                 .map(this::convertToDto)
                 .toList();
     }
 
 
-    public List<BoThe> getAllFlashCards() {
+    public List<BoTheGhiNho> getAllFlashCards() {
         return flashCardRepository.findAll();
     }
 
 
     @Transactional
-    public BoThe updateFlashCard(UUID cardId, FlashCardDto dto, UUID userId) {
-        Optional<BoThe> optionalCard = flashCardRepository.findById(cardId);
+    public BoTheGhiNho updateFlashCard(UUID cardId, FlashCardDto dto, UUID userId) {
+        Optional<BoTheGhiNho> optionalCard = flashCardRepository.findById(cardId);
         if (optionalCard.isEmpty()) return null;
 
-        BoThe boThe = optionalCard.get();
-        if (!boThe.getNguoiDung().getUser_id().equals(userId)) return null;
+        BoTheGhiNho boTheGhiNho = optionalCard.get();
+        if (!boTheGhiNho.getNguoiDung().getMaNguoiDung().equals(userId)) return null;
 
-        boThe.setTenBoThe(dto.getTerm());
-        boThe.setMoTa(dto.getDescription());
-        boThe.getMucThes().clear();
+        boTheGhiNho.setTenBoThe(dto.getTerm());
+        boTheGhiNho.setMoTa(dto.getDescription());
+        boTheGhiNho.getChiTietThes().clear();
 
         if (dto.getCardItems() != null) {
             for (CardItemDto itemDto : dto.getCardItems()) {
-                MucThe mucThe = new MucThe();
-                mucThe.setWord(itemDto.getWord());
-                mucThe.setMeaning(itemDto.getMeaning());
-                mucThe.setBoThe(boThe);
-                boThe.getMucThes().add(mucThe);
+                ChiTietThe chiTietThe = new ChiTietThe();
+                chiTietThe.setTuVung(itemDto.getWord());
+                chiTietThe.setNghia(itemDto.getMeaning());
+                chiTietThe.setBoTheGhiNho(boTheGhiNho);
+                boTheGhiNho.getChiTietThes().add(chiTietThe);
             }
         }
 
-        return flashCardRepository.save(boThe);
+        return flashCardRepository.save(boTheGhiNho);
     }
 
-    private FlashCardDto convertToDto(BoThe boThe) {
+    private FlashCardDto convertToDto(BoTheGhiNho boTheGhiNho) {
         FlashCardDto dto = new FlashCardDto();
-        dto.setTerm(boThe.getTenBoThe());
-        dto.setDescription(boThe.getMoTa());
-        dto.setFlashcardID(boThe.getMaBoThe());
-        List<CardItemDto> itemDtos = boThe.getMucThes().stream()
+        dto.setTerm(boTheGhiNho.getTenBoThe());
+        dto.setDescription(boTheGhiNho.getMoTa());
+        dto.setFlashcardID(boTheGhiNho.getMaBoThe());
+        List<CardItemDto> itemDtos = boTheGhiNho.getChiTietThes().stream()
                 .map(item -> {
                     CardItemDto itemDto = new CardItemDto();
-                    itemDto.setWord(item.getWord());
-                    itemDto.setMeaning(item.getMeaning());
+                    itemDto.setWord(item.getTuVung());
+                    itemDto.setMeaning(item.getNghia());
                     return itemDto;
                 })
                 .toList();

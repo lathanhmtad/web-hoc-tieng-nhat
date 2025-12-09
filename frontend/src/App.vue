@@ -54,7 +54,13 @@ const isAdminRoute = computed(() => {
 })
 
 const goToUpgrade = () => {
-  router.push('/upgrade');
+  const currentUser = store.getters['auth/currentUser'];
+  if(currentUser.accountType === 'PREMIUM') {
+    router.push('/payment');
+  }
+  else {
+    router.push('/upgrade');
+  }
 };
 
 const chatBoxUser = ref(null)
@@ -141,8 +147,8 @@ onMounted(async () => {
 function openChatBox(user) {
   // Handle different user data formats
   const chatUser = {
-    id: user.user_id || user.userId || user.id,
-    userId: user.user_id || user.userId || user.id,
+    id: user.maNguoiDung || user.userId || user.id,
+    userId: user.maNguoiDung || user.userId || user.id,
     name: user.fullName || user.name || user.userName,
     username: user.userName || user.username,
     fullName: user.fullName || user.name,

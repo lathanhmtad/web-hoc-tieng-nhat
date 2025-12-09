@@ -1,6 +1,6 @@
 package com.example.Oboe.Entity;
 
-public enum Status {
+public enum TrangThaiTaiKhoan {
     ACTION,
     BAN
 }

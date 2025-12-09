@@ -15,6 +15,6 @@ public class ContactDTO {
     public UUID getUserId() { return userId; }
     public void setUserId(UUID userId) { this.userId = userId; }
 
-    public String getUsername() { return username; }
+    public String getEmail() { return username; }
     public void setUsername(String username) { this.username = username; }
 }

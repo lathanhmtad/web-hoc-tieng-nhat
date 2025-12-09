@@ -1,6 +1,8 @@
 @use '@/assets/css/index.scss' as *;
 @use 'sass:color';
 
+$info-color: #17a2b8;
+
 .payment-page-container {
   display: flex;
   justify-content: center;
@@ -415,7 +417,7 @@
   }
   
   .payment-instructions {
-    background: color.adjust($primary-color, $lightness: 50%, $saturation: -30%);
+    background: color.adjust($info-color, $lightness: 50%, $saturation: -30%);
     border-left: 4px solid $primary-color;
     padding: 20px;
     border-radius: 0 8px 8px 0;

@@ -12,7 +12,7 @@ import java.util.UUID;
 public interface UserAnswerRepository extends JpaRepository<CauTraLoiNguoiDung, UUID> {
 
 
-    @Query("SELECT MAX(u.attemptNumber) FROM CauTraLoiNguoiDung u WHERE u.nguoiDung.user_id = :userId AND u.quiz.quizzesID = :quizId")
+    @Query("SELECT MAX(u.attemptNumber) FROM CauTraLoiNguoiDung u WHERE u.nguoiDung.maNguoiDung = :userId AND u.quiz.quizzesID = :quizId")
     Integer findMaxAttemptNumber(@Param("userId") UUID userId, @Param("quizId") UUID quizId);
 
 

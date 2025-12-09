@@ -12,7 +12,7 @@
     <div class="form__content">
       <h1>{{ isRegister ? 'Đăng Ký' : 'Đăng Nhập' }}</h1>
 
-      <div class="styled-input" :style="{ 'margin-top': isRegister ? '10px' : '0px' }">
+      <div class="styled-input" :style="{ 'margin-bottom': '20px'}">
         <input v-model="username" type="text" class="styled-input__input" />
         <div class="styled-input__placeholder">
           <span class="styled-input__placeholder-text">Email</span>
@@ -20,7 +20,7 @@
         <div class="styled-input__circle"></div>
       </div>
 
-      <div class="styled-input" :style="{ 'margin-top': isRegister ? '20px' : '10px' }">
+      <div class="styled-input" :style="{ 'margin-bottom': '20px'}">
         <input v-model="password" type="password" class="styled-input__input" />
         <div class="styled-input__placeholder">
           <span class="styled-input__placeholder-text">Mật Khẩu</span>
@@ -29,7 +29,7 @@
       </div>
 
       <div class="flex-jsb grap-20">
-        <div v-if="isRegister" class="styled-input" :style="{ 'margin-top': '20px', 'margin-bottom': '20px' }">
+        <div v-if="isRegister" class="styled-input" :style="{ 'margin-bottom': '20px'}">
           <input v-model="lastname" type="text" class="styled-input__input" :disabled="isLoading" />
           <div class="styled-input__placeholder">
             <span class="styled-input__placeholder-text">Họ</span>
@@ -37,7 +37,7 @@
           <div class="styled-input__circle"></div>
         </div>
 
-        <div v-if="isRegister" class="styled-input" :style="{ 'margin-top': '20px', 'margin-bottom': '20px' }">
+        <div v-if="isRegister" class="styled-input" :style="{ 'margin-bottom': '20px'}">
           <input v-model="firstname" type="text" class="styled-input__input" :disabled="isLoading" />
           <div class="styled-input__placeholder">
             <span class="styled-input__placeholder-text">Tên</span>
@@ -73,11 +73,11 @@
         </span>
       </button>
 
-      <div v-if="!isRegister" class="divider">
+      <div class="divider">
         <span class="divider-text">Hoặc</span>
       </div>
 
-       <div v-if="!isRegister">
+       <div>
         <div id="firebaseui-auth-container"></div>
         <div id="loader">Loading...</div>
       </div>
@@ -235,16 +235,20 @@ const uiConfig = {
     }
   }
 }
+
 const ui = firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(firebase.auth());
+
 function loginTranslate() {
+  const actionText = props.isRegister ? 'Đăng ký' : 'Đăng nhập';
+
   const googleBtn = document.querySelector('.firebaseui-idp-google .firebaseui-idp-text');
   if (googleBtn) {
-    googleBtn.textContent = 'Đăng nhập với Google';
+    googleBtn.textContent = `${actionText} với Google`;
   }
 
   const facebookBtn = document.querySelector('.firebaseui-idp-facebook .firebaseui-idp-text');
   if (facebookBtn) {
-    facebookBtn.textContent = 'Đăng nhập với Facebook';
+    facebookBtn.textContent = `${actionText} với Facebook`;
   }
 }
 const handlePopupConfirm = () => {
@@ -412,10 +416,8 @@ function observeAndRemoveFirebaseSnackbar() {
 onMounted(async () => {
   try {
     await nextTick()
-     if (!props.isRegister) {
-      ui.start('#firebaseui-auth-container', uiConfig)
-      observeAndRemoveFirebaseSnackbar();
-    }
+    ui.start('#firebaseui-auth-container', uiConfig)
+    observeAndRemoveFirebaseSnackbar();
     initAnimatedPlaceholders()
     setupInputFocusAnimations()
     runStartupTransitions()

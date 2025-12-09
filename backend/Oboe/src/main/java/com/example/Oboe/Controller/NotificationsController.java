@@ -24,7 +24,7 @@ public class NotificationsController {
         this.notificationsService = notificationsService;
     }
 
-    // API: Lấy 30 thông báo mới nhất cho một user User_id được lấy qua token
+    // API: Lấy 30 thông báo mới nhất cho một user maNguoiDung được lấy qua token
     @GetMapping
     public ResponseEntity<List<NotificationsDTO>> getUserNotifications(Authentication authentication) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();

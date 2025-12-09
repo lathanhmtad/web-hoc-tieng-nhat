@@ -784,7 +784,7 @@ const isPostOwner = computed(() => {
 
   
   // Try different field combinations for current user ID
-  const currentUserId = currentUser.value.userId || currentUser.value.user_id || currentUser.value.id;
+  const currentUserId = currentUser.value.userId || currentUser.value.maNguoiDung || currentUser.value.id;
   const postAuthorId = blogPost.value.author.id;
   
 
@@ -1030,8 +1030,8 @@ const toggleUserCard = (event, user) => {
   // Check if clicking on own avatar - prevent showing popup
   if (currentUser && user) {
     // Try different field combinations for comparison
-    const currentUserId = currentUser.userId || currentUser.user_id;
-    const clickedUserId = user.id || user.userId || user.user_id;
+    const currentUserId = currentUser.userId || currentUser.maNguoiDung;
+    const clickedUserId = user.id || user.userId || user.maNguoiDung;
 
          // Primary comparison: ID-based
      if (currentUserId && clickedUserId && currentUserId === clickedUserId) {

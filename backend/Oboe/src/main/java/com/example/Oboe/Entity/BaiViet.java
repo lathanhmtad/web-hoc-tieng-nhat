@@ -40,7 +40,7 @@ public class BaiViet {
 
     // Mối quan hệ nhiều-một với User
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "maNguoiDung", nullable = false)
     @JsonBackReference("user-blogs") // Tương ứng với @JsonManagedReference trong User
     private NguoiDung nguoiDung;
 

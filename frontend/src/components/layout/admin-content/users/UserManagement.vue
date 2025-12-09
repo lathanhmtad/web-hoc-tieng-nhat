@@ -189,7 +189,7 @@
         <form @submit.prevent="saveUserEdit">
           <div class="form-group">
             <label>Họ</label>
-            <input type="text" v-model="editingUser.firstName" required>
+            <input type="text" v-model="editingUser.ho" required>
           </div>
           <div class="form-group">
             <label>Tên</label>
@@ -244,7 +244,7 @@
         <form @submit.prevent="showConfirmation">
           <div class="form-group">
             <label>Họ</label>
-            <input type="text" v-model="newUser.firstName" required>
+            <input type="text" v-model="newUser.ho" required>
           </div>
           <div class="form-group">
             <label>Tên</label>
@@ -352,7 +352,7 @@ const userToDelete = ref(null);
 // Biến cho chức năng sắp xếp theo ngày tham gia
 const sortOrder = ref('none'); // 'none', 'asc' (cũ nhất trước), 'desc' (mới nhất trước)
 const newUser = ref({
-  firstName: '',
+  ho: '',
   lastName: '',
   userName: '',
   password: '',
@@ -376,8 +376,8 @@ const fetchUsers = async () => {
     // Map API response to component format - sử dụng đúng cấu trúc từ API
     users.value = data.map(user => {
       return {
-        id: user.user_id, // Sử dụng user_id từ API
-        name: `${user.firstName} ${user.lastName}`,
+        id: user.maNguoiDung, // Sử dụng maNguoiDung từ API
+        name: `${user.ho} ${user.lastName}`,
         username: user.userName,
         email: user.userName, // API không có email riêng, dùng userName
         role: user.role === 'ROLE_ADMIN' ? 'admin' : 'user',
@@ -392,7 +392,7 @@ const fetchUsers = async () => {
         verified: user.verified,
         originalRole: user.role, // ROLE_ADMIN hoặc ROLE_USER
         originalStatus: user.status, // ACTION hoặc BANNED
-        firstName: user.firstName,
+        ho: user.ho,
         lastName: user.lastName,
         createAt: user.create_at,
         updateAt: user.update_at
@@ -560,7 +560,7 @@ const saveUserEdit = async () => {
     // Prepare data for API - theo đúng cấu trúc body yêu cầu từ API response
     const updateData = {
       userName: editingUser.value.username,
-      firstName: editingUser.value.firstName,
+      ho: editingUser.value.ho,
       lastName: editingUser.value.lastName,
       avatarUrl: editingUser.value.avatar || 'https://thumbs.dreamstime.com/b/default-avatar-profile-image-vector-social-media-user-icon-potrait-182347582.jpg',
       address: editingUser.value.address,
@@ -569,7 +569,7 @@ const saveUserEdit = async () => {
       role: editingUser.value.originalRole // Sử dụng trực tiếp originalRole từ dropdown
     };
     
-    // Sử dụng user_id để gọi API update
+    // Sử dụng maNguoiDung để gọi API update
     await api.admin.updateUser(editingUser.value.id, updateData);
     
     // Update local data với dữ liệu mới
@@ -577,8 +577,8 @@ const saveUserEdit = async () => {
     if (index !== -1) {
       users.value[index] = { 
         ...users.value[index],
-        name: `${updateData.firstName} ${updateData.lastName}`,
-        firstName: updateData.firstName,
+        name: `${updateData.ho} ${updateData.lastName}`,
+        ho: updateData.ho,
         lastName: updateData.lastName,
         username: updateData.userName,
         avatar: updateData.avatarUrl,
@@ -668,7 +668,7 @@ const confirmDeleteUser = async () => {
   if (!userToDelete.value) return;
   
   try {
-    // Sử dụng user_id để gọi API delete
+    // Sử dụng maNguoiDung để gọi API delete
     await api.admin.deleteUser(userToDelete.value.id);
     
     // Refresh toàn bộ danh sách từ server
@@ -700,7 +700,7 @@ const showConfirmation = () => {
 const getConfirmMessage = () => {
   return `Bạn có chắc chắn muốn thêm người dùng với thông tin sau không?
 
-Họ tên: ${newUser.value.firstName} ${newUser.value.lastName}
+Họ tên: ${newUser.value.ho} ${newUser.value.lastName}
 Tên đăng nhập: ${newUser.value.userName}
 Địa chỉ: ${newUser.value.address}
 Ngày sinh: ${newUser.value.dayOfBirth}
@@ -730,7 +730,7 @@ const saveNewUser = async () => {
     const userData = {
       userName: newUser.value.userName,
       passWord: newUser.value.passWord,
-      firstName: newUser.value.firstName,
+      ho: newUser.value.ho,
       lastName: newUser.value.lastName,
       address: newUser.value.address,
       day_of_birth: newUser.value.dayOfBirth, // Format: YYYY-MM-DD
@@ -743,7 +743,7 @@ const saveNewUser = async () => {
     
     // Reset form
     newUser.value = {
-      firstName: '',
+      ho: '',
       lastName: '',
       userName: '',
       password: '',

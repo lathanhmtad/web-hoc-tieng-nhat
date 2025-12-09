@@ -30,10 +30,10 @@ public interface BlogRepository extends JpaRepository<BaiViet, UUID> {
 
 
     // Method lấy tất cả blog của user
-    @Query("SELECT b FROM BaiViet b WHERE b.nguoiDung.user_id = :userId")
+    @Query("SELECT b FROM BaiViet b WHERE b.nguoiDung.maNguoiDung = :userId")
     List<BaiViet> findBlogsByUserId(@Param("userId") UUID userId);
 
-    @Query("SELECT b FROM BaiViet b WHERE b.nguoiDung.user_id = :userId")
+    @Query("SELECT b FROM BaiViet b WHERE b.nguoiDung.maNguoiDung = :userId")
     Page<BaiViet> findBlogsByUserIds(@Param("userId") UUID userId, Pageable pageabl);
 
     // lấy chủ đề nổi bật sử dụng interface TopicPostProjection
@@ -53,12 +53,12 @@ public interface BlogRepository extends JpaRepository<BaiViet, UUID> {
 
 
 
-    @Query("SELECT COUNT(b) FROM BaiViet b WHERE b.nguoiDung.user_id = :userId")
+    @Query("SELECT COUNT(b) FROM BaiViet b WHERE b.nguoiDung.maNguoiDung = :userId")
     long countBlogsByUserId(@Param("userId") UUID userId);
     @Modifying
     @Transactional
 
-    @Query("DELETE FROM BaiViet b WHERE b.nguoiDung.user_id = :userId")
+    @Query("DELETE FROM BaiViet b WHERE b.nguoiDung.maNguoiDung = :userId")
     void deleteBlogsbyUser(@Param("userId") UUID userId);
 
     // Tổng số blog

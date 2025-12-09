@@ -14,8 +14,8 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name="bo_the")
-public class BoThe {
+@Table(name="bo_the_ghi_nho")
+public class BoTheGhiNho {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "ma_bo_the", updatable = false, nullable = false)
@@ -33,12 +33,12 @@ public class BoThe {
     @Column(updatable = false)
     private LocalDateTime ngayTao;
 
-    @OneToMany(mappedBy = "boThe", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MucThe> mucThes = new ArrayList<>();
+    @OneToMany(mappedBy = "boTheGhiNho", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ChiTietThe> chiTietThes = new ArrayList<>();
 
-    public BoThe() {}
+    public BoTheGhiNho() {}
 
-    public BoThe(String tenBoThe, String moTa, NguoiDung nguoiDung) {
+    public BoTheGhiNho(String tenBoThe, String moTa, NguoiDung nguoiDung) {
         this.tenBoThe = tenBoThe;
         this.moTa = moTa;
         this.nguoiDung = nguoiDung;

@@ -135,7 +135,7 @@ const adminName = computed(() => {
   
   return currentUser.value.displayName || 
          currentUser.value.userName || 
-         `${currentUser.value.firstName || ''} ${currentUser.value.lastName || ''}`.trim() ||
+         `${currentUser.value.ho || ''} ${currentUser.value.lastName || ''}`.trim() ||
          'Admin';
 });
 

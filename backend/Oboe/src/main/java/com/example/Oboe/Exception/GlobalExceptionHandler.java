@@ -16,7 +16,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
                 Map.of(
                         "timestamp", LocalDateTime.now(),
-                        "status", 403,
+                        "trangThai", 403,
                         "error", ex.getMessage()
                 )
         );

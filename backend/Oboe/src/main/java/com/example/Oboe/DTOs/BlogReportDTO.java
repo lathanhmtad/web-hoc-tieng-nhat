@@ -1,10 +1,9 @@
 package com.example.Oboe.DTOs;
 
-import com.example.Oboe.Entity.AuthProvider;
+import com.example.Oboe.Entity.PhuongThucXacThuc;
 import com.example.Oboe.Entity.ReportStatus;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class BlogReportDTO {
@@ -12,7 +11,7 @@ public class BlogReportDTO {
     private String blogTitle;
     private String blogContent;
     private String userName;
-    private AuthProvider authProvider;
+    private PhuongThucXacThuc phuongThucXacThuc;
     private String avatarUrl;
     private String type; // report title
     private String content; // report content
@@ -23,13 +22,13 @@ public class BlogReportDTO {
 
     public BlogReportDTO() {}
     public BlogReportDTO(UUID reportId, String blogTitle, String blogContent, String userName,
-                         AuthProvider authProvider, String avatarUrl, String type,
-                         String content, ReportStatus status, LocalDate report_at,UUID blogId,long reportCount) {
+                         PhuongThucXacThuc phuongThucXacThuc, String avatarUrl, String type,
+                         String content, ReportStatus status, LocalDate report_at, UUID blogId, long reportCount) {
         this.reportId = reportId;
         this.blogTitle = blogTitle;
         this.blogContent = blogContent;
         this.userName = userName;
-        this.authProvider = authProvider;
+        this.phuongThucXacThuc = phuongThucXacThuc;
         this.avatarUrl = avatarUrl;
         this.type = type;
         this.content = content;
@@ -80,7 +79,7 @@ public class BlogReportDTO {
         this.blogContent = blogContent;
     }
 
-    public String getUserName() {
+    public String getEmail() {
         return userName;
     }
 
@@ -88,12 +87,12 @@ public class BlogReportDTO {
         this.userName = userName;
     }
 
-    public AuthProvider getAuthProvider() {
-        return authProvider;
+    public PhuongThucXacThuc getAuthProvider() {
+        return phuongThucXacThuc;
     }
 
-    public void setAuthProvider(AuthProvider authProvider) {
-        this.authProvider = authProvider;
+    public void setAuthProvider(PhuongThucXacThuc phuongThucXacThuc) {
+        this.phuongThucXacThuc = phuongThucXacThuc;
     }
 
     public String getAvatarUrl() {

@@ -19,7 +19,7 @@ public class Favorites {
 
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "maNguoiDung")
     private NguoiDung nguoiDung;
 
     @ManyToOne
@@ -32,7 +32,7 @@ public class Favorites {
 
     @ManyToOne
     @JoinColumn(name ="CardId")
-    private BoThe boThe;
+    private BoTheGhiNho boTheGhiNho;
 
     @ManyToOne
     @JoinColumn(name ="Vocalb_id")
@@ -57,12 +57,12 @@ public class Favorites {
 
     }
 
-    public BoThe getFlashCards() {
-        return boThe;
+    public BoTheGhiNho getFlashCards() {
+        return boTheGhiNho;
     }
 
-    public void setBoThe(BoThe boThe) {
-        this.boThe = boThe;
+    public void setBoThe(BoTheGhiNho boTheGhiNho) {
+        this.boTheGhiNho = boTheGhiNho;
     }
 
     public UUID getFavoritesID() {

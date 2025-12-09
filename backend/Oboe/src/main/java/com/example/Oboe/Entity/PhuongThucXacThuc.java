@@ -1,6 +1,6 @@
 package com.example.Oboe.Entity;
 
-public enum AuthProvider {
+public enum PhuongThucXacThuc {
     EMAIL,
     GOOGLE,
     FACEBOOK

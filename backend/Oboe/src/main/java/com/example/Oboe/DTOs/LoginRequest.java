@@ -8,7 +8,7 @@ public class LoginRequest {
     private String userName;
     private String passWord;
 
-    public String getUserName() {
+    public String getEmail() {
         return userName;
     }
 

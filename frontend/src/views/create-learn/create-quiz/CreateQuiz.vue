@@ -249,7 +249,6 @@ const saveQuiz = async () => {
     // Bước 1: Tạo quiz
     const response = await store.dispatch('quiz/createQuiz', quizData);
 
-    
     // Bước 2: Tạo câu hỏi cho quiz
     const questionsList = questions.value.map(q => ({
       questionName: q.text.trim(),
