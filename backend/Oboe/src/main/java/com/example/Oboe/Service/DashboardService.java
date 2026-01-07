@@ -78,10 +78,10 @@ public class DashboardService {
         if (!latestReports.isEmpty()) {
             var r = latestReports.get(0);
             String message;
-            if (r.getBlog() != null) {
-                message = "Bài viết (ID: " + r.getBlog().getBlogId() + ") đã bị báo cáo";
-            } else if (r.getUser() != null) {
-                message = "Người dùng (ID: " + r.getUser().getMaNguoiDung() + ") đã bị phản ánh";
+            if (r.getBaiViet() != null) {
+                message = "Bài viết (ID: " + r.getBaiViet().getMaBaiViet() + ") đã bị báo cáo";
+            } else if (r.getNguoiDung() != null) {
+                message = "Người dùng (ID: " + r.getNguoiDung().getMaNguoiDung() + ") đã bị phản ánh";
             } else {
                 message = "Báo cáo không xác định đối tượng";
             }
@@ -89,7 +89,7 @@ public class DashboardService {
             activities.add(Map.of(
                     "type", "Báo cáo mới",
                     "message", message,
-                    "time", convertToTimeAgo(r.getReport_at().atStartOfDay())
+                    "time", convertToTimeAgo(r.getNgayBaoCao().atStartOfDay())
             ));
         }
 
@@ -99,8 +99,8 @@ public class DashboardService {
             var feedback = latestFeedbackList.get(0);
             activities.add(Map.of(
                     "type", "Phản hồi mới",
-                    "message", "Phản hồi: \"" + feedback.getContent() + "\"",
-                    "time", convertToTimeAgo(feedback.getCreatedAt())
+                    "message", "Phản hồi: \"" + feedback.getNoiDung() + "\"",
+                    "time", convertToTimeAgo(feedback.getNgayTao())
             ));
         }
 

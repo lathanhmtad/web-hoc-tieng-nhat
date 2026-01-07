@@ -3,7 +3,7 @@
 
     import com.example.Oboe.DTOs.MessageDTO;
     import com.example.Oboe.DTOs.UserSummaryDTO;
-    import com.example.Oboe.Entity.Message;
+    import com.example.Oboe.Entity.TinNhan;
     import com.example.Oboe.Entity.NguoiDung;
     import com.example.Oboe.Entity.ThongBao;
     import com.example.Oboe.Repository.MessageRepository;
@@ -50,32 +50,32 @@
                     .orElseThrow(() -> new RuntimeException("Receiver not found"));
 
             // Tạo và lưu message
-            Message message = new Message();
-            message.setSender(sender);
-            message.setReceiver(receiver);
-            message.setSent_message(messageDto.getSentMessage());
+            TinNhan tinNhan = new TinNhan();
+            tinNhan.setNguoiGui(sender);
+            tinNhan.setNguoiNhan(receiver);
+            tinNhan.setNoiDung(messageDto.getSentMessage());
 
             ZoneId zoneVN = ZoneId.of("Asia/Ho_Chi_Minh");
             LocalDateTime localDateTimeVN = LocalDateTime.now(zoneVN);
-            message.setSent_at(localDateTimeVN);
+            tinNhan.setThoiGianGui(localDateTimeVN);
 
-            Message savedMessage = messageRepository.save(message);
+            TinNhan savedTinNhan = messageRepository.save(tinNhan);
 
             // Tạo thông báo
             ThongBao notification = new ThongBao();
             notification.setNguoiDung(receiver);
-            notification.setText_notification("Bạn nhận được một tin nhắn mới từ " + sender.getEmail());
-            notification.setRead(false);
-            notification.setNgayCapNhat(localDateTimeVN);
+            notification.setNoiDung("Bạn nhận được một tin nhắn mới từ " + sender.getEmail());
+            notification.setDaDuocDoc(false);
+            notification.setThoiGianCapNhat(localDateTimeVN);
 
             // Gán targetId & targetType cho thông báo
-            notification.setTargetId(savedMessage.getReceiverId());
-            notification.setTargetType("Message");
+            notification.setMaDoiTuong(savedTinNhan.getMaNguoiNhan());
+            notification.setLoaiDoiTuong("Message");
 
             notificationsRepository.save(notification);
 
             // Gửi WebSocket đến client
-            MessageDTO dto = toDTO(savedMessage);
+            MessageDTO dto = toDTO(savedTinNhan);
 
             WebSocketSession receiverSession = SessionManager.getSession(receiver.getMaNguoiDung());
 
@@ -111,7 +111,7 @@
             Pageable limitOne = PageRequest.of(0, 1);
 
             return nguoiDungs.stream().map(user -> {
-                Message lastMsg = messageRepository
+                TinNhan lastMsg = messageRepository
                         .findMessageNew(userId, user.getMaNguoiDung(), limitOne)
                         .stream().findFirst().orElse(null);
 
@@ -120,8 +120,8 @@
                         user.getHo(),
                         user.getTen(),
                         user.getEmail(),
-                        lastMsg != null ? lastMsg.getSent_message() : null,
-                        lastMsg != null ? lastMsg.getSent_at() : null,
+                        lastMsg != null ? lastMsg.getNoiDung() : null,
+                        lastMsg != null ? lastMsg.getThoiGianGui() : null,
                         user.getAnhDaiDien() //  avatar
                 );
             }).collect(Collectors.toList());
@@ -130,38 +130,38 @@
         //lấy tất cả cuộc hội thoại
         public List<MessageDTO> getMessagesBetweenUsers(UUID userA, UUID userB) {
             Pageable top30 = PageRequest.of(0, 30); // chỉ lấy 30 tin mới nhất
-            List<Message> messages = messageRepository.findConversation(userA, userB,top30);
+            List<TinNhan> tinNhans = messageRepository.findConversation(userA, userB,top30);
 
-            Collections.reverse(messages); //  chuyển tin nhắn từ  cũ sang mới
+            Collections.reverse(tinNhans); //  chuyển tin nhắn từ  cũ sang mới
 
-            return messages.stream()
+            return tinNhans.stream()
                     .map(this::toDTO)
                     .collect(Collectors.toList());
         }
         public boolean deleteMessage(UUID messageId, UUID userId) {
-            Message message = getMessage(messageId);
+            TinNhan tinNhan = getMessage(messageId);
             // Kiểm tra quyền: chỉ sender mới được xóa
-            if (!message.getSender().getMaNguoiDung().equals(userId)) {
+            if (!tinNhan.getNguoiGui().getMaNguoiDung().equals(userId)) {
                 return false;
             }
-            messageRepository.delete(message);
+            messageRepository.delete(tinNhan);
             return true;
         }
 
-        public Message getMessage(UUID messageId) {
+        public TinNhan getMessage(UUID messageId) {
             return messageRepository.findById(messageId).orElse(null);
         }
 
-        private MessageDTO toDTO(Message message) {
+        private MessageDTO toDTO(TinNhan tinNhan) {
             MessageDTO dto = new MessageDTO();
-            dto.setMessageId(message.getMessageID());
-            dto.setSenderId(message.getSender().getMaNguoiDung());
-            dto.setReceiverId(message.getReceiver().getMaNguoiDung());
-            dto.setSentMessage(message.getSent_message());
-            dto.setSentDateTime(message.getSent_at());
-            dto.setSenderName(message.getSender().getEmail());
-            dto.setAvatarUrlSender(message.getSender().getAnhDaiDien());
-            dto.setAvatarUrlReceiver(message.getReceiver().getAnhDaiDien());
+            dto.setMessageId(tinNhan.getMaTinNhan());
+            dto.setSenderId(tinNhan.getNguoiGui().getMaNguoiDung());
+            dto.setReceiverId(tinNhan.getNguoiNhan().getMaNguoiDung());
+            dto.setSentMessage(tinNhan.getNoiDung());
+            dto.setSentDateTime(tinNhan.getThoiGianGui());
+            dto.setSenderName(tinNhan.getNguoiGui().getEmail());
+            dto.setAvatarUrlSender(tinNhan.getNguoiGui().getAnhDaiDien());
+            dto.setAvatarUrlReceiver(tinNhan.getNguoiNhan().getAnhDaiDien());
             return dto;
         }
 

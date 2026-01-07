@@ -58,7 +58,7 @@ public class CommentService {
 
 
     public Map<String, Object> getCommentsByTeamId(UUID teamId, int page, int size) {
-        List<BinhLuan> binhLuans = commentRepository.findByReferenceId(teamId);
+        List<BinhLuan> binhLuans = commentRepository.findByMaThamChieu(teamId);
 
         List<CommentDTOs> allDtos = binhLuans.stream()
                 .map(this::toDTO)
@@ -150,11 +150,11 @@ public class CommentService {
 
         //  Tạo Comment
         BinhLuan binhLuan = new BinhLuan();
-        binhLuan.setTitle(dto.getTitle());
-        binhLuan.setContent(dto.getContent());
-        binhLuan.setCreatedAt(vietnamTime);
+        binhLuan.setTieuDe(dto.getTitle());
+        binhLuan.setNoiDung(dto.getContent());
+        binhLuan.setNgayTao(vietnamTime);
         binhLuan.setNguoiDung(sender);
-        binhLuan.setreferenceId(teamId);
+        binhLuan.setMaThamChieu(teamId);
         BinhLuan saved = commentRepository.save(binhLuan);
         CommentDTOs commentDTO = toDTO(saved);
 
@@ -164,11 +164,11 @@ public class CommentService {
             // Tạo thông báo
             ThongBao notification = new ThongBao();
             notification.setNguoiDung(receiver);
-            notification.setText_notification("Bạn vừa nhận được một bình luận mới từ " + sender.getEmail());
-            notification.setRead(false);
-            notification.setNgayCapNhat(vietnamTime);
-            notification.setTargetId(saved.getreferenceId());          // ID của comment
-            notification.setTargetType("BLog");            // Kiểu: "Comment"
+            notification.setNoiDung("Bạn vừa nhận được một bình luận mới từ " + sender.getEmail());
+            notification.setDaDuocDoc(false);
+            notification.setThoiGianCapNhat(vietnamTime);
+            notification.setMaDoiTuong(saved.getMaThamChieu());          // ID của comment
+            notification.setLoaiDoiTuong("BLog");            // Kiểu: "Comment"
 
             ThongBao savedNoti = notificationsRepository.save(notification);
 
@@ -200,7 +200,7 @@ public class CommentService {
 
 
     // Tạo phản hồi (comment con) dựa trên comment cha
-    public CommentDTOs Commentreply(UUID parentCommentId, UUID userId, CommentDTOs dto) {
+    public CommentDTOs CommentReply(UUID parentCommentId, UUID userId, CommentDTOs dto) {
         // Lấy người gửi (sender) từ userId
         NguoiDung sender = userService.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Người dùng không hợp lệ"));
@@ -215,12 +215,12 @@ public class CommentService {
 
         // Tạo comment con (reply)
         BinhLuan reply = new BinhLuan();
-        reply.setTitle(dto.getTitle());
-        reply.setContent(dto.getContent());
-        reply.setCreatedAt(vietnamTime);
+        reply.setTieuDe(dto.getTitle());
+        reply.setNoiDung(dto.getContent());
+        reply.setNgayTao(vietnamTime);
         reply.setNguoiDung(sender);
-        reply.setParentBinhLuan(parent);
-        reply.setreferenceId(parent.getreferenceId()); // giữ nguyên blogId hoặc teamId giống comment cha
+        reply.setBinhLuanCha(parent);
+        reply.setMaThamChieu(parent.getMaThamChieu()); // giữ nguyên blogId hoặc teamId giống comment cha
 
         // Lưu comment con vào database
         BinhLuan savedReply = commentRepository.save(reply);
@@ -232,11 +232,11 @@ public class CommentService {
         if (receiver != null && !receiver.getMaNguoiDung().equals(sender.getMaNguoiDung())) {
             ThongBao notification = new ThongBao();
             notification.setNguoiDung(receiver); // Gửi tới người nhận
-            notification.setText_notification("Bạn vừa nhận được một phản hồi từ " + sender.getEmail());
-            notification.setRead(false);
-            notification.setNgayCapNhat(vietnamTime);
-            notification.setTargetId(parent.getreferenceId());
-            notification.setTargetType("BLog");
+            notification.setNoiDung("Bạn vừa nhận được một phản hồi từ " + sender.getEmail());
+            notification.setDaDuocDoc(false);
+            notification.setThoiGianCapNhat(vietnamTime);
+            notification.setMaDoiTuong(parent.getMaThamChieu());
+            notification.setLoaiDoiTuong("BLog");
 
             ThongBao savedNoti = notificationsRepository.save(notification);
 
@@ -282,9 +282,9 @@ public class CommentService {
         // Chỉ cho phép sửa nếu là người tạo
         if (!binhLuan.getNguoiDung().getMaNguoiDung().equals(userOpt.get().getMaNguoiDung())) return null;
 
-        binhLuan.setTitle(dto.getTitle());
-        binhLuan.setContent(dto.getContent());
-        binhLuan.setCreatedAt(LocalDateTime.now());
+        binhLuan.setTieuDe(dto.getTitle());
+        binhLuan.setNoiDung(dto.getContent());
+        binhLuan.setNgayTao(LocalDateTime.now());
 
         return toDTO(commentRepository.save(binhLuan));
     }
@@ -330,7 +330,7 @@ public class CommentService {
 
     //  Lấy số lượng comment theo teamId (blogId)
     public Long getCommentCountByTeamId(UUID teamId) {
-        return commentRepository.countByReferenceId(teamId);
+        return commentRepository.countByMaThamChieu(teamId);
     }
 
     //  Hàm dùng chung để lấy comment theo ID
@@ -341,38 +341,39 @@ public class CommentService {
     //  Chuyển từ entity -> DTO
     private CommentDTOs toDTO(BinhLuan binhLuan) {
         CommentDTOs dto = new CommentDTOs();
-        dto.setCommentId(binhLuan.getCommentId());
-        dto.setTitle(binhLuan.getTitle());
-        dto.setContent(binhLuan.getContent());
-        dto.setCreatedAt(binhLuan.getCreatedAt());
+        dto.setCommentId(binhLuan.getMaBinhLuan());
+        dto.setTitle(binhLuan.getTieuDe());
+        dto.setContent(binhLuan.getNoiDung());
+        dto.setCreatedAt(binhLuan.getNgayTao());
         // Gán thông tin người dùng
         if (binhLuan.getNguoiDung() != null) {
             dto.setUserId(binhLuan.getNguoiDung().getMaNguoiDung());
             dto.setUserName(binhLuan.getNguoiDung().getEmail());
+            dto.setFullName(String.format("%s %s", binhLuan.getNguoiDung().getHo(), binhLuan.getNguoiDung().getTen()));
             dto.setAvatarUrl(binhLuan.getNguoiDung().getAnhDaiDien());
         }
         // Nếu là phản hồi thì set comment cha
-        if (binhLuan.getParentBinhLuan() != null) {
-            dto.setCommentIdParent(binhLuan.getParentBinhLuan().getCommentId());
+        if (binhLuan.getBinhLuanCha() != null) {
+            dto.setCommentIdParent(binhLuan.getBinhLuanCha().getMaBinhLuan());
         }
-        dto.setReferenceId(binhLuan.getreferenceId());
+        dto.setReferenceId(binhLuan.getMaThamChieu());
         dto.setReplies(new ArrayList<>()); // Khởi tạo danh sách phản hồi
         return dto;
     }
     private CommentDTOs toShortDTO(BinhLuan binhLuan) {
         CommentDTOs dto = new CommentDTOs();
-        dto.setCommentId(binhLuan.getCommentId());
-        dto.setTitle(binhLuan.getTitle());
-        dto.setContent(binhLuan.getContent());
-        dto.setCreatedAt(binhLuan.getCreatedAt());
+        dto.setCommentId(binhLuan.getMaBinhLuan());
+        dto.setTitle(binhLuan.getTieuDe());
+        dto.setContent(binhLuan.getNoiDung());
+        dto.setCreatedAt(binhLuan.getNgayTao());
         if (binhLuan.getNguoiDung() != null) {
             dto.setUserId(binhLuan.getNguoiDung().getMaNguoiDung());
             dto.setUserName(binhLuan.getNguoiDung().getEmail());
         }
-        if (binhLuan.getParentBinhLuan() != null) {
-            dto.setCommentIdParent(binhLuan.getParentBinhLuan().getCommentId());
+        if (binhLuan.getBinhLuanCha() != null) {
+            dto.setCommentIdParent(binhLuan.getBinhLuanCha().getMaBinhLuan());
         }
-        dto.setReferenceId(binhLuan.getreferenceId());
+        dto.setReferenceId(binhLuan.getMaThamChieu());
         return dto;
     }
 

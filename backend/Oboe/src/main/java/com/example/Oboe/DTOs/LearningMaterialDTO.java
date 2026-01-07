@@ -65,7 +65,7 @@ public class LearningMaterialDTO {
     public String toString() {
         return "LearningMaterialDTO{" +
                 "quizId=" + quizId +
-                ", title='" + title + '\'' +
+                ", tieuDe='" + title + '\'' +
                 ", description='" + description + '\'' +
                 '}';
     }

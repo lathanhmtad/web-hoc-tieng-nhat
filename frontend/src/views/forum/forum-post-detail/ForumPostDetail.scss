@@ -6,20 +6,22 @@
   font-family: $font-family-regular;
   padding: 0 15px;
 
-   @include mobile-only {
+  @include mobile-only {
     padding: 0 10px;
   }
 }
-.tag{
-  margin-right: 10px;
+
+.tag {
+  margin-right: 4px;
 }
+
 .breadcrumb {
   display: flex;
   align-items: center;
   margin-bottom: 25px;
   font-size: 0.95rem;
 
-   @include mobile-only {
+  @include mobile-only {
     margin-bottom: 15px;
     font-size: 0.85rem;
     flex-wrap: wrap;
@@ -29,6 +31,7 @@
     color: $primary-color;
     text-decoration: none;
     font-weight: 600;
+
     &:hover {
       text-decoration: underline;
     }
@@ -39,7 +42,7 @@
     font-size: 0.8rem;
     color: #adb5bd;
 
-     @include mobile-only {
+    @include mobile-only {
       margin: 0 6px;
       font-size: 0.75rem;
     }
@@ -53,7 +56,7 @@
 .post-header {
   margin-bottom: 25px;
 
-   @include mobile-only {
+  @include mobile-only {
     margin-bottom: 20px;
   }
 
@@ -64,15 +67,17 @@
     line-height: 1.3;
     margin: 0 0 15px 0;
 
-     @include mobile-only {
+    @include mobile-only {
       font-size: 15px;
       line-height: 1.25;
       margin: 0 0 10px 0;
     }
   }
+
   .post-meta {
     display: flex;
     align-items: center;
+
     .author-avatar {
       width: 40px;
       height: 40px;
@@ -80,32 +85,36 @@
       margin-right: 12px;
       cursor: pointer;
 
-       @include mobile-only {
+      @include mobile-only {
         width: 35px;
         height: 35px;
         margin-right: 10px;
       }
     }
+
     .meta-info {
       display: flex;
       flex-direction: column;
+
       .author-name {
         font-weight: 600;
         color: #343a40;
         cursor: pointer;
+
         &:hover {
           color: $primary-color;
         }
 
-         @include mobile-only {
+        @include mobile-only {
           font-size: 0.95rem;
         }
       }
+
       .post-time {
         font-size: 0.9rem;
         color: #6c757d;
 
-         @include mobile-only {
+        @include mobile-only {
           font-size: 0.8rem;
         }
       }
@@ -113,15 +122,16 @@
   }
 }
 
-.post-content-card, .add-reply-card {
+.post-content-card,
+.add-reply-card {
   background: white;
   border-radius: 12px;
   padding: 30px;
-  box-shadow: 0 4px 25px -10px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 25px -10px rgba(0, 0, 0, 0.08);
   border: 1px solid #e9ecef;
   margin-bottom: 30px;
 
-   @include mobile-only {
+  @include mobile-only {
     padding: 20px 15px;
     border-radius: 8px;
     margin-bottom: 20px;
@@ -133,7 +143,7 @@
   line-height: 1.7;
   color: #343a40;
 
-   @include mobile-only {
+  @include mobile-only {
     font-size: 1rem;
     line-height: 1.6;
   }
@@ -141,11 +151,65 @@
   p {
     margin: 0 0 1rem 0;
   }
+
   ul {
     padding-left: 20px;
     margin-bottom: 1rem;
+
     li {
       margin-bottom: 0.5rem;
+    }
+  }
+
+  .post-tags {
+    margin-top: 32px;
+    padding-top: 20px;
+    border-top: 1px solid #f1f3f5; // Tạo đường gạch ngăn cách với nội dung
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px; // Khoảng cách giữa các phần tử
+
+    // Icon cái tag ở đầu
+    >i {
+      color: #adb5bd;
+      transform: rotate(-90deg);
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 14px;
+      background-color: #f8f9fa;
+      color: #555;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 20px; // Bo tròn kiểu viên thuốc
+      border: 1px solid #e9ecef;
+      transition: all 0.2s ease;
+      user-select: none;
+
+      // Thêm ký tự # phía trước mỗi tag bằng CSS
+      &::before {
+        content: '#';
+        color: $primary-color; // Dùng biến màu chính của web
+        margin-right: 4px;
+        font-weight: 400;
+        opacity: 0.8;
+      }
+    }
+  }
+
+  // Responsive cho mobile
+  @include mobile-only {
+    .post-tags {
+      margin-top: 20px;
+      padding-top: 15px;
+      
+      .tag {
+        padding: 4px 10px;
+        font-size: 0.8rem;
+      }
     }
   }
 }
@@ -158,7 +222,7 @@
     padding-bottom: 10px;
     border-bottom: 1px solid #dee2e6;
 
-     @include mobile-only {
+    @include mobile-only {
       font-size: 1.3rem;
       margin-bottom: 15px;
       padding-bottom: 8px;
@@ -167,35 +231,38 @@
 }
 
 .reply-list {
-  > .reply-thread:not(:first-child) {
+  >.reply-thread:not(:first-child) {
     padding-top: 20px;
 
-     @include mobile-only {
+    @include mobile-only {
       padding-top: 15px;
     }
   }
-   > .reply-thread:not(:last-child) {
+
+  >.reply-thread:not(:last-child) {
     border-bottom: 1px solid #e9ecef;
     padding-bottom: 20px;
 
-     @include mobile-only {
+    @include mobile-only {
       padding-bottom: 15px;
     }
   }
+
   & {
     margin-bottom: 40px;
   }
 
-   @include mobile-only {
+  @include mobile-only {
     margin-bottom: 30px;
   }
 }
 
 .reply-thread {
   position: relative;
-  
+
   &.is-nested {
     padding-top: 20px;
+
     &::before {
       content: '';
       position: absolute;
@@ -205,7 +272,7 @@
       width: 2px;
       background-color: #e9ecef;
 
-       @include mobile-only {
+      @include mobile-only {
         left: -25px;
         top: -30px;
       }
@@ -220,7 +287,7 @@
   padding: 8px;
   margin: 0 -8px;
 
-   @include mobile-only {
+  @include mobile-only {
     padding: 6px;
     margin: 0 -6px;
   }
@@ -233,21 +300,22 @@
     flex-shrink: 0;
     cursor: pointer;
 
-     @include mobile-only {
+    @include mobile-only {
       width: 32px;
       height: 32px;
       margin-right: 10px;
     }
   }
-  
+
   .reply-content-wrapper {
     flex-grow: 1;
+
     .reply-meta {
       display: flex;
       align-items: center;
       margin-bottom: 8px;
 
-       @include mobile-only {
+      @include mobile-only {
         margin-bottom: 6px;
       }
 
@@ -256,34 +324,39 @@
         color: #343a40;
         margin-right: 10px;
         cursor: pointer;
+
         &:hover {
           color: $primary-color;
         }
 
-         @include mobile-only {
+        @include mobile-only {
           font-size: 0.9rem;
           margin-right: 8px;
         }
       }
+
       .post-time {
         font-size: 0.85rem;
         color: #868e96;
 
-         @include mobile-only {
+        @include mobile-only {
           font-size: 0.75rem;
         }
       }
     }
+
     .reply-content {
       color: #495057;
       line-height: 1.6;
 
-       @include mobile-only {
+      @include mobile-only {
         font-size: 0.95rem;
         line-height: 1.5;
       }
 
-      p { margin: 0; }
+      p {
+        margin: 0;
+      }
     }
   }
 }
@@ -292,7 +365,7 @@
   padding-left: 55px;
   margin-top: 12px;
 
-   @include mobile-only {
+  @include mobile-only {
     padding-left: 35px;
     margin-top: 10px;
   }
@@ -302,8 +375,8 @@
   margin-top: 10px;
   display: flex;
   gap: 15px;
-  
-   @include mobile-only {
+
+  @include mobile-only {
     margin-top: 8px;
     gap: 12px;
   }
@@ -322,7 +395,7 @@
     border-radius: 6px;
     transition: all 0.2s ease;
 
-     @include mobile-only {
+    @include mobile-only {
       font-size: 0.8rem;
       padding: 3px 5px;
     }
@@ -331,11 +404,11 @@
       margin-right: 6px;
       font-size: 0.9em;
 
-       @include mobile-only {
+      @include mobile-only {
         margin-right: 4px;
       }
     }
-    
+
     &:hover {
       color: $primary-color;
       background-color: color.adjust($primary-color, $alpha: -0.9);
@@ -344,9 +417,11 @@
     &.toggle-replies {
       i {
         transition: transform 0.2s ease;
+
         &.fa-chevron-up {
           transform: rotate(0);
         }
+
         &.fa-chevron-down {
           transform: rotate(0);
         }
@@ -359,7 +434,7 @@
   padding-left: 55px;
   margin-top: 15px;
 
-   @include mobile-only {
+  @include mobile-only {
     padding-left: 35px;
     margin-top: 12px;
   }
@@ -371,7 +446,7 @@
   gap: 10px;
   margin-top: 10px;
 
-   @include mobile-only {
+  @include mobile-only {
     gap: 8px;
     margin-top: 8px;
   }
@@ -386,14 +461,14 @@
   font-size: 1rem;
   font-family: inherit;
   resize: vertical;
-  
-   @include mobile-only {
+
+  @include mobile-only {
     min-height: 80px;
     padding: 12px;
     font-size: 0.95rem;
     border-radius: 6px;
   }
-  
+
   &:focus {
     outline: none;
     border-color: $primary-color;
@@ -401,7 +476,8 @@
   }
 }
 
-.submit-reply-btn, .cancel-reply-btn {
+.submit-reply-btn,
+.cancel-reply-btn {
   padding: 8px 18px;
   font-size: 0.95rem;
   font-weight: 600;
@@ -409,7 +485,7 @@
   border: 1px solid transparent;
   cursor: pointer;
 
-   @include mobile-only {
+  @include mobile-only {
     padding: 8px 15px;
     font-size: 0.9rem;
     border-radius: 6px;
@@ -419,6 +495,7 @@
 .submit-reply-btn {
   background-color: $primary-color;
   color: white;
+
   &:hover {
     background-color: color.adjust($primary-color, $lightness: -5%);
   }
@@ -427,9 +504,11 @@
 .slide-fade-enter-active {
   transition: all 0.3s ease-out;
 }
+
 .slide-fade-leave-active {
   transition: all 0.2s ease-in;
 }
+
 .slide-fade-enter-from,
 .slide-fade-leave-to {
   transform: translateY(-10px);
@@ -440,7 +519,7 @@
   margin-top: 40px;
   margin-bottom: 30px;
 
-   @include mobile-only {
+  @include mobile-only {
     margin-top: 30px;
     margin-bottom: 20px;
   }
@@ -450,7 +529,7 @@
     font-weight: 700;
     margin: 0 0 15px 0;
 
-     @include mobile-only {
+    @include mobile-only {
       font-size: 1.1rem;
       margin: 0 0 12px 0;
     }
@@ -461,18 +540,19 @@
       min-height: 120px;
       margin-bottom: 15px;
 
-       @include mobile-only {
+      @include mobile-only {
         min-height: 100px;
         margin-bottom: 12px;
       }
     }
+
     .submit-reply-btn {
       padding: 10px 20px;
       font-size: 1rem;
       margin-left: auto;
       display: block;
 
-       @include mobile-only {
+      @include mobile-only {
         width: 100%;
         padding: 10px 15px;
         font-size: 0.95rem;
@@ -484,7 +564,7 @@
 .reply-form {
   display: flex;
   flex-direction: column;
-  
+
   .reply-textarea {
     width: 100%;
     min-height: 100px;
@@ -496,7 +576,7 @@
     resize: vertical;
     transition: border-color 0.2s, box-shadow 0.2s;
     margin-bottom: 15px;
-    
+
     &:focus {
       outline: none;
       border-color: $primary-color;
@@ -515,19 +595,21 @@
     background-color: #f8f9fa;
     border-color: #dee2e6;
     color: #495057;
+
     &:hover {
       background-color: #e9ecef;
       border-color: #ced4da;
     }
   }
 }
+
 .post-meta-wrapper {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
 
-   @include mobile-only {
+  @include mobile-only {
     flex-wrap: wrap;
     gap: 10px;
   }
@@ -544,7 +626,7 @@
   cursor: pointer;
   color: #666;
   border-radius: 50%;
-  
+
   &:hover {
     background-color: #f5f5f5;
   }
@@ -560,7 +642,7 @@
   min-width: 180px;
   z-index: 3000;
 
-   @include mobile-only {
+  @include mobile-only {
     min-width: 160px;
     right: -5px;
   }
@@ -577,11 +659,11 @@
   text-align: left;
   cursor: pointer;
   color: #333;
-  
+
   &:hover {
     background-color: #f5f5f5;
   }
-  
+
   i {
     width: 16px;
   }
@@ -608,8 +690,13 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .error-state {
@@ -641,7 +728,7 @@
   overflow-y: auto;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
-   @include mobile-only {
+  @include mobile-only {
     width: 95%;
     max-height: 95vh;
     border-radius: 8px;
@@ -654,17 +741,17 @@
   align-items: center;
   padding: 20px;
   border-bottom: 1px solid #e2e8f0;
-  
+
   h3 {
     margin: 0;
     font-size: 1.25rem;
     color: #2d3748;
 
-     @include mobile-only {
+    @include mobile-only {
       font-size: 1.1rem;
     }
   }
-  
+
   .close-btn {
     background: none;
     border: none;
@@ -672,7 +759,7 @@
     cursor: pointer;
     padding: 8px;
     border-radius: 6px;
-    
+
     &:hover {
       background: #f7fafc;
       color: #4a5568;
@@ -682,18 +769,18 @@
 
 .report-form {
   padding: 20px;
-  
-   @include mobile-only {
+
+  @include mobile-only {
     padding: 15px;
   }
-  
+
   .form-group {
     margin-bottom: 20px;
-    
-     @include mobile-only {
+
+    @include mobile-only {
       margin-bottom: 15px;
     }
-    
+
     label {
       display: block;
       margin-bottom: 8px;
@@ -701,32 +788,33 @@
       color: #2d3748;
       margin-bottom: 8px;
 
-       @include mobile-only {
+      @include mobile-only {
         margin-bottom: 6px;
         font-size: 0.9rem;
       }
     }
-    
-    select, textarea {
+
+    select,
+    textarea {
       width: 100%;
       padding: 10px;
       border: 1px solid #e2e8f0;
       border-radius: 6px;
       font-size: 0.95rem;
       color: #4a5568;
-      
+
       &:focus {
         outline: none;
         border-color: $primary-color;
         box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
       }
     }
-    
+
     textarea {
       resize: vertical;
       min-height: 100px;
 
-       @include mobile-only {
+      @include mobile-only {
         min-height: 80px;
       }
     }
@@ -738,50 +826,52 @@
   justify-content: flex-end;
   gap: 12px;
   margin-top: 20px;
-  
-   @include mobile-only {
+
+  @include mobile-only {
     gap: 8px;
     margin-top: 15px;
     flex-direction: column;
   }
-  
+
   button {
     padding: 10px 20px;
     border-radius: 6px;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s;
-    
+
     &.btn-cancel {
       background: #f7fafc;
       border: 1px solid #e2e8f0;
       color: #4a5568;
-      
+
       &:hover {
         background: #edf2f7;
       }
     }
-    
+
     &.btn-submit {
       background: $primary-color;
       border: none;
       color: white;
-      
+
       &:hover {
         background: $hover-btn-color;
       }
     }
   }
 }
+
 // Additional styles for comments loading and empty states
-.comments-loading, .no-comments {
+.comments-loading,
+.no-comments {
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 40px 20px;
   text-align: center;
   color: #6c757d;
-  
+
   .spinner {
     width: 24px;
     height: 24px;
@@ -791,7 +881,7 @@
     animation: spin 1s linear infinite;
     margin-right: 12px;
   }
-  
+
   p {
     margin: 0;
     font-size: 16px;
@@ -800,15 +890,20 @@
 
 .no-comments {
   flex-direction: column;
-  
+
   p {
     font-style: italic;
   }
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 // Post content styling
@@ -816,10 +911,10 @@
   line-height: 1.6;
   white-space: pre-wrap;
   word-wrap: break-word;
-  
+
   p {
     margin-bottom: 16px;
-    
+
     &:last-child {
       margin-bottom: 0;
     }
@@ -836,19 +931,19 @@
   margin-bottom: 12px;
   font-family: inherit;
   transition: border-color 0.2s ease;
-  
+
   &:focus {
     outline: none;
     border-color: #007bff;
     box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
   }
-  
+
   &:disabled {
     background-color: #f8f9fa;
     color: #6c757d;
     cursor: not-allowed;
   }
-  
+
   &::placeholder {
     color: #6c757d;
   }
@@ -859,11 +954,11 @@
     opacity: 0.6;
     cursor: not-allowed;
   }
-  
+
   .fa-spinner {
     margin-right: 8px;
   }
-  
+
   .fa-paper-plane {
     margin-right: 8px;
   }
@@ -887,13 +982,13 @@
   padding: 40px 20px;
   text-align: center;
   margin-top: 20px;
-  
+
   p {
     margin-bottom: 16px;
     color: #6c757d;
     font-size: 16px;
   }
-  
+
   .btn {
     padding: 12px 24px;
     font-size: 14px;
@@ -916,7 +1011,7 @@
   display: flex;
   justify-content: center;
   margin: 24px 0;
-  
+
   .load-more-btn {
     padding: 12px 24px;
     font-size: 14px;
@@ -924,16 +1019,16 @@
     border-radius: 8px;
     transition: all 0.2s ease;
     min-width: 200px;
-    
+
     &:disabled {
       opacity: 0.6;
       cursor: not-allowed;
     }
-    
+
     i {
       margin-right: 8px;
     }
-    
+
     &:hover:not(:disabled) {
       transform: translateY(-1px);
       box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2);
@@ -952,7 +1047,7 @@
   animation: highlightPulse 4s ease-in-out;
   box-shadow: 0 4px 12px rgba(255, 107, 107, 0.1);
   transition: all 0.3s ease-out;
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -966,7 +1061,7 @@
     animation: glowPulse 3s ease-in-out infinite alternate;
     opacity: 0.7;
   }
-  
+
   &::after {
     content: '✨ Mới';
     position: absolute;
@@ -982,7 +1077,7 @@
     box-shadow: 0 2px 6px rgba(255, 107, 107, 0.3);
     animation: newBadgePulse 2s ease-in-out infinite alternate;
   }
-  
+
   // Override the default reply-item padding since we're adding our own
   .reply-content-wrapper {
     margin-left: 0;
@@ -995,10 +1090,12 @@
     background: rgba(255, 107, 107, 0.15);
     transform: scale(1.01);
   }
+
   50% {
     background: rgba(255, 107, 107, 0.08);
     transform: scale(1);
   }
+
   100% {
     background: rgba(255, 107, 107, 0.05);
     transform: scale(1);
@@ -1009,6 +1106,7 @@
   0% {
     opacity: 0.3;
   }
+
   100% {
     opacity: 0.1;
   }
@@ -1019,6 +1117,7 @@
     transform: scale(1);
     box-shadow: 0 2px 6px rgba(255, 107, 107, 0.3);
   }
+
   100% {
     transform: scale(1.05);
     box-shadow: 0 3px 8px rgba(255, 107, 107, 0.4);
@@ -1043,7 +1142,7 @@
   justify-content: center;
   z-index: 15000;
   animation: fadeIn 0.3s ease-out;
-  
+
   .success-content {
     background: white;
     border-radius: 20px;
@@ -1052,18 +1151,18 @@
     max-width: 400px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     animation: successSlideIn 0.5s ease-out;
-    
+
     .success-icon {
       font-size: 4rem;
       color: #28a745;
       margin-bottom: 20px;
       animation: successIconPulse 0.6s ease-out;
-      
+
       i {
         filter: drop-shadow(0 4px 8px rgba(40, 167, 69, 0.3));
       }
     }
-    
+
     .success-text {
       h3 {
         font-size: 1.5rem;
@@ -1072,7 +1171,7 @@
         margin-bottom: 10px;
         animation: successTextSlide 0.7s ease-out;
       }
-      
+
       p {
         font-size: 1rem;
         color: #666;
@@ -1087,6 +1186,7 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -1095,7 +1195,7 @@
 // AI Sensei Reply Box Styling
 .ai-sensei-section {
   margin: 30px 0;
-  
+
   @include mobile-only {
     margin: 20px 0;
   }
@@ -1109,7 +1209,7 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   overflow: hidden;
   position: relative;
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -1120,7 +1220,7 @@
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
     pointer-events: none;
   }
-  
+
   @include mobile-only {
     border-radius: 12px;
   }
@@ -1133,7 +1233,7 @@
   // background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  
+
   @include mobile-only {
     padding: 15px 20px 12px;
   }
@@ -1141,7 +1241,7 @@
 
 .ai-sensei-avatar {
   margin-right: 15px;
-  
+
   .sensei-avatar {
     width: 50px;
     height: 50px;
@@ -1149,7 +1249,7 @@
     border: 3px solid rgba(255, 255, 255, 0.3);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     background: white;
-    
+
     @include mobile-only {
       width: 40px;
       height: 40px;
@@ -1160,7 +1260,7 @@
 
 .ai-sensei-info {
   flex: 1;
-  
+
   .sensei-name {
     margin: 0 0 5px 0;
     font-size: 1.2rem;
@@ -1168,19 +1268,19 @@
     color: white;
     display: flex;
     align-items: center;
-    
+
     i {
       margin-right: 8px;
       color: #ffd700;
       animation: robotPulse 2s ease-in-out infinite;
     }
-    
+
     @include mobile-only {
       font-size: 1.1rem;
       margin: 0 0 3px 0;
     }
   }
-  
+
   .sensei-badge {
     background: rgba(255, 215, 0, 0.9);
     color: #333;
@@ -1191,7 +1291,7 @@
     letter-spacing: 0.5px;
     text-transform: uppercase;
     box-shadow: 0 2px 6px rgba(255, 215, 0, 0.3);
-    
+
     @include mobile-only {
       padding: 3px 10px;
       font-size: 0.7rem;
@@ -1203,7 +1303,7 @@
   padding: 25px;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
-  
+
   @include mobile-only {
     padding: 20px;
   }
@@ -1211,13 +1311,13 @@
 
 .ai-sensei-reply {
   margin-bottom: 15px;
-  
+
   p {
     margin: 0;
     font-size: 1.05rem;
     line-height: 1.6;
     color: #2d3748;
-    
+
     @include mobile-only {
       font-size: 1rem;
       line-height: 1.5;
@@ -1230,12 +1330,12 @@
   align-items: center;
   font-size: 0.9rem;
   color: #718096;
-  
+
   i {
     margin-right: 6px;
     color: #a0aec0;
   }
-  
+
   @include mobile-only {
     font-size: 0.85rem;
   }
@@ -1245,7 +1345,7 @@
   padding: 30px;
   text-align: center;
   color: white;
-  
+
   .spinner {
     width: 40px;
     height: 40px;
@@ -1255,17 +1355,17 @@
     animation: spin 1s linear infinite;
     margin: 0 auto 15px;
   }
-  
+
   p {
     margin: 0;
     font-size: 1rem;
     font-weight: 500;
-    
+
     @include mobile-only {
       font-size: 0.9rem;
     }
   }
-  
+
   @include mobile-only {
     padding: 25px;
   }
@@ -1276,31 +1376,34 @@
   text-align: center;
   color: #fed7d7;
   background: rgba(254, 215, 215, 0.1);
-  
+
   i {
     font-size: 2rem;
     margin-bottom: 10px;
     color: #fc8181;
   }
-  
+
   p {
     margin: 0;
     font-size: 1rem;
-    
+
     @include mobile-only {
       font-size: 0.9rem;
     }
   }
-  
+
   @include mobile-only {
     padding: 20px;
   }
 }
 
 @keyframes robotPulse {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: scale(1);
   }
+
   50% {
     transform: scale(1.1);
   }
@@ -1310,6 +1413,7 @@
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
@@ -1320,6 +1424,7 @@
     transform: translateY(-50px) scale(0.8);
     opacity: 0;
   }
+
   to {
     transform: translateY(0) scale(1);
     opacity: 1;
@@ -1331,9 +1436,11 @@
     transform: scale(0);
     opacity: 0;
   }
+
   50% {
     transform: scale(1.2);
   }
+
   100% {
     transform: scale(1);
     opacity: 1;
@@ -1345,6 +1452,7 @@
     transform: translateY(20px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;

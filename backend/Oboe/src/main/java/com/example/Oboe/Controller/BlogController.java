@@ -28,12 +28,16 @@ public class BlogController {
         this.blogService = blogService;
     }
 
-        @GetMapping("/get_all")
-        public ResponseEntity<Map<String, Object>> getBlogs(
-                @RequestParam(defaultValue = "0") int page,
-                @RequestParam(defaultValue = "10") int size) {
-            return ResponseEntity.ok(blogService.getAllBlogDTOs(page, size));
+    @GetMapping("/get_all")
+    public ResponseEntity<Map<String, Object>> getBlogs(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Map<String, Object> response = blogService.getAllBlogDTOs(page, size);
+        if(response.get("code").equals(200)) {
+            return ResponseEntity.ok(response);
         }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    }
 
 
     @GetMapping("/{id}")
@@ -112,6 +116,7 @@ public class BlogController {
         List<TopicPostProjection> topTopics = blogService.getTop5TopicsWithMostPosts();
         return ResponseEntity.ok(topTopics);
     }
+
     @DeleteMapping("/admin/delete-blog/{blogId}")
     public ResponseEntity<?> deleteBlogByAdmin(@PathVariable UUID blogId) {
         boolean deleted = blogService.deleteBlogAsAdmin(blogId);

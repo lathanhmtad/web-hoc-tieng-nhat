@@ -22,7 +22,7 @@ public class BlogService {
     private final UserService userService;
     private final CommentRepository commentRepository;
 
-    public BlogService(BlogRepository blogRepository, UserService userService,CommentRepository commentRepository) {
+    public BlogService(BlogRepository blogRepository, UserService userService, CommentRepository commentRepository) {
         this.blogRepository = blogRepository;
         this.userService = userService;
         this.commentRepository = commentRepository;
@@ -32,7 +32,7 @@ public class BlogService {
     public Map<String, Object> getAllBlogDTOs(int page, int size) {
         Map<String, Object> response = new HashMap<>();
         try {
-            Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+            Pageable pageable = PageRequest.of(page, size, Sort.by("ngayTao").descending());
             Page<BaiViet> blogPage = blogRepository.findAll(pageable);
 
             List<BlogDTO> blogDTOs = blogPage.getContent()
@@ -74,14 +74,14 @@ public class BlogService {
         ZoneId vietnamZone = ZoneId.of("Asia/Ho_Chi_Minh");
         LocalDateTime vietnamTime = LocalDateTime.now(vietnamZone);
         BaiViet baiViet = new BaiViet();
-        baiViet.setTitle(blogDTO.getTitle());
-        baiViet.setContent(blogDTO.getContent());
+        baiViet.setTieuDe(blogDTO.getTitle());
+        baiViet.setNoiDung(blogDTO.getContent());
         baiViet.setNguoiDung(userOpt.get());
-        baiViet.setCreatedAt(vietnamTime);
-        baiViet.setUpdatedAt(vietnamTime);
+        baiViet.setNgayTao(vietnamTime);
+        baiViet.setNgayCapNhat(vietnamTime);
         //  Thêm tags và topics
-        baiViet.setTags(blogDTO.getTags());
-        baiViet.setTopics(blogDTO.getTopics());
+        baiViet.setThe(blogDTO.getTags());
+        baiViet.setChuDe(blogDTO.getTopics());
 
 
         BaiViet saved = blogRepository.save(baiViet);
@@ -105,13 +105,13 @@ public class BlogService {
         if (baiViet.getNguoiDung() == null || !baiViet.getNguoiDung().getMaNguoiDung().equals(currentNguoiDung.getMaNguoiDung())) {
             return null;
         }
-        baiViet.setTitle(blogDTO.getTitle());
-        baiViet.setContent(blogDTO.getContent());
-        baiViet.setUpdatedAt(vietnamTime);
+        baiViet.setTieuDe(blogDTO.getTitle());
+        baiViet.setNoiDung(blogDTO.getContent());
+        baiViet.setNgayCapNhat(vietnamTime);
 
         // Cập nhật tags và topics
-        baiViet.setTags(blogDTO.getTags());
-        baiViet.setTopics(blogDTO.getTopics());
+        baiViet.setThe(blogDTO.getTags());
+        baiViet.setChuDe(blogDTO.getTopics());
 
         BaiViet updated = blogRepository.save(baiViet);
         return toDTO(updated);
@@ -143,14 +143,14 @@ public class BlogService {
         List<BaiViet> baiViets;
 
         switch (field.toLowerCase()) {
-            case "title":
-                baiViets = blogRepository.findByTitleContainingIgnoreCase(keyword);
+            case "tieuDe":
+                baiViets = blogRepository.findByTieuDeContainingIgnoreCase(keyword);
                 break;
             case "tags":
-                baiViets = blogRepository.findByTagsContainingIgnoreCase(keyword);
+                baiViets = blogRepository.findByTheContainingIgnoreCase(keyword);
                 break;
             case "topics":
-                baiViets = blogRepository.findByTopicsContainingIgnoreCase(keyword);
+                baiViets = blogRepository.findByChuDeContainingIgnoreCase(keyword);
                 break;
             default: // "all"
                 baiViets = blogRepository.searchByKeyword(keyword);
@@ -193,14 +193,16 @@ public class BlogService {
     //  Chuyển đổi từ Entity sang DTO
     private BlogDTO toDTO(BaiViet baiViet) {
         BlogDTO dto = new BlogDTO();
-        dto.setId(baiViet.getBlogId());
-        dto.setTitle(baiViet.getTitle());
-        dto.setContent(baiViet.getContent());
-        dto.setCreatedAt(baiViet.getCreatedAt());
-        dto.setUpdatedAt(baiViet.getUpdatedAt());
+        dto.setId(baiViet.getMaBaiViet());
 
-        dto.setTags(baiViet.getTags());
-        dto.setTopics(baiViet.getTopics());
+
+        dto.setTitle(baiViet.getTieuDe());
+        dto.setContent(baiViet.getNoiDung());
+        dto.setCreatedAt(baiViet.getNgayTao());
+        dto.setUpdatedAt(baiViet.getNgayCapNhat());
+
+        dto.setTags(baiViet.getThe());
+        dto.setTopics(baiViet.getChuDe());
 
         if (baiViet.getNguoiDung() != null) {
             dto.setUserId(baiViet.getNguoiDung().getMaNguoiDung());
@@ -209,13 +211,13 @@ public class BlogService {
         }
 
         // Đếm số comment
-        long count = commentRepository.countByReferenceId(baiViet.getBlogId());
+        long count = commentRepository.countByMaThamChieu(baiViet.getMaBaiViet());
         dto.setCommentCount((int) count);
 
         //  Lấy comment gần nhất
-        commentRepository.findTopByReferenceIdOrderByCreatedAtDesc(baiViet.getBlogId())
+        commentRepository.findTopByMaThamChieuOrderByNgayTaoDesc(baiViet.getMaBaiViet())
                 .ifPresent(latestComment -> {
-                    dto.setLatestCommentTime(latestComment.getCreatedAt());
+                    dto.setLatestCommentTime(latestComment.getNgayTao());
                     dto.setLatestCommenterName(latestComment.getNguoiDung().getEmail());
 
                 });

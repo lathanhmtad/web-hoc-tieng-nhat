@@ -35,12 +35,4 @@ public class BoTheGhiNho {
 
     @OneToMany(mappedBy = "boTheGhiNho", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChiTietThe> chiTietThes = new ArrayList<>();
-
-    public BoTheGhiNho() {}
-
-    public BoTheGhiNho(String tenBoThe, String moTa, NguoiDung nguoiDung) {
-        this.tenBoThe = tenBoThe;
-        this.moTa = moTa;
-        this.nguoiDung = nguoiDung;
-    }
 }

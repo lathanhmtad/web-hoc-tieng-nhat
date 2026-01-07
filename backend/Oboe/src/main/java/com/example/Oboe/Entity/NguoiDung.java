@@ -32,7 +32,7 @@ public class NguoiDung {
     private String email;
 
     @JsonIgnore
-    @Size(min = 8, message = "Mật khẩu ít nhất 8 ký tự!")
+    @Size(min = 6, message = "Mật khẩu ít nhất 6 ký tự!")
     @Column(nullable = true) // Cho phép null cho tài khoản Firebase/Social login
     private String matKhau;
 
@@ -89,18 +89,18 @@ public class NguoiDung {
 
     @OneToMany(mappedBy = "nguoiDung", cascade = CascadeType.ALL)
     @JsonManagedReference("users-Notifications")
-    private List<ThongBao> notifications = new ArrayList<>();
+    private List<ThongBao> thongBaos = new ArrayList<>();
 
     // Mối quan hệ 1-nhiều với Comment
     @OneToMany(mappedBy = "nguoiDung", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference("user-comments")
     private List<BinhLuan> binhLuans = new ArrayList<>();
 
-    @OneToMany(mappedBy = "sender")
+    @OneToMany(mappedBy = "nguoiGui")
     @JsonManagedReference("user-sent-messages")
-    private List<Message> sentMessages;
+    private List<TinNhan> tinNhanDaGuis;
 
-    @OneToMany(mappedBy = "receiver")
+    @OneToMany(mappedBy = "nguoiNhan")
     @JsonManagedReference("user-received-messages")
-    private List<Message> receivedMessages;
+    private List<TinNhan> tinNhanDaNhans;
 }

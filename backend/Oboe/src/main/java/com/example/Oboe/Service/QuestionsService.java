@@ -5,6 +5,7 @@ import com.example.Oboe.Entity.CauHoi;
 import com.example.Oboe.Entity.BaiKiemTra;
 import com.example.Oboe.Repository.QuestionsRepository;
 import com.example.Oboe.Repository.QuizzesRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,13 +16,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+@AllArgsConstructor
 @Service
 public class QuestionsService {
 
-    @Autowired
     private QuestionsRepository questionsRepository;
 
-    @Autowired
     private QuizzesRepository quizzesRepository;
 
 
@@ -35,10 +35,10 @@ public class QuestionsService {
                     .orElseThrow(() -> new RuntimeException("Quiz not found with ID: " + dto.getQuizId()));
 
             CauHoi question = new CauHoi();
-            question.setQuestionName(dto.getQuestionName());
-            question.setCorrectAnswer(dto.getCorrectAnswer());
-            question.setOptions(String.join(";", dto.getOptions()));
-            question.setQuiz(quiz);
+            question.setTenCauHoi(dto.getQuestionName());
+            question.setDapAnChinhXac(dto.getCorrectAnswer());
+            question.setLuuChon(String.join(";", dto.getOptions()));
+            question.setBaiKiemTra(quiz);
 
             CauHoi saved = questionsRepository.save(question);
             createdQuestions.add(toDTO(saved));
@@ -51,7 +51,7 @@ public class QuestionsService {
         BaiKiemTra quiz = quizzesRepository.findById(quizId)
                 .orElseThrow(() -> new RuntimeException("Quiz not found"));
 
-        return questionsRepository.findByQuiz(quiz, pageable)
+        return questionsRepository.findByBaiKiemTra(quiz, pageable)
                 .map(this::toDTO); // chuyển Page<Questions> -> Page<QuestionDTO>
     }
 
@@ -59,11 +59,11 @@ public class QuestionsService {
 
     private QuestionDTO toDTO(CauHoi q) {
         QuestionDTO dto = new QuestionDTO();
-        dto.setQuestionID(q.getQuestionID());
-        dto.setQuestionName(q.getQuestionName());
-        dto.setCorrectAnswer(q.getCorrectAnswer());
+        dto.setQuestionID(q.getMaCauHoi());
+        dto.setQuestionName(q.getTenCauHoi());
+        dto.setCorrectAnswer(q.getDapAnChinhXac());
 
-        String optionsStr = q.getOptions().trim();
+        String optionsStr = q.getLuuChon().trim();
 
         if (optionsStr.startsWith("[") && optionsStr.endsWith("]")) {
             // Trường hợp bị lưu kiểu JSON string
@@ -75,7 +75,7 @@ public class QuestionsService {
             dto.setOptions(Arrays.asList(optionsStr.split(";")));
         }
 
-        dto.setQuizId(q.getQuiz().getQuizzesID());
+        dto.setQuizId(q.getBaiKiemTra().getMaBaiKiemTra());
         return dto;
     }
 

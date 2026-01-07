@@ -3,7 +3,7 @@ package com.example.Oboe.Service;
 import com.example.Oboe.DTOs.GrammarDTO;
 import com.example.Oboe.DTOs.ReadingDTO;
 import com.example.Oboe.Entity.NguPhap;
-import com.example.Oboe.Entity.Reading;
+import com.example.Oboe.Entity.CachDoc;
 import com.example.Oboe.Repository.GrammarRepository;
 import com.example.Oboe.Repository.ReadingRepository;
 import jakarta.transaction.Transactional;
@@ -31,9 +31,9 @@ public class GrammarService {
     }
 
     // Get all grammar with pagination
-    public Map<String, Object> getAllGrammar(int page, int size) {
+    public Map<String, Object> getAllGrammar(int page, int size, String search) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<NguPhap> grammarPage = grammarRepository.findAll(pageable);
+        Page<NguPhap> grammarPage = grammarRepository.getALl(search, pageable);
 
         List<GrammarDTO> grammarDTOs = grammarPage.getContent()
                 .stream()
@@ -56,11 +56,11 @@ public class GrammarService {
         checkAdminAccess();
 
         NguPhap nguPhap = new NguPhap();
-        nguPhap.setStructure(dto.getStructure());
-        nguPhap.setExplanation(dto.getExplanation());
-        nguPhap.setExample(dto.getExample());
-        nguPhap.setGrammarType(dto.getGrammarType());
-        nguPhap.setVietnamesePronunciation(dto.getVietnamesePronunciation());
+        nguPhap.setCauTruc(dto.getStructure());
+        nguPhap.setGiaiThich(dto.getExplanation());
+        nguPhap.setViDu(dto.getExample());
+        nguPhap.setLoaiNguPhap(dto.getGrammarType());
+        nguPhap.setTrinhDoJLPT(dto.getJlptLevel());
 
         NguPhap saved = grammarRepository.save(nguPhap);
 
@@ -81,11 +81,11 @@ public class GrammarService {
         NguPhap nguPhap = grammarRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Grammar không tồn tại"));
 
-        if (dto.getStructure() != null) nguPhap.setStructure(dto.getStructure());
-        if (dto.getExplanation() != null) nguPhap.setExplanation(dto.getExplanation());
-        if (dto.getExample() != null) nguPhap.setExample(dto.getExample());
-        if (dto.getGrammarType() != null) nguPhap.setGrammarType(dto.getGrammarType());
-        if (dto.getVietnamesePronunciation() != null) nguPhap.setVietnamesePronunciation(dto.getVietnamesePronunciation());
+        if (dto.getStructure() != null) nguPhap.setCauTruc(dto.getStructure());
+        if (dto.getExplanation() != null) nguPhap.setGiaiThich(dto.getExplanation());
+        if (dto.getExample() != null) nguPhap.setViDu(dto.getExample());
+        if (dto.getGrammarType() != null) nguPhap.setLoaiNguPhap(dto.getGrammarType());
+        if(dto.getJlptLevel() != null) nguPhap.setTrinhDoJLPT(dto.getJlptLevel());
 
         NguPhap updated = grammarRepository.save(nguPhap);
         return grammarToDTO(updated);
@@ -112,25 +112,25 @@ public class GrammarService {
     //  Convert Grammar → DTO
     private GrammarDTO grammarToDTO(NguPhap nguPhap) {
         GrammarDTO dto = new GrammarDTO();
-        dto.setGrammarId(nguPhap.getGrammaID().toString());
-        dto.setStructure(nguPhap.getStructure());
-        dto.setExplanation(nguPhap.getExplanation());
-        dto.setExample(nguPhap.getExample());
-        dto.setGrammarType(nguPhap.getGrammarType());
-        dto.setVietnamesePronunciation(nguPhap.getVietnamesePronunciation());
-        List<ReadingDTO> readingDTOs = readingRepository.findByOwnerTypeAndOwnerId("grammar", nguPhap.getGrammaID())
+        dto.setGrammarId(nguPhap.getMaNguPhap().toString());
+        dto.setStructure(nguPhap.getCauTruc());
+        dto.setExplanation(nguPhap.getGiaiThich());
+        dto.setExample(nguPhap.getViDu());
+        dto.setGrammarType(nguPhap.getLoaiNguPhap());
+        dto.setJlptLevel(nguPhap.getTrinhDoJLPT());
+        List<ReadingDTO> readingDTOs = readingRepository.findByLoaiDoiTuongAndMaDoiTuong("grammar", nguPhap.getMaNguPhap())
                 .stream().map(this::readingToDTO).collect(Collectors.toList());
         dto.setReadings(readingDTOs);
         return dto;
     }
 
-    private ReadingDTO readingToDTO(Reading r) {
+    private ReadingDTO readingToDTO(CachDoc r) {
         return new ReadingDTO(
-                r.getReadingID(),
-                r.getReadingText(),
-                r.getReadingType(),
-                r.getOwnerType(),
-                r.getOwnerId()
+                r.getMaCachDoc(),
+                r.getCachDocThucTe(),
+                r.getLoaiDoc(),
+                r.getLoaiDoiTuong(),
+                r.getMaDoiTuong()
         );
     }
 

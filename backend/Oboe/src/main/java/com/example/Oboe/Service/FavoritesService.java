@@ -33,7 +33,7 @@ public class FavoritesService {
         this.sampleSentenceRepository = sampleSentenceRepository;
     }
     public FavoritesDTO toggleFavorite(FavoritesDTO dto, UUID userId) {
-        Favorites existing = null;
+        YeuThich existing = null;
         // Kiểm tra xem nội dung yêu thích là loại nào (Kanji, Grammar, Vocab, hoặc Sentence)
         // Và tìm trong database xem người dùng đã từng thích mục đó chưa.
         if (dto.getKanjiId() != null) {
@@ -71,60 +71,60 @@ public class FavoritesService {
     }
 
     public FavoritesDTO createFavorite(FavoritesDTO dto, UUID userId) {
-        Favorites favorites = new Favorites();
+        YeuThich yeuThich = new YeuThich();
 
-        favorites.setFavories_at(dto.getFavoritesAt() != null ? dto.getFavoritesAt() : java.time.LocalDate.now());
+        yeuThich.setNgayTao(dto.getFavoritesAt() != null ? dto.getFavoritesAt() : java.time.LocalDate.now());
 
         NguoiDung nguoiDung = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        favorites.setUser(nguoiDung);
+        yeuThich.setNguoiDung(nguoiDung);
 
         if (dto.getKanjiId() != null) {
             HanTu hanTu = kanjiRepository.findById(dto.getKanjiId())
                     .orElseThrow(() -> new RuntimeException("Kanji not found"));
-            favorites.setHanTu(hanTu);
-            favorites.setTitle(hanTu.getCharacter_name());
-            favorites.setContent(hanTu.getMeaning());
+            yeuThich.setHanTu(hanTu);
+            yeuThich.setTieuDe(hanTu.getKyTu());
+            yeuThich.setNoiDung(hanTu.getNghia());
         } else if (dto.getGrammaId() != null) {
             NguPhap nguPhap = grammarRepository.findById(dto.getGrammaId())
                     .orElseThrow(() -> new RuntimeException("Grammar not found"));
-            favorites.setGramma(nguPhap);
-            favorites.setTitle(nguPhap.getStructure());
-            favorites.setContent(nguPhap.getExplanation());
+            yeuThich.setNguPhap(nguPhap);
+            yeuThich.setTieuDe(nguPhap.getCauTruc());
+            yeuThich.setNoiDung(nguPhap.getGiaiThich());
         }  else if (dto.getVocabularyId() != null) {
         TuVung tuVung = vocabularyRepository.findById(dto.getVocabularyId())
                 .orElseThrow(() -> new RuntimeException("Vocabulary not found"));
-            favorites.setTuVung(tuVung);
-            favorites.setTitle(tuVung.getWords());
-            favorites.setContent(tuVung.getMeanning());
+            yeuThich.setTuVung(tuVung);
+            yeuThich.setTieuDe(tuVung.getNoiDungTu());
+            yeuThich.setNoiDung(tuVung.getNghia());
         }
         else if (dto.getSampleSentenceId() != null)  {
                 MauCau mauCau = sampleSentenceRepository.findById(dto.getSampleSentenceId())
                         .orElseThrow(() -> new RuntimeException("SampleSentence not found"));
-            favorites.setSentence(mauCau);
-            favorites.setTitle(mauCau.getJapaneseText());
-            favorites.setContent(mauCau.getVietnameseMeaning());
+            yeuThich.setMauCau(mauCau);
+            yeuThich.setTieuDe(mauCau.getCauTiengNhat());
+            yeuThich.setNoiDung(mauCau.getNghiaTiengViet());
         }
 
         else {
             throw new RuntimeException("Phải cung cấp ít nhất 1 loại nội dung yêu thích (Kanji, Grammar, ...).");
         }
 
-        favoritesRepository.save(favorites);
-        return toDTO(favorites);
+        favoritesRepository.save(yeuThich);
+        return toDTO(yeuThich);
     }
 
     //lấy tất các từ yêu thích theo type
     public List<FavoritesDTO> getFavoritesByUserIdAndType(UUID userId, String type) {
-        List<Favorites> list = favoritesRepository.findByUserId(userId);
+        List<YeuThich> list = favoritesRepository.findByUserId(userId);
 
         return list.stream()
                 .filter(fav -> {
                     return switch (type.toLowerCase()) {
                         case "kanji" -> fav.getHanTu() != null;
-                        case "grammar" -> fav.getGramma() != null;
+                        case "grammar" -> fav.getNguPhap() != null;
                         case "vocabulary" -> fav.getTuVung() != null;
-                        case "samplesentence" -> fav.getSentence() != null;
+                        case "samplesentence" -> fav.getMauCau() != null;
                         default -> false;
                     };
                 })
@@ -137,7 +137,7 @@ public class FavoritesService {
     }
     //lấy tất cả các tử yêu thích
     public List<FavoritesDTO> getAllFavoritesByUserId(UUID userId) {
-        List<Favorites> list = favoritesRepository.findByUserId(userId);
+        List<YeuThich> list = favoritesRepository.findByUserId(userId);
 
         return list.stream()
                 .map(fav -> {
@@ -145,11 +145,11 @@ public class FavoritesService {
 
                     if (fav.getHanTu() != null) {
                         dto.setType("kanji");
-                    } else if (fav.getGramma() != null) {
+                    } else if (fav.getNguPhap() != null) {
                         dto.setType("grammar");
                     } else if (fav.getTuVung() != null) {
                         dto.setType("vocabulary");
-                    } else if (fav.getSentence() != null) {
+                    } else if (fav.getMauCau() != null) {
                         dto.setType("samplesentence");
                     } else {
                         dto.setType("unknown");
@@ -162,11 +162,11 @@ public class FavoritesService {
     // Xóa mục yêu thích dựa trên ID và kiểm tra quyền sở hữu của người dùng
     public void deleteFavorite(UUID favoriteId, UUID userId) {
         // Tìm mục yêu thích theo ID, nếu không tồn tại thì ném ra lỗi
-        Favorites favorite = favoritesRepository.findById(favoriteId)
+        YeuThich favorite = favoritesRepository.findById(favoriteId)
                 .orElseThrow(() -> new RuntimeException("Favorite not found"));
 
         // Kiểm tra xem mục yêu thích này có thuộc về người dùng hiện tại không
-        if (!favorite.getUser().getMaNguoiDung().equals(userId)) {
+        if (!favorite.getNguoiDung().getMaNguoiDung().equals(userId)) {
             throw new RuntimeException("Bạn không có quyền xóa mục yêu thích này");
         }
 
@@ -175,34 +175,33 @@ public class FavoritesService {
     }
 
 
-    public static FavoritesDTO toDTO(Favorites favorites) {
-        if (favorites == null) return null;
+    public static FavoritesDTO toDTO(YeuThich yeuThich) {
+        if (yeuThich == null) return null;
         FavoritesDTO dto = new FavoritesDTO(
-                favorites.getFavoritesID(),
-                favorites.getTitle(),
-                favorites.getContent(),
-                favorites.getFavories_at(),
-                favorites.getUser() != null ? favorites.getUser().getMaNguoiDung() : null,
-                favorites.getGramma() != null ? favorites.getGramma().getGrammaID() : null,
-                favorites.getHanTu() != null ? favorites.getHanTu().getKanjiId() : null,
-                favorites.getSentence() != null ? favorites.getSentence().getSample_sentence_id() : null,
-                favorites.getTuVung() != null ? favorites.getTuVung().getVocalbId() : null
+                yeuThich.getFavoritesID(),
+                yeuThich.getTieuDe(),
+                yeuThich.getNoiDung(),
+                yeuThich.getNgayTao(),
+                yeuThich.getNguoiDung() != null ? yeuThich.getNguoiDung().getMaNguoiDung() : null,
+                yeuThich.getNguPhap() != null ? yeuThich.getNguPhap().getMaNguPhap() : null,
+                yeuThich.getHanTu() != null ? yeuThich.getHanTu().getMaHanTu() : null,
+                yeuThich.getMauCau() != null ? yeuThich.getMauCau().getMaMauCau() : null,
+                yeuThich.getTuVung() != null ? yeuThich.getTuVung().getMaTuVung() : null
         );
         // Xác định type
-        if (favorites.getHanTu() != null) {
+        if (yeuThich.getHanTu() != null) {
             dto.setType("kanji");
-        } else if (favorites.getGramma() != null) {
+        } else if (yeuThich.getNguPhap() != null) {
             dto.setType("grammar");
-        } else if (favorites.getTuVung() != null) {
+        } else if (yeuThich.getTuVung() != null) {
             dto.setType("vocabulary");
-        } else if (favorites.getSentence() != null) {
+        } else if (yeuThich.getMauCau() != null) {
             dto.setType("samplesentence");
         } else {
             dto.setType("unknown");
         }
         return dto;
     }
-
 
 }
 

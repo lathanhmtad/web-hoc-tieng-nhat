@@ -1,62 +1,27 @@
 package com.example.Oboe.Entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.UUID;
 
 @Entity
 @Table(name = "cau_hoi")
+@Getter
+@Setter
 public class CauHoi {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "QuestionID", updatable = false, nullable = false)
-    private UUID questionID;
+    @Column(name = "ma_cau_hoi", updatable = false, nullable = false)
+    private UUID maCauHoi;
 
-    private String questionName;
-    private String correctAnswer;
-    private String options;
+    private String tenCauHoi;
+    private String dapAnChinhXac;
+    private String luuChon;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "QuizzesID")
-    private BaiKiemTra quiz;
-
-    public UUID getQuestionID() {
-        return questionID;
-    }
-
-    public void setQuestionID(UUID questionID) {
-        this.questionID = questionID;
-    }
-
-    public String getQuestionName() {
-        return questionName;
-    }
-
-    public void setQuestionName(String questionName) {
-        this.questionName = questionName;
-    }
-
-    public String getCorrectAnswer() {
-        return correctAnswer;
-    }
-
-    public void setCorrectAnswer(String correctAnswer) {
-        this.correctAnswer = correctAnswer;
-    }
-
-    public String getOptions() {
-        return options;
-    }
-
-    public void setOptions(String options) {
-        this.options = options;
-    }
-
-    public BaiKiemTra getQuiz() {
-        return quiz;
-    }
-
-    public void setQuiz(BaiKiemTra quiz) {
-        this.quiz = quiz;
-    }
+    @ManyToOne
+    @JoinColumn(name = "maBaiKiemTra")
+    private BaiKiemTra baiKiemTra;
 }

@@ -42,7 +42,7 @@ public class UserAnswerService {
         }
 
         // Đếm tổng số câu hỏi
-        int totalQuestions = questionsRepository.countByQuiz_QuizzesID(quizzesId);
+        int totalQuestions = questionsRepository.countByBaiKiemTra_MaBaiKiemTra(quizzesId);
 
 
         if (totalQuestions == 0) {
@@ -63,42 +63,43 @@ public class UserAnswerService {
 
         long correctAnswers = 0;
 
-        for (UserAnswerDTO dto : answers) {
-            CauHoi question = questionsRepository.findById(dto.getQuestionId())
-                    .orElseThrow(() -> new RuntimeException("Không tìm thấy câu hỏi"));
-
-            // Kiểm tra đúng/sai
-            boolean isCorrect = dto.getAnswer().equalsIgnoreCase(question.getCorrectAnswer());
-
-            CauTraLoiNguoiDung userAnswer = new CauTraLoiNguoiDung();
-            userAnswer.setQuiz(quiz);
-            userAnswer.setUser(nguoiDung);
-            userAnswer.setQuestion(question);
-            userAnswer.setAnswer(dto.getAnswer());
-            userAnswer.setCorrect(isCorrect);
-            userAnswer.setAttemptNumber(currentAttempt);
-
-            userAnswerRepository.save(userAnswer);
-
-            if (isCorrect) correctAnswers++;
-        }
-
-        double score = ((double) correctAnswers / totalQuestions) * 100;
-        score = Math.round(score * 100.0) / 100.0;
-        LocalDateTime takenAt = LocalDateTime.now();
-
-        QuizResults result = new QuizResults();
-        result.setQuiz(quiz);
-        result.setUser(nguoiDung);
-        result.setTakenAt(takenAt);
-        result.setScore(score);
-        try {
-            quizResultRepository.save(result);
-            return new QuizResultDTO("Lưu đáp án thành công!", score, totalQuestions, correctAnswers, takenAt);
-        } catch (Exception e) {
-            e.printStackTrace(); // hoặc log lỗi
-            return new QuizResultDTO("Lỗi khi lưu kết quả quiz!", 0, totalQuestions, correctAnswers, LocalDateTime.now());
-        }
+//        for (UserAnswerDTO dto : answers) {
+//            CauHoi question = questionsRepository.findById(dto.getQuestionId())
+//                    .orElseThrow(() -> new RuntimeException("Không tìm thấy câu hỏi"));
+//
+//            // Kiểm tra đúng/sai
+//            boolean isCorrect = dto.getAnswer().equalsIgnoreCase(question.getCorrectAnswer());
+//
+//            CauTraLoiNguoiDung userAnswer = new CauTraLoiNguoiDung();
+//            userAnswer.setQuiz(quiz);
+//            userAnswer.setUser(nguoiDung);
+//            userAnswer.setQuestion(question);
+//            userAnswer.setAnswer(dto.getAnswer());
+//            userAnswer.setCorrect(isCorrect);
+//            userAnswer.setAttemptNumber(currentAttempt);
+//
+//            userAnswerRepository.save(userAnswer);
+//
+//            if (isCorrect) correctAnswers++;
+//        }
+//
+//        double score = ((double) correctAnswers / totalQuestions) * 100;
+//        score = Math.round(score * 100.0) / 100.0;
+//        LocalDateTime takenAt = LocalDateTime.now();
+//
+//        KetQua result = new KetQua();
+//        result.setQuiz(quiz);
+//        result.setUser(nguoiDung);
+//        result.setTakenAt(takenAt);
+//        result.setScore(score);
+//        try {
+//            quizResultRepository.save(result);
+//            return new QuizResultDTO("Lưu đáp án thành công!", score, totalQuestions, correctAnswers, takenAt);
+//        } catch (Exception e) {
+//            e.printStackTrace(); // hoặc log lỗi
+//            return new QuizResultDTO("Lỗi khi lưu kết quả quiz!", 0, totalQuestions, correctAnswers, LocalDateTime.now());
+//        }
+        return null;
     }
 }
 

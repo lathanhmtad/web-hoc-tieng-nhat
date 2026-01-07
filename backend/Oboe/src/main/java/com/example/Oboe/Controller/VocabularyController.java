@@ -49,9 +49,9 @@ public class VocabularyController {
 
     // DELETE /api/vocabulary/{id} (ROLE_ADMIN)
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+    public ResponseEntity<Integer> delete(@PathVariable UUID id) {
         vocabularyService.deleteVocabulary(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(1);
     }
 
     // GET /api/vocabulary/search?keyword=sakura

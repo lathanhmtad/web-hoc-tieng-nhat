@@ -17,15 +17,15 @@ import java.util.UUID;
 @Repository
 public interface BlogRepository extends JpaRepository<BaiViet, UUID> {
 
-    // Method tìm kiếm theo title
-    List<BaiViet> findByTitleContainingIgnoreCase(String keyword);
-    List<BaiViet> findByTagsContainingIgnoreCase(String keyword);
-    List<BaiViet> findByTopicsContainingIgnoreCase(String keyword);
+    // Method tìm kiếm theo tieuDe
+    List<BaiViet> findByTieuDeContainingIgnoreCase(String keyword);
+    List<BaiViet> findByTheContainingIgnoreCase(String keyword);
+    List<BaiViet> findByChuDeContainingIgnoreCase(String keyword);
 
     @Query("SELECT b FROM BaiViet b WHERE " +
-            "LOWER(b.title) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-            "LOWER(b.tags) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-            "LOWER(b.topics) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+            "LOWER(b.tieuDe) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+            "LOWER(b.the) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+            "LOWER(b.chuDe) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<BaiViet> searchByKeyword(@Param("keyword") String keyword);
 
 
@@ -39,19 +39,16 @@ public interface BlogRepository extends JpaRepository<BaiViet, UUID> {
     // lấy chủ đề nổi bật sử dụng interface TopicPostProjection
     @Query(value = """
     SELECT 
-        BIN_TO_UUID(b.blog_id) AS blogId,
-        b.title AS title,
-        COUNT(c.comment_id) AS commentCount
+        BIN_TO_UUID(b.ma_bai_viet) AS blogId,
+        b.tieu_de AS title,
+        COUNT(c.ma_binh_luan) AS commentCount
     FROM bai_viet b
-    JOIN binhLuans c ON b.blog_id = c.reference_id
-    GROUP BY b.blog_id, b.title
+    JOIN binh_luan c ON b.ma_bai_viet = c.ma_tham_chieu
+    GROUP BY b.ma_bai_viet, b.tieu_de
     ORDER BY commentCount DESC
     LIMIT 3
     """, nativeQuery = true)
     List<TopicPostProjection> findTop3BlogsByCommentCount();
-
-
-
 
     @Query("SELECT COUNT(b) FROM BaiViet b WHERE b.nguoiDung.maNguoiDung = :userId")
     long countBlogsByUserId(@Param("userId") UUID userId);
@@ -66,7 +63,7 @@ public interface BlogRepository extends JpaRepository<BaiViet, UUID> {
     Long countAllPosts();
 
     // Số blog trong tháng hiện tại
-    @Query("SELECT COUNT(b) FROM BaiViet b WHERE FUNCTION('MONTH', b.createdAt) = FUNCTION('MONTH', CURRENT_DATE)")
+    @Query("SELECT COUNT(b) FROM BaiViet b WHERE FUNCTION('MONTH', b.ngayTao) = FUNCTION('MONTH', CURRENT_DATE)")
     Long countPostsThisMonth();
 
 

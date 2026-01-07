@@ -34,6 +34,16 @@ const profileApi = {
     } catch (error) {
       throw new Error(handleApiError(error));
     }
+  },
+
+  async updateProfile(profileData) {
+    try {
+      console.log(profileData);
+      // const res = await axios.put(PREFIX, profileData);
+      return res.data;
+    } catch (error) {
+      throw new Error(handleApiError(error));
+    }   
   }
 };
 

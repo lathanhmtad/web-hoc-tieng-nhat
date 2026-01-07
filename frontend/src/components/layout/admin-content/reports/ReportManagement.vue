@@ -77,8 +77,8 @@
         </thead>
         <tbody>
           <tr v-if="paginatedReports.length === 0">
-            <td colspan="7" class="no-data">
-              <div class="no-data-message">
+            <td colspan="9" class="no-data">
+              <div class="no-data-message" style="text-align: center;">
                 <i class="fas fa-inbox"></i>
                 <p v-if="filteredReports.length === 0 && !loading">
                   {{ searchQuery || statusFilter || typeFilter || severityFilter 

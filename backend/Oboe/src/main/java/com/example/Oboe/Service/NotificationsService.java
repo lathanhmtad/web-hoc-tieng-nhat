@@ -40,8 +40,8 @@ public class NotificationsService {
     @Transactional
     public boolean markNotificationAsRead(UUID notificationId) {
         ThongBao read = notificationsRepository.findById(notificationId).orElse(null);
-        if (read != null && !read.isRead()) {
-            read.setRead(true); // Đánh dấu đã đọc
+        if (read != null && !read.isDaDuocDoc()) {
+            read.setDaDuocDoc(true); // Đánh dấu đã đọc
             notificationsRepository.save(read); // Lưu lại
             return true;
         }
@@ -50,13 +50,13 @@ public class NotificationsService {
 
     public NotificationsDTO convertToDTO(ThongBao thongBao) {
         return new NotificationsDTO(
-                thongBao.getNotifiId(),
+                thongBao.getMaThongBao(),
                 thongBao.getNguoiDung().getMaNguoiDung(),
-                thongBao.getText_notification(),
-                thongBao.isRead(),
-                thongBao.getNgayCapNhat(),
-                thongBao.getTargetId(),     // ← thêm mới
-                thongBao.getTargetType()    // ← thêm mới
+                thongBao.getNoiDung(),
+                thongBao.isDaDuocDoc(),
+                thongBao.getThoiGianCapNhat(),
+                thongBao.getMaDoiTuong(),     // ← thêm mới
+                thongBao.getLoaiDoiTuong()    // ← thêm mới
         );
     }
 }

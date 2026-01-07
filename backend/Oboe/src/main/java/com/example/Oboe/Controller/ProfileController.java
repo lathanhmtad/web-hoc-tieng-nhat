@@ -8,6 +8,7 @@ import com.example.Oboe.Entity.PhuongThucXacThuc;
 import com.example.Oboe.Entity.NguoiDung;
 import com.example.Oboe.Service.StatisticalUserSerivce;
 import com.example.Oboe.Service.UserService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,12 +24,11 @@ import java.util.Map;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("api/profile")
+@AllArgsConstructor
+@RequestMapping("/api/profile")
 public class ProfileController {
 
-    @Autowired
     private UserService userService;
-    @Autowired
     private StatisticalUserSerivce statisticalUserSerivce;
 
     @GetMapping

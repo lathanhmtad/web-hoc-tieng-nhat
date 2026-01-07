@@ -168,7 +168,7 @@ public class AIController {
                     {
                       "question": "Câu hỏi 1",
                       "correct": true,
-                      "feedback": "Bạn trả lời đúng"
+                      "phanHoi": "Bạn trả lời đúng"
                     },
                     ...
                   ],
@@ -197,16 +197,16 @@ public class AIController {
     public Map<String, String> translateJapaneseToVietnamese(@RequestBody Map<String, String> request) {
         String input = request.get("text");
         String prompt = """
-        Bạn là giáo viên dạy tiếng Nhật. Bạn hãy đưa ra câu trả lời một cách trôi chảy liền mạch. Vào đầu câu trả lơời sẽ có chào bạn..
+        Bạn là giáo viên dạy tiếng Nhật. Bạn hãy đưa ra câu trả lời một cách trôi chảy liền mạch. Vào đầu câu trả lời sẽ có chào bạn..
         Dịch câu tiếng Nhật sau sang tiếng Việt. Nếu là câu hỏi thì hãy dịch sao cho người học dễ hiểu.
         Nếu câu có cấu trúc ngữ pháp đặc biệt, hãy giải thích ngắn gọn ý nghĩa mẫu ngữ pháp đó. Giải thích đầy đủ về:
         - Nghĩa của từng từ trong câu
         - Cấu trúc ngữ pháp được sử dụng
         - Ngữ cảnh phù hợp để dùng câu này
-        - Hoàn cảnh sử dụng, tình huống sử dụng, đưa ra ví dụ 
+        - Hoàn cảnh sử dụng, tình huống sử dụng, đưa ra ví dụ
         - Sắc thái, mức độ lịch sự (nếu có)
         - Những lưu ý khi sử dụng câu này trong giao tiếp hàng ngày.
-        - Viết cho tôi dưới 100 ký tự và hãy trả lời luôn
+        - Viết cho tôi dưới 400 ký tự và hãy trả lời luôn
 
         Câu: %s
 

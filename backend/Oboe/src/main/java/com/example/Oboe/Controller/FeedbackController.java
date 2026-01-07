@@ -1,6 +1,6 @@
 package com.example.Oboe.Controller;
 
-import com.example.Oboe.Entity.Feedback;
+import com.example.Oboe.Entity.PhanHoi;
 import com.example.Oboe.Service.FeedbackService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,14 +17,14 @@ public class FeedbackController {
 
     // Gửi phản hồi
     @PostMapping
-    public ResponseEntity<Feedback> submitFeedback(@RequestBody Feedback feedback) {
-        Feedback saved = feedbackService.createFeedback(feedback);
+    public ResponseEntity<PhanHoi> submitFeedback(@RequestBody PhanHoi phanHoi) {
+        PhanHoi saved = feedbackService.createFeedback(phanHoi);
         return ResponseEntity.ok(saved);
     }
 
     // Lấy tất cả phản hồi (chỉ dùng cho admin)
     @GetMapping
-    public ResponseEntity<List<Feedback>> getAllFeedbacks() {
+    public ResponseEntity<List<PhanHoi>> getAllFeedbacks() {
         return ResponseEntity.ok(feedbackService.getAllFeedbacks());
     }
 }

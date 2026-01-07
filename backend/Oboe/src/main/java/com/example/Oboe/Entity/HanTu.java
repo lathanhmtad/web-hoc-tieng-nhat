@@ -19,20 +19,22 @@ public class HanTu {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @JdbcTypeCode(Types.BINARY)
-    @Column(name = "kanji_id", columnDefinition = "BINARY(16)", updatable = false, nullable = false)
-    private UUID kanjiId;
+    @Column(name = "ma_han_tu", updatable = false, nullable = false)
+    private UUID maHanTu;
 
-    @Column(name = "character_name", nullable = false)
-    private String character_name;
+    private String kyTu;
 
-    @Column(name = "meaning")
-    private String meaning;
+    private String nghia;
 
-    @Column(name = "strokes")
-    private String strokes;
+    private String soNet;
 
-    @Column(name = "vietnamese_pronunciation")
-    private String vietnamesePronunciation;
+    private String phatAmTiengViet;
+
+    private String onYomi;
+    private String kunYomi;
+
+    @Column(name = "trinh_do_jlpt")
+    private String trinhDoJLPT;
 
     @OneToMany(mappedBy = "hanTu")
     private List<ChiTietTuVung> cacTuVungLienQuan;

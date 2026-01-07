@@ -2,8 +2,10 @@ package com.example.Oboe.Service;
 
 import com.example.Oboe.DTOs.VocabularyDTOs;
 import com.example.Oboe.DTOs.ReadingDTO;
+import com.example.Oboe.Entity.ChiTietTuVung;
 import com.example.Oboe.Entity.TuVung;
-import com.example.Oboe.Entity.Reading;
+import com.example.Oboe.Entity.CachDoc;
+import com.example.Oboe.Repository.ChiTietTuVungRepository;
 import com.example.Oboe.Repository.KanjiRepository;
 import com.example.Oboe.Repository.VocabularyRepository;
 import com.example.Oboe.Repository.ReadingRepository;
@@ -15,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,11 +27,13 @@ public class VocabularyService {
     private final VocabularyRepository vocabularyRepository;
     private final ReadingRepository readingRepository;
     private final KanjiRepository kanjiRepository;
+    private final ChiTietTuVungRepository chiTietTuVungRepository;
 
-    public VocabularyService(VocabularyRepository vocabularyRepository, ReadingRepository readingRepository ,KanjiRepository kanjiRepository) {
+    public VocabularyService(VocabularyRepository vocabularyRepository, ReadingRepository readingRepository, KanjiRepository kanjiRepository, ChiTietTuVungRepository chiTietTuVungRepository) {
         this.vocabularyRepository = vocabularyRepository;
         this.readingRepository = readingRepository;
         this.kanjiRepository = kanjiRepository;
+        this.chiTietTuVungRepository = chiTietTuVungRepository;
     }
 
     // Get all vocabularies with pagination
@@ -37,7 +42,7 @@ public class VocabularyService {
         Page<TuVung> vocabPage = vocabularyRepository.findAll(pageable);
 
         List<VocabularyDTOs> vocabDTOs = vocabPage.getContent().stream()
-                .map(this::vocabToDTO) .collect(Collectors.toList());
+                .map(this::vocabToDTO).collect(Collectors.toList());
 
         Map<String, Object> response = new HashMap<>();
         response.put("vocabularies", vocabDTOs);
@@ -55,25 +60,25 @@ public class VocabularyService {
         checkAdminAccess();
 
         TuVung vocab = new TuVung();
-        vocab.setWords(dto.getWords());
-        vocab.setMeanning(dto.getMeanning());
-        vocab.setWordType(dto.getWordType());
-        vocab.setScriptType(dto.getScriptType());
-        vocab.setVietnamesePronunciation(dto.getVietnamese_pronunciation());
+        vocab.setNoiDungTu(dto.getWords());
+        vocab.setNghia(dto.getMeanning());
+        vocab.setLoaiTu(dto.getWordType());
+        vocab.setKieuChu(dto.getScriptType());
+        vocab.setPhatAmTiengViet(dto.getVietnamese_pronunciation());
 
         TuVung saved = vocabularyRepository.save(vocab);
-        if (dto.getKanjiId() != null) {
-            kanjiRepository.findById(dto.getKanjiId())
-                    .ifPresent(vocab::setHanTu);
-        }
-
-        if (dto.getReadings() != null && !dto.getReadings().isEmpty()) {
-            List<Reading> readings = dto.getReadings().stream().map(r -> {
-                r.setOwnerType("vocabulary");
-                r.setOwnerId(saved.getVocalbId());
-                return readingToEntity(r);
-            }).collect(Collectors.toList());
-            readingRepository.saveAll(readings);
+        if (dto.getKanjiLinks() != null && !dto.getKanjiLinks().isEmpty()) {
+            AtomicInteger orderCounter = new AtomicInteger(1);
+            List<ChiTietTuVung> chiTietTuVung = dto.getKanjiLinks().stream().map(kanjiLink -> {
+                ChiTietTuVung cttv = new ChiTietTuVung();
+                cttv.setTuVung(saved);
+                cttv.setHanTu(kanjiRepository.findById(kanjiLink.getValue())
+                        .orElseThrow(() -> new RuntimeException("Kanji không tồn tại với ID: " + kanjiLink.getValue())));
+                cttv.setThuTu(orderCounter.getAndIncrement());
+                return cttv;
+            }).toList();
+            saved.setChiTietTuVungs(chiTietTuVung);
+            chiTietTuVungRepository.saveAll(chiTietTuVung);
         }
 
         return vocabToDTO(saved);
@@ -93,26 +98,28 @@ public class VocabularyService {
         TuVung vocab = vocabularyRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Từ vựng không tồn tại"));
 
-        if (dto.getWords() != null) vocab.setWords(dto.getWords());
-        if (dto.getMeanning() != null) vocab.setMeanning(dto.getMeanning());
-        if (dto.getWordType() != null) vocab.setWordType(dto.getWordType());
-        if (dto.getScriptType() != null) vocab.setScriptType(dto.getScriptType());
-        if(dto.getVietnamese_pronunciation() != null ) vocab.setVietnamesePronunciation(dto.getVietnamese_pronunciation());
-
-        TuVung updated = vocabularyRepository.save(vocab);
-
-        // Xoá và thêm lại readings
-        List<Reading> oldReadings = readingRepository.findByOwnerTypeAndOwnerId("vocabulary", id);
-        readingRepository.deleteAll(oldReadings);
-
-        if (dto.getReadings() != null && !dto.getReadings().isEmpty()) {
-            List<Reading> newReadings = dto.getReadings().stream().map(r -> {
-                r.setOwnerType("vocabulary");
-                r.setOwnerId(id);
-                return readingToEntity(r);
-            }).collect(Collectors.toList());
-            readingRepository.saveAll(newReadings);
+        if (dto.getWords() != null) vocab.setNoiDungTu(dto.getWords());
+        if (dto.getMeanning() != null) vocab.setNghia(dto.getMeanning());
+        if (dto.getWordType() != null) vocab.setLoaiTu(dto.getWordType());
+        if (dto.getScriptType() != null) vocab.setKieuChu(dto.getScriptType());
+        if (dto.getVietnamese_pronunciation() != null) vocab.setPhatAmTiengViet(dto.getVietnamese_pronunciation());
+        List<ChiTietTuVung> chiTietTuVungs = List.of();
+        chiTietTuVungRepository.deleteAll(vocab.getChiTietTuVungs());
+        if (!dto.getKanjiLinks().isEmpty()) {
+            AtomicInteger orderCounter = new AtomicInteger(1);
+            chiTietTuVungs = dto.getKanjiLinks().stream().map(
+                    kanjiLink -> {
+                        ChiTietTuVung cttv = new ChiTietTuVung();
+                        cttv.setTuVung(vocab);
+                        cttv.setHanTu(kanjiRepository.findById(kanjiLink.getValue())
+                                .orElseThrow(() -> new RuntimeException("Kanji không tồn tại với ID: " + kanjiLink.getValue())));
+                        cttv.setThuTu(orderCounter.getAndIncrement());
+                        return cttv;
+                    }
+            ).toList();
         }
+        TuVung updated = vocabularyRepository.save(vocab);
+        updated.setChiTietTuVungs(chiTietTuVungRepository.saveAll(chiTietTuVungs));
 
         return vocabToDTO(updated);
     }
@@ -124,8 +131,11 @@ public class VocabularyService {
         TuVung vocab = vocabularyRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Từ vựng không tồn tại"));
 
-        List<Reading> readings = readingRepository.findByOwnerTypeAndOwnerId("vocabulary", id);
-        readingRepository.deleteAll(readings);
+        List<CachDoc> cachDocs = readingRepository.findByLoaiDoiTuongAndMaDoiTuong("vocabulary", id);
+        readingRepository.deleteAll(cachDocs);
+
+        List<ChiTietTuVung> chiTietTuVungs = vocab.getChiTietTuVungs();
+        chiTietTuVungRepository.deleteAll(chiTietTuVungs);
 
         vocabularyRepository.delete(vocab);
     }
@@ -139,19 +149,28 @@ public class VocabularyService {
     // 🔄 Entity → DTO
     private VocabularyDTOs vocabToDTO(TuVung vocab) {
         VocabularyDTOs dto = new VocabularyDTOs();
-        dto.setVocalbId(vocab.getVocalbId());
-        dto.setWords(vocab.getWords());
-        dto.setMeanning(vocab.getMeanning());
-        dto.setWordType(vocab.getWordType());
-        dto.setScriptType(vocab.getScriptType());
+        dto.setVocalbId(vocab.getMaTuVung());
+        dto.setWords(vocab.getNoiDungTu());
+        dto.setMeanning(vocab.getNghia());
+        dto.setWordType(vocab.getLoaiTu());
+        dto.setScriptType(vocab.getKieuChu());
 
-        // ✅ Sửa ở đây để tránh lỗi nếu kanji là null
-        dto.setKanjiId(vocab.getHanTu() != null ? vocab.getHanTu().getKanjiId() : null);
-
-        dto.setVietnamese_pronunciation(vocab.getVietnamesePronunciation());
+        if (vocab.getChiTietTuVungs() != null && !vocab.getChiTietTuVungs().isEmpty()) {
+            dto.setKanjiLinks(
+                    vocab.getChiTietTuVungs()
+                            .stream()
+                            .sorted(Comparator.comparing(ChiTietTuVung::getThuTu))
+                            .map(
+                                    item -> VocabularyDTOs.KanjiLink.builder()
+                                            .label(String.format("%s - %s", item.getHanTu().getKyTu(), item.getHanTu().getNghia()))
+                                            .value(item.getHanTu().getMaHanTu())
+                                            .build())
+                            .collect(Collectors.toList()));
+        }
+        dto.setVietnamese_pronunciation(vocab.getPhatAmTiengViet());
 
         List<ReadingDTO> readingDTOs = readingRepository
-                .findByOwnerTypeAndOwnerId("vocabulary", vocab.getVocalbId())
+                .findByLoaiDoiTuongAndMaDoiTuong("vocabulary", vocab.getMaTuVung())
                 .stream().map(this::readingToDTO)
                 .collect(Collectors.toList());
         dto.setReadings(readingDTOs);
@@ -159,24 +178,23 @@ public class VocabularyService {
         return dto;
     }
 
-
-    private ReadingDTO readingToDTO(Reading r) {
+    private ReadingDTO readingToDTO(CachDoc r) {
         return new ReadingDTO(
-                r.getReadingID(),
-                r.getReadingText(),
-                r.getReadingType(),
-                r.getOwnerType(),
-                r.getOwnerId()
+                r.getMaCachDoc(),
+                r.getCachDocThucTe(),
+                r.getLoaiDoc(),
+                r.getLoaiDoiTuong(),
+                r.getMaDoiTuong()
         );
     }
 
-    private Reading readingToEntity(ReadingDTO dto) {
-        Reading r = new Reading();
-        r.setReadingID(dto.getReadingID());
-        r.setReadingText(dto.getReadingText());
-        r.setReadingType(dto.getReadingType());
-        r.setOwnerType(dto.getOwnerType());
-        r.setOwnerId(dto.getOwnerId());
+    private CachDoc readingToEntity(ReadingDTO dto) {
+        CachDoc r = new CachDoc();
+        r.setMaCachDoc(dto.getReadingID());
+        r.setCachDocThucTe(dto.getReadingText());
+        r.setLoaiDoc(dto.getReadingType());
+        r.setLoaiDoiTuong(dto.getOwnerType());
+        r.setMaDoiTuong(dto.getOwnerId());
         return r;
     }
 

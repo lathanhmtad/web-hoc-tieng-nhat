@@ -14,15 +14,15 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface CommentRepository extends JpaRepository<BinhLuan, UUID> {
-    List<BinhLuan> findByReferenceId(UUID referenceId);
-    Long countByReferenceId(UUID referenceId);
+    List<BinhLuan> findByMaThamChieu(UUID referenceId);
+    Long countByMaThamChieu(UUID referenceId);
     @Query("SELECT b FROM BinhLuan b WHERE b.nguoiDung.maNguoiDung = :userId")
     List<BinhLuan> findCommentByUserId(UUID userId);
 
     @Query("SELECT b FROM BinhLuan b WHERE b.nguoiDung.maNguoiDung = :userId")
     Page<BinhLuan> findCommentByUserIds(UUID userId, Pageable pageabl);
     //Để thêm người comment gần nhất cho một bài blog
-    Optional<BinhLuan> findTopByReferenceIdOrderByCreatedAtDesc(UUID referenceId);
+    Optional<BinhLuan> findTopByMaThamChieuOrderByNgayTaoDesc(UUID referenceId);
 
     @Modifying
     @Transactional

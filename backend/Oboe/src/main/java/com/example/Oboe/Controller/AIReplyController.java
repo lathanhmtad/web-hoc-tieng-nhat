@@ -2,15 +2,15 @@ package com.example.Oboe.Controller;
 
 import com.example.Oboe.DTOs.AIBlogReplyDTO;
 import com.example.Oboe.Entity.AIPhanHoiBaiViet;
-import com.example.Oboe.Entity.AICommentReply;
+//import com.example.Oboe.Entity.AICommentReply;
 import com.example.Oboe.Entity.BaiViet;
 import com.example.Oboe.Entity.BinhLuan;
 import com.example.Oboe.Repository.AIBlogReplyRepository;
-import com.example.Oboe.Repository.AICommentReplyRepository;
+//import com.example.Oboe.Repository.AICommentReplyRepository;
 import com.example.Oboe.Repository.BlogRepository;
 import com.example.Oboe.Repository.CommentRepository;
 import com.example.Oboe.Service.GeminiService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,22 +21,19 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/ai-reply")
+@AllArgsConstructor
 public class AIReplyController {
 
-    @Autowired
     private GeminiService geminiService;
 
-    @Autowired
     private BlogRepository blogRepository;
 
-    @Autowired
     private CommentRepository commentRepository;
 
-    @Autowired
     private AIBlogReplyRepository aiBlogReplyRepository;
 
-    @Autowired
-    private AICommentReplyRepository aiCommentReplyRepository;
+//    @Autowired
+//    private AICommentReplyRepository aiCommentReplyRepository;
 
     @PostMapping("/blog/{blogId}")
     public ResponseEntity<?> getOrCreateAIBlogReply(@PathVariable UUID blogId) {
@@ -48,23 +45,23 @@ public class AIReplyController {
         }
 
         // Kiểm tra đã có phản hồi AI chưa
-        AIPhanHoiBaiViet existingReply = aiBlogReplyRepository.findByBaiViet_BlogId(blogId);
+        AIPhanHoiBaiViet existingReply = aiBlogReplyRepository.findByBaiViet_maBaiViet(blogId);
         AIBlogReplyDTO dto = new AIBlogReplyDTO();
 
         if (existingReply != null) {
             // Dùng lại phản hồi đã có
-            dto.setId(existingReply.getId());
+            dto.setId(existingReply.getMaPhanHoi());
             dto.setBlogId(blogId);
-            dto.setContent(existingReply.getContent());
-            dto.setCreatedAt(existingReply.getCreatedAt());
+            dto.setContent(existingReply.getNoiDung());
+            dto.setCreatedAt(existingReply.getNgayTao());
 
             return ResponseEntity.ok(dto);
         }
 
         // Nếu chưa có, gọi Gemini
         String prompt = "Bạn là một AI chuyên viết bình luận giá trị cho các bài blog liên quan đến tiếng Nhật. Hãy dựa vào nội dung bài viết bên dưới để đưa ra phản hồi phù hợp:\n\n" +
-                "Tiêu đề: " + baiViet.getTitle() +
-                "\nNội dung: " + baiViet.getContent() +
+                "Tiêu đề: " + baiViet.getTieuDe() +
+                "\nNội dung: " + baiViet.getNoiDung() +
                 "\n\nNếu đây là bài viết nêu câu hỏi hoặc vấn đề, hãy trả lời rõ ràng, đúng trọng tâm, giúp người viết hiểu và giải quyết triệt để vấn đề. Nếu đây là bài chia sẻ kinh nghiệm, tâm sự hay bí quyết học tập (ví dụ như 'Tôi đã hoàn thành khóa học Kanji như thế nào...'), hãy phản hồi một cách thân thiện, đồng cảm và cổ vũ tích cực. Luôn dùng giọng điệu thân thiện, không dùng markdown, câu văn rõ ràng, ngắn gọn nhưng đầy đủ ý nghĩa, giúp người đọc cảm thấy được lắng nghe và trân trọng." +
                 " và hãy viết chỉ tầm khoảng dưới 150 chữ thôi";
 
@@ -72,21 +69,20 @@ public class AIReplyController {
 
         // Tạo phản hồi mới
         AIPhanHoiBaiViet newReply = new AIPhanHoiBaiViet();
-        newReply.setId(UUID.randomUUID());
+        newReply.setMaPhanHoi(UUID.randomUUID());
         newReply.setBaiViet(baiViet);
-        newReply.setContent(response);
-        newReply.setCreatedAt(LocalDateTime.now());
+        newReply.setNoiDung(response);
+        newReply.setNgayTao(LocalDateTime.now());
 
         aiBlogReplyRepository.save(newReply);
 
-        dto.setId(newReply.getId());
+        dto.setId(newReply.getMaPhanHoi());
         dto.setBlogId(blogId);
-        dto.setContent(newReply.getContent());
-        dto.setCreatedAt(newReply.getCreatedAt());
+        dto.setContent(newReply.getNoiDung());
+        dto.setCreatedAt(newReply.getNgayTao());
 
         return ResponseEntity.ok(dto);
     }
-
 
 
     @PostMapping("/comment/{commentId}")
@@ -99,24 +95,24 @@ public class AIReplyController {
         }
 
         String prompt = "Bạn là một AI chuyên phản hồi các bình luận trên blog. Hãy phản hồi lại bình luận sau:\n" +
-                binhLuan.getContent() +
+                binhLuan.getNoiDung() +
                 "\n\nHãy trả lời lịch sự, thân thiện, phù hợp ngữ cảnh. Không dùng markdown.";
 
         String response = geminiService.generateTextFromPrompt(prompt);
 
-        AICommentReply reply = new AICommentReply();
-        reply.setId(UUID.randomUUID());
-        reply.setComment(binhLuan);
-        reply.setContent(response);
-        reply.setCreatedAt(LocalDateTime.now());
-
-        aiCommentReplyRepository.save(reply);
+//        AICommentReply reply = new AICommentReply();
+//        reply.setId(UUID.randomUUID());
+//        reply.setComment(binhLuan);
+//        reply.setContent(response);
+//        reply.setCreatedAt(LocalDateTime.now());
+//
+//        aiCommentReplyRepository.save(reply);
 
         // Trả JSON
         Map<String, Object> result = new HashMap<>();
         result.put("commentId", commentId);
         result.put("reply", response);
-        result.put("createdAt", reply.getCreatedAt());
+        //result.put("createdAt", reply.getCreatedAt());
 
         return ResponseEntity.ok(result);
     }

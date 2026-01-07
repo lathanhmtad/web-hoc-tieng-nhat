@@ -5,10 +5,10 @@ const PREFIX = '/api/grammar';
 
 const grammarApi = {
   // Lấy danh sách có phân trang
-  async getAll({ page = 0, size = 10 } = {}) {
+  async getAll({ page = 0, size = 10, search } = {}) {
     try {
       const res = await axios.get(PREFIX, {
-        params: { page, size }
+        params: { page, size, search }
       });
       return res.data;
     } catch (error) {

@@ -230,14 +230,14 @@ const isSearching = ref(false);
 
 // --- DATA ---
 const categories = computed(() => [
-    { id: 'all', name: t('forum.categories.all'), color: '' },
-    { id: 'word', name: t('forum.categories.word'), color: '#b90449' },
-    { id: 'kanji', name: t('forum.categories.kanji'), color: '#b90449' },
-    { id: 'grammar', name: t('forum.categories.grammar'), color: '#b90449' },
-    { id: 'jlpt', name: t('forum.categories.jlpt'), color: '#b90449' },
-    { id: 'communication', name: t('forum.categories.communication'), color: '#b90449' },
-    { id: 'life-in-japan', name: t('forum.categories.lifeInJapan'), color: '#b90449' },
-    { id: 'other', name: t('forum.categories.other'), color: '#b90449' }
+    { id: 'all', name: t('forum.categories.all'), color: '#6c757d' }, // Xám
+    { id: 'word', name: t('forum.categories.word'), color: '#2ecc71' }, // Xanh lá
+    { id: 'kanji', name: t('forum.categories.kanji'), color: '#e74c3c' }, // Đỏ
+    { id: 'grammar', name: t('forum.categories.grammar'), color: '#3498db' }, // Xanh dương
+    { id: 'jlpt', name: t('forum.categories.jlpt'), color: '#f1c40f' }, // Vàng
+    { id: 'communication', name: t('forum.categories.communication'), color: '#9b59b6' }, // Tím
+    { id: 'life-in-japan', name: t('forum.categories.lifeInJapan'), color: '#e67e22' }, // Cam
+    { id: 'other', name: t('forum.categories.other'), color: '#95a5a6' } // Xám xanh
 ]);
 
 // --- API FUNCTIONS ---

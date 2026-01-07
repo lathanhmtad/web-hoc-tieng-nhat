@@ -26,8 +26,8 @@ public interface QuizzesRepository extends JpaRepository<BaiKiemTra, UUID> {
     @Query(value = "SELECT * FROM bai_kiem_tra ORDER BY RAND() LIMIT 3", nativeQuery = true)
     List<BaiKiemTra> findRandomQuizzes();
 
-    @Query("SELECT new com.example.Oboe.DTOs.QuizSearchResultDTO(q.quizzesID, q.title, SIZE(q.questions), q.nguoiDung.email, q.nguoiDung.anhDaiDien) " +
-            "FROM BaiKiemTra q WHERE LOWER(q.title) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    @Query("SELECT new com.example.Oboe.DTOs.QuizSearchResultDTO(q.maBaiKiemTra, q.tieuDe, SIZE(q.cauHoiList), q.nguoiDung.email, q.nguoiDung.anhDaiDien) " +
+            "FROM BaiKiemTra q WHERE LOWER(q.tieuDe) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     Page<QuizSearchResultDTO> searchQuizzesByKeyword(@Param("keyword") String keyword,Pageable pageable);
 
     Optional<BaiKiemTra> findById(UUID id);

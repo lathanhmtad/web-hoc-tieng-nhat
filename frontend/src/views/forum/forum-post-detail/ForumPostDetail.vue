@@ -123,7 +123,7 @@
         </div>
       </div>
 
-             <!-- Replies Section -->
+      <!-- Replies Section -->
        <div class="replies-section">
          <h2 class="replies-header">
            {{ postStats.replies }} Trả lời
@@ -515,9 +515,7 @@ const fetchComments = async (postId, loadMore = false) => {
     } else {
       loadingMoreComments.value = true;
     }
-    
-
-    
+   
     // Use commentApi to get comments for the blog post with pagination
     const response = await commentApi.getComments(postId, commentsPage.value, commentsSize.value);
     // Helper function to map a single comment with its nested replies
@@ -525,7 +523,7 @@ const fetchComments = async (postId, loadMore = false) => {
       id: comment.commentId,
       author: {
         id: comment.userId,
-        username: comment.userName || 'Anonymous',
+        username: comment.fullName || comment.userName || 'Anonymous',
         avatar: comment.avatarUrl
       },
       time: formatTimeAgo(new Date(comment.createdAt)),

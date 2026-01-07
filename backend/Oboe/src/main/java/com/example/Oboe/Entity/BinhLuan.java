@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -12,23 +14,25 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "comments")
+@Table(name = "binh_luan")
+@Getter
+@Setter
 public class BinhLuan {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "comment_id", updatable = false, nullable = false)
-    private UUID commentId;
+    @Column(name = "ma_binh_luan", updatable = false, nullable = false)
+    private UUID maBinhLuan;
 
     @Size(max = 255, message = "Tiêu đề không được vượt quá 255 ký tự")
-    private String title;
+    private String tieuDe;
 
     @NotBlank(message = "Nội dung không được để trống")
     @Column(columnDefinition = "TEXT", nullable = false)
-    private String content;
+    private String noiDung;
 
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime ngayTao = LocalDateTime.now();
 
     // Nhiều - Một với User
     @ManyToOne(fetch = FetchType.EAGER)
@@ -37,92 +41,17 @@ public class BinhLuan {
     private NguoiDung nguoiDung;
 
     //  Gộp mục tiêu vào 1 trường referenceId
-    @Column(name = "reference_Id", nullable = false)
-    private UUID referenceId;
+    @Column(name = "ma_tham_chieu", nullable = false)
+    private UUID maThamChieu;
 
     // Quan hệ tự tham chiếu - comment cha
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_comment_id")
+    @JoinColumn(name = "ma_binh_luan_cha")
     @JsonBackReference("comment-parent")
-    private BinhLuan parentBinhLuan;
+    private BinhLuan binhLuanCha;
 
     // Danh sách comment con (replies)
-    @OneToMany(mappedBy = "parentBinhLuan", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "binhLuanCha", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference("comment-parent")
     private List<BinhLuan> replies = new ArrayList<>();
-
-    // Constructors
-    public BinhLuan() {}
-
-    public BinhLuan(String title, String content, NguoiDung nguoiDung, UUID teamId) {
-        this.title = title;
-        this.content = content;
-        this.nguoiDung = nguoiDung;
-        this.referenceId = teamId;
-    }
-
-    // Getters and Setters
-    public UUID getCommentId() {
-        return commentId;
-    }
-
-    public void setCommentId(UUID commentId) {
-        this.commentId = commentId;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public NguoiDung getNguoiDung() {
-        return nguoiDung;
-    }
-
-    public void setNguoiDung(NguoiDung nguoiDung) {
-        this.nguoiDung = nguoiDung;
-    }
-
-    public UUID getreferenceId() {
-        return referenceId;
-    }
-
-    public void setreferenceId(UUID teamId) {
-        this.referenceId = teamId;
-    }
-
-    public BinhLuan getParentBinhLuan() {
-        return parentBinhLuan;
-    }
-
-    public void setParentBinhLuan(BinhLuan parentBinhLuan) {
-        this.parentBinhLuan = parentBinhLuan;
-    }
-
-    public List<BinhLuan> getReplies() {
-        return replies;
-    }
-
-    public void setReplies(List<BinhLuan> replies) {
-        this.replies = replies;
-    }
 }

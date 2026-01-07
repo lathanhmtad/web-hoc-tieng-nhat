@@ -52,10 +52,10 @@ public class SearchService {
                 for (TuVung v : vocabularyRepository.searchVocabulary(keyword)) {
                     Map<String, String> item = new HashMap<>();
                     item.put("type", "vocabulary");
-                    item.put("word", v.getWords());
-                    item.put("reading", v.getVietnamesePronunciation());
-                    item.put("meaning", v.getMeanning());
-                    item.put("id", v.getVocalbId().toString());
+                    item.put("word", v.getNoiDungTu());
+                    item.put("reading", v.getPhatAmTiengViet());
+                    item.put("meaning", v.getNghia());
+                    item.put("id", v.getMaTuVung().toString());
                     suggestions.add(item);
                 }
                 break;
@@ -64,10 +64,10 @@ public class SearchService {
                 for (HanTu k : kanjiRepository.searchKanji(keyword)) {
                     Map<String, String> item = new HashMap<>();
                     item.put("type", "kanji");
-                    item.put("word", k.getCharacter_name());
-                    item.put("reading", k.getVietnamesePronunciation());
-                    item.put("meaning", k.getMeaning());
-                    item.put("id", k.getKanjiId().toString());
+                    item.put("word", k.getKyTu());
+                    item.put("reading", k.getPhatAmTiengViet());
+                    item.put("meaning", k.getNghia());
+                    item.put("id", k.getMaHanTu().toString());
                     suggestions.add(item);
                 }
                 break;
@@ -76,10 +76,10 @@ public class SearchService {
                 for (NguPhap g : grammarRepository.searchGrammar(keyword)) {
                     Map<String, String> item = new HashMap<>();
                     item.put("type", "grammar");
-                    item.put("word", g.getStructure());
-                    item.put("reading", g.getVietnamesePronunciation());
-                    item.put("meaning", g.getExplanation());
-                    item.put("id", g.getGrammaID().toString());
+                    item.put("word", g.getCauTruc());
+//                    item.put("reading", g.getPhatAmTiengViet());
+                    item.put("meaning", g.getGiaiThich());
+                    item.put("id", g.getMaNguPhap().toString());
                     suggestions.add(item);
                 }
                 break;
@@ -88,10 +88,10 @@ public class SearchService {
                 for (MauCau s : sampleSentenceRepository.searchByVietnameseMeaning(keyword)) {
                     Map<String, String> item = new HashMap<>();
                     item.put("type", "sentence");
-                    item.put("word", s.getJapaneseText());
-                    item.put("reading", s.getVietnamesePronunciation());
-                    item.put("meaning", s.getVietnameseMeaning());
-                    item.put("id", s.getSample_sentence_id().toString());
+                    item.put("word", s.getCauTiengNhat());
+                    //item.put("reading", s.getCachDocRomaji());
+                    item.put("meaning", s.getNghiaTiengViet());
+                    item.put("id", s.getMaMauCau().toString());
                     suggestions.add(item);
                 }
                 break;

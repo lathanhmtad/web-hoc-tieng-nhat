@@ -21,9 +21,10 @@ public class GrammarController {
     @GetMapping
     public ResponseEntity<Map<String, Object>> getAllGrammar(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "", required = false) String search
     ) {
-        return ResponseEntity.ok(grammarService.getAllGrammar(page, size));
+        return ResponseEntity.ok(grammarService.getAllGrammar(page, size, search));
     }
 
     // Lấy grammar theo ID
@@ -51,9 +52,9 @@ public class GrammarController {
 
     // Xoá grammar (ROLE_ADMIN)
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteGrammar(@PathVariable UUID id) {
+    public ResponseEntity<?> deleteGrammar(@PathVariable UUID id) {
         grammarService.deleteGrammar(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(1);
     }
 
     // Tìm kiếm grammar theo từ khoá

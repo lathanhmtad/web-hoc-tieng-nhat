@@ -1,3 +1,5 @@
+import { toast } from "vue-sonner"
+
 const state = {
   message: null,
   chatPartners: []
@@ -21,6 +23,9 @@ const mutations = {
 const actions = {
   showMessage({ commit }, message) {
     commit('setMessage', message)
+    if(message.type === 'success') {
+      toast.success(message.text)
+    }
     // Auto clear after 3 seconds
     setTimeout(() => {
       commit('clearMessage')

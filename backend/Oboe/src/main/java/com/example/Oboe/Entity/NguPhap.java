@@ -1,69 +1,26 @@
 package com.example.Oboe.Entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.UUID;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "ngu_phap")
 public class NguPhap {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "grammaID", updatable = false, nullable = false)
-    private UUID grammaID;
-    private String structure;
-    private String explanation;
-    private String example;
-    private String grammarType;
-    @Column(name = "vietnamese_pronunciation")
-    private String vietnamesePronunciation;
+    @Column(name = "ma_ngu_phap", updatable = false, nullable = false)
+    private UUID maNguPhap;
+    private String cauTruc;
+    private String giaiThich;
+    private String viDu;
+    private String loaiNguPhap;
 
-    public UUID getGrammaID() {
-        return grammaID;
-    }
-
-    public void setGrammaID(UUID grammaID) {
-        this.grammaID = grammaID;
-    }
-
-    public String getStructure() {
-        return structure;
-    }
-
-    public void setStructure(String structure) {
-        this.structure = structure;
-    }
-
-    public String getExplanation() {
-        return explanation;
-    }
-
-    public void setExplanation(String explanation) {
-        this.explanation = explanation;
-    }
-
-    public String getExample() {
-        return example;
-    }
-
-    public void setExample(String example) {
-        this.example = example;
-    }
-
-    public String getGrammarType() {
-        return grammarType;
-    }
-
-    public void setGrammarType(String grammarType) {
-        this.grammarType = grammarType;
-    }
-
-    public String getVietnamesePronunciation() {
-        return vietnamesePronunciation;
-    }
-
-    public void setVietnamesePronunciation(String vietnamesePronunciation) {
-        this.vietnamesePronunciation = vietnamesePronunciation;
-    }
+    @Column(name = "trinh_do_jlpt")
+    private String trinhDoJLPT;
 }

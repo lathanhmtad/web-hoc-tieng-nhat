@@ -7,23 +7,22 @@ import lombok.Setter;
 import java.util.UUID;
 
 @Entity
-@Table(name = "tu_vung_han_tu")
 @Getter
 @Setter
+@Table(name = "chi_tiet_tu_vung")
 public class ChiTietTuVung {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "ma_tu_vung_han_tu")
-    private UUID maTuVungHanTu;
+    @Column(name = "ma_chi_tiet_tu_vung", updatable = false, nullable = false)
+    private UUID maChiTietTuVung;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tu_vung_id")
+    @ManyToOne
+    @JoinColumn(name = "maTuVung")
     private TuVung tuVung;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "han_tu_id")
+    @ManyToOne
+    @JoinColumn(name = "maHanTu")
     private HanTu hanTu;
 
-    @Column(name = "thu_tu")
     private int thuTu;
 }

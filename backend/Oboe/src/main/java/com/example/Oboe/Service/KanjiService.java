@@ -26,9 +26,9 @@ public class KanjiService {
     }
 
 
-    public Map<String, Object> getAllKanji(int page, int size) {
+    public Map<String, Object> getAllKanji(int page, int size, String keyword) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<HanTu> kanjiPage = kanjiRepository.findAll(pageable);
+        Page<HanTu> kanjiPage = kanjiRepository.getAll(keyword, pageable);
 
         List<KanjiDTOs> kanjiDTOs = kanjiPage.getContent()
                 .stream()
@@ -54,10 +54,13 @@ public class KanjiService {
         }
 
         HanTu hanTu = new HanTu();
-        hanTu.setStrokes(dto.getStrokes());
-        hanTu.setMeaning(dto.getMeaning());
-        hanTu.setCharacter_name(dto.getCharacterName());
-        hanTu.setVietnamesePronunciation(dto.getVietnamesePronunciation());
+        hanTu.setSoNet(dto.getStrokes());
+        hanTu.setNghia(dto.getMeaning());
+        hanTu.setKyTu(dto.getCharacterName());
+        hanTu.setPhatAmTiengViet(dto.getVietnamesePronunciation());
+        hanTu.setTrinhDoJLPT(dto.getJlptLevel());
+        hanTu.setOnYomi(dto.getOnYomi());
+        hanTu.setKunYomi(dto.getKunYomi());
 
         HanTu saved = kanjiRepository.save(hanTu);
         return kanjiToDTO(saved);
@@ -82,16 +85,25 @@ public class KanjiService {
         if (hanTu == null) return null;
 
         if (dto.getCharacterName() != null) {
-            hanTu.setCharacter_name(dto.getCharacterName());
+            hanTu.setKyTu(dto.getCharacterName());
         }
         if (dto.getMeaning() != null) {
-            hanTu.setMeaning(dto.getMeaning());
+            hanTu.setNghia(dto.getMeaning());
         }
         if (dto.getStrokes() != null) {
-            hanTu.setStrokes(dto.getStrokes());
+            hanTu.setSoNet(dto.getStrokes());
         }
         if (dto.getVietnamesePronunciation() != null) {
-            hanTu.setVietnamesePronunciation(dto.getVietnamesePronunciation());
+            hanTu.setPhatAmTiengViet(dto.getVietnamesePronunciation());
+        }
+        if(dto.getJlptLevel() != null) {
+            hanTu.setTrinhDoJLPT(dto.getJlptLevel());
+        }
+        if(dto.getOnYomi() != null) {
+            hanTu.setOnYomi(dto.getOnYomi());
+        }
+        if(dto.getKunYomi() != null) {
+            hanTu.setKunYomi(dto.getKunYomi());
         }
 
         HanTu updated = kanjiRepository.save(hanTu);
@@ -125,7 +137,7 @@ public class KanjiService {
         HanTu hanTu = kanjiRepository.findById(kanjiId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy Kanji"));
 
-        String meaning = hanTu.getMeaning();
+        String meaning = hanTu.getNghia();
         List<HanTu> relatedHanTus = kanjiRepository.findRelatedByMeaning(meaning, kanjiId);
 
         return relatedHanTus.stream()
@@ -141,11 +153,14 @@ public class KanjiService {
 
     public KanjiDTOs kanjiToDTO(HanTu hanTu) {
         KanjiDTOs dto = new KanjiDTOs();
-        dto.setKanjiId(hanTu.getKanjiId());
-        dto.setCharacterName(hanTu.getCharacter_name());
-        dto.setMeaning(hanTu.getMeaning());
-        dto.setStrokes(hanTu.getStrokes());
-        dto.setVietnamesePronunciation(hanTu.getVietnamesePronunciation());
+        dto.setKanjiId(hanTu.getMaHanTu());
+        dto.setCharacterName(hanTu.getKyTu());
+        dto.setMeaning(hanTu.getNghia());
+        dto.setStrokes(hanTu.getSoNet());
+        dto.setOnYomi(hanTu.getOnYomi());
+        dto.setKunYomi(hanTu.getKunYomi());
+        dto.setVietnamesePronunciation(hanTu.getPhatAmTiengViet());
+        dto.setJlptLevel(hanTu.getTrinhDoJLPT());
         return dto;
     }
 }

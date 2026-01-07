@@ -2,8 +2,9 @@ package com.example.Oboe.Service;
 
 import com.example.Oboe.DTOs.SampleSentenceDTO;
 import com.example.Oboe.Entity.MauCau;
+import com.example.Oboe.Repository.GrammarRepository;
 import com.example.Oboe.Repository.SampleSentenceRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -12,25 +13,39 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+@AllArgsConstructor
 @Service
 public class SampleSentenceServiceImpl implements SampleSentenceService {
 
-    @Autowired
     private SampleSentenceRepository repository;
+    private GrammarRepository grammarRepository;
 
     private SampleSentenceDTO convertToDTO(MauCau entity) {
-        return new SampleSentenceDTO(
-                entity.getSample_sentence_id(),
-                entity.getJapaneseText(),
-                entity.getVietnameseMeaning()
-        );
+        return SampleSentenceDTO.builder()
+                .id(entity.getMaMauCau())
+                .japaneseText(entity.getCauTiengNhat())
+                .vietnameseMeaning(entity.getNghiaTiengViet())
+                .reading("")
+                .grammarLink(
+                        SampleSentenceDTO.GrammarLink.builder()
+                                .label(entity.getNguPhap() != null ? entity.getNguPhap().getCauTruc() : null)
+                                .value(entity.getNguPhap() != null ? entity.getNguPhap().getMaNguPhap() : null)
+                                .build()
+                )
+                .build();
     }
 
     private MauCau convertToEntity(SampleSentenceDTO dto) {
         MauCau entity = new MauCau();
-        entity.setSample_sentence_id(dto.getId());
-        entity.setJapaneseText(dto.getJapaneseText());
-        entity.setVietnameseMeaning(dto.getVietnameseMeaning());
+        entity.setMaMauCau(dto.getId());
+        entity.setCauTiengNhat(dto.getJapaneseText());
+        entity.setNghiaTiengViet(dto.getVietnameseMeaning());
+        entity.setNguPhap(
+                grammarRepository
+                        .findById(dto
+                                .getGrammarLink()
+                                .getValue())
+                        .orElse(null));
         return entity;
     }
 
@@ -44,8 +59,16 @@ public class SampleSentenceServiceImpl implements SampleSentenceService {
     public SampleSentenceDTO update(UUID id, SampleSentenceDTO dto) {
         MauCau entity = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("SampleSentence not found"));
-        entity.setJapaneseText(dto.getJapaneseText());
-        entity.setVietnameseMeaning(dto.getVietnameseMeaning());
+        entity.setCauTiengNhat(dto.getJapaneseText());
+        entity.setNghiaTiengViet(dto.getVietnameseMeaning());
+
+        if (dto.getGrammarLink().getValue() != null) {
+            entity.setNguPhap(
+                    grammarRepository
+                            .findById(dto.getGrammarLink().getValue())
+                            .orElse(null));
+        }
+
         return convertToDTO(repository.save(entity));
     }
 
@@ -75,6 +98,4 @@ public class SampleSentenceServiceImpl implements SampleSentenceService {
 
         return response;
     }
-
-
 }

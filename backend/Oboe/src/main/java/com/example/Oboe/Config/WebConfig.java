@@ -46,10 +46,6 @@ public class WebConfig {
     @Value("${app.domain}")
     private String domain;
 
-
-
-
-
     @Bean
     public HttpFirewall allowUrlEncodedDoubleSlashHttpFirewall() {
         StrictHttpFirewall firewall = new StrictHttpFirewall();

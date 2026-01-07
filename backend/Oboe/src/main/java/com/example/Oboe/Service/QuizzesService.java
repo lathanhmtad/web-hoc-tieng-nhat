@@ -64,9 +64,9 @@ public class QuizzesService {
         Optional<NguoiDung> userOpt = userService.findById(userId);
         if (userOpt.isEmpty()) return null;
         BaiKiemTra quiz = new BaiKiemTra();
-        quiz.setTitle(dto.getTitle());
-        quiz.setDescription(dto.getDescription());
-        quiz.setUser(userOpt.get());
+        quiz.setTieuDe(dto.getTitle());
+        quiz.setMoTa(dto.getDescription());
+        quiz.setNguoiDung(userOpt.get());
         return toDTO(quizzesRepository.save(quiz));
     }
 
@@ -74,11 +74,11 @@ public class QuizzesService {
         BaiKiemTra quiz = quizzesRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Quiz not found"));
         //  Kiểm tra quyền sở hữu
-        if (!quiz.getUser().getMaNguoiDung().equals(userId)) {
+        if (!quiz.getNguoiDung().getMaNguoiDung().equals(userId)) {
             throw new RuntimeException("Unauthorized to update this quiz");
         }
-        quiz.setTitle(dto.getTitle());
-        quiz.setDescription(dto.getDescription());
+        quiz.setTieuDe(dto.getTitle());
+        quiz.setMoTa(dto.getDescription());
 
         return toDTO(quizzesRepository.save(quiz));
     }
@@ -89,7 +89,7 @@ public class QuizzesService {
                 .orElseThrow(() -> new RuntimeException("Quiz not found"));
 
         //  Kiểm tra quyền sở hữu
-        if (!quiz.getUser().getMaNguoiDung().equals(userId)) {
+        if (!quiz.getNguoiDung().getMaNguoiDung().equals(userId)) {
             throw new RuntimeException("Unauthorized to delete this quiz");
         }
 
@@ -100,53 +100,52 @@ public class QuizzesService {
                 .orElseThrow(() -> new RuntimeException("Quiz not found"));
 
         QuizWithQuestionsDTO dto = new QuizWithQuestionsDTO();
-        dto.setQuizzesID(quiz.getQuizzesID());
-        dto.setTitle(quiz.getTitle());
-        dto.setDescription(quiz.getDescription());
+        dto.setQuizzesID(quiz.getMaBaiKiemTra());
+        dto.setTitle(quiz.getTieuDe());
+        dto.setDescription(quiz.getMoTa());
 
 
 
-        List<QuestionDTO> questionDTOs = quiz.getQuestions().stream().map(q -> {
-            QuestionDTO qDto = new QuestionDTO();
-            qDto.setQuestionID(q.getQuestionID());
-            qDto.setQuestionName(q.getQuestionName());
-            qDto.setCorrectAnswer(q.getCorrectAnswer());
-
-
-
-            // Làm sạch dữ liệu options
-            String rawOptions = q.getOptions();
-            List<String> cleanedOptions = new ArrayList<>();
-            if (rawOptions != null && !rawOptions.isBlank()) {
-                cleanedOptions = Arrays.stream(rawOptions
-                                .replace("[", "")   // loại dấu [
-                                .replace("]", "")   // loại dấu ]
-                                .replace("\"", "")  // loại dấu "
-                                .split(","))
-                        .map(String::trim)         // loại bỏ khoảng trắng đầu/cuối
-                        .filter(s -> !s.isEmpty()) // loại bỏ chuỗi rỗng
-                        .toList();
-            }
-            qDto.setOptions(cleanedOptions);
-            qDto.setQuizId(q.getQuiz().getQuizzesID());
-            return qDto;
-        }).toList();
-
-        dto.setQuestions(questionDTOs);
+//        List<QuestionDTO> questionDTOs = quiz.getQuestions().stream().map(q -> {
+//            QuestionDTO qDto = new QuestionDTO();
+//            qDto.setQuestionID(q.getQuestionID());
+//            qDto.setQuestionName(q.getQuestionName());
+//            qDto.setCorrectAnswer(q.getCorrectAnswer());
+//
+//
+//
+//            // Làm sạch dữ liệu options
+//            String rawOptions = q.getOptions();
+//            List<String> cleanedOptions = new ArrayList<>();
+//            if (rawOptions != null && !rawOptions.isBlank()) {
+//                cleanedOptions = Arrays.stream(rawOptions
+//                                .replace("[", "")   // loại dấu [
+//                                .replace("]", "")   // loại dấu ]
+//                                .replace("\"", "")  // loại dấu "
+//                                .split(","))
+//                        .map(String::trim)         // loại bỏ khoảng trắng đầu/cuối
+//                        .filter(s -> !s.isEmpty()) // loại bỏ chuỗi rỗng
+//                        .toList();
+//            }
+//            qDto.setOptions(cleanedOptions);
+//            qDto.setQuizId(q.getQuiz().getMaBaiKiemTra());
+//            return qDto;
+//        }).toList();
+//
+//        dto.setQuestions(questionDTOs);
         return dto;
     }
-
 
 
     // Convert Entity -> DTO
     private QuizDTO toDTO(BaiKiemTra entity) {
         QuizDTO dto = new QuizDTO();
-        dto.setQuizzesID(entity.getQuizzesID());
-        dto.setTitle(entity.getTitle());
-        dto.setDescription(entity.getDescription());
+        dto.setQuizzesID(entity.getMaBaiKiemTra());
+        dto.setTitle(entity.getTieuDe());
+        dto.setDescription(entity.getMoTa());
         //  Lấy UUID từ User entity
-        if (entity.getUser() != null) {
-            dto.setUserID(entity.getUser().getMaNguoiDung());
+        if (entity.getNguoiDung() != null) {
+            dto.setUserID(entity.getNguoiDung().getMaNguoiDung());
         }
         return dto;
     }

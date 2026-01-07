@@ -2,110 +2,40 @@ package com.example.Oboe.Entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "Notifications")
 public class ThongBao {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "NotifiId", updatable = false, nullable = false)
-    private UUID NotifiId;
+    @Column(name = "ma_thong_bao", updatable = false, nullable = false)
+    private UUID maThongBao;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "maNguoiDung", nullable = false)
     @JsonBackReference("users-Notifications")
     private NguoiDung nguoiDung;
 
-    @Column(name = "text_notification")
-    private String text_notification;
+    private String noiDung;
 
-    @Column(name = "is_read")
-    private boolean isRead;
+    private boolean daDuocDoc;
 
-    @Column(name = "target_id")
-    private UUID targetId;
+    private UUID maDoiTuong;
 
-    @Column(name = "target_type")
-    private String targetType;
+    private String loaiDoiTuong;
 
-    @Column(name = "update_at")
-    private LocalDateTime update_at = LocalDateTime.now();
-
-    // Constructors
-    public ThongBao() {
-    }
-
-    public ThongBao(NguoiDung nguoiDung, String text_notification, boolean isRead, UUID targetId, String targetType) {
-        this.nguoiDung = nguoiDung;
-        this.text_notification = text_notification;
-        this.isRead = isRead;
-        this.targetId = targetId;
-        this.targetType = targetType;
-    }
+    private LocalDateTime thoiGianCapNhat = LocalDateTime.now();
 
     @PreUpdate
     public void preUpdate() {
-        this.update_at = LocalDateTime.now();
-    }
-
-    // Getters and Setters
-    public UUID getNotifiId() {
-        return NotifiId;
-    }
-
-    public void setNotifiId(UUID notifiId) {
-        NotifiId = notifiId;
-    }
-
-    public NguoiDung getNguoiDung() {
-        return nguoiDung;
-    }
-
-    public void setNguoiDung(NguoiDung nguoiDung) {
-        this.nguoiDung = nguoiDung;
-    }
-
-    public String getText_notification() {
-        return text_notification;
-    }
-
-    public void setText_notification(String text_notification) {
-        this.text_notification = text_notification;
-    }
-
-    public boolean isRead() {
-        return isRead;
-    }
-
-    public void setRead(boolean read) {
-        isRead = read;
-    }
-
-    public UUID getTargetId() {
-        return targetId;
-    }
-
-    public void setTargetId(UUID targetId) {
-        this.targetId = targetId;
-    }
-
-    public String getTargetType() {
-        return targetType;
-    }
-
-    public void setTargetType(String targetType) {
-        this.targetType = targetType;
-    }
-
-    public LocalDateTime getNgayCapNhat() {
-        return update_at;
-    }
-
-    public void setNgayCapNhat(LocalDateTime update_at) {
-        this.update_at = update_at;
+        this.thoiGianCapNhat = LocalDateTime.now();
     }
 }

@@ -1,7 +1,7 @@
 package com.example.Oboe.DTOs;
 
 import com.example.Oboe.Entity.PhuongThucXacThuc;
-import com.example.Oboe.Entity.ReportStatus;
+import com.example.Oboe.Entity.TrangThaiBaoCao;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -13,9 +13,9 @@ public class BlogReportDTO {
     private String userName;
     private PhuongThucXacThuc phuongThucXacThuc;
     private String avatarUrl;
-    private String type; // report title
+    private String type; // report tieuDe
     private String content; // report content
-    private ReportStatus status;
+    private TrangThaiBaoCao status;
     private LocalDate  report_at;
     private UUID blogId;
     private long reportCount;
@@ -23,7 +23,7 @@ public class BlogReportDTO {
     public BlogReportDTO() {}
     public BlogReportDTO(UUID reportId, String blogTitle, String blogContent, String userName,
                          PhuongThucXacThuc phuongThucXacThuc, String avatarUrl, String type,
-                         String content, ReportStatus status, LocalDate report_at, UUID blogId, long reportCount) {
+                         String content, TrangThaiBaoCao status, LocalDate report_at, UUID blogId, long reportCount) {
         this.reportId = reportId;
         this.blogTitle = blogTitle;
         this.blogContent = blogContent;
@@ -119,11 +119,11 @@ public class BlogReportDTO {
         this.content = content;
     }
 
-    public ReportStatus getStatus() {
+    public TrangThaiBaoCao getStatus() {
         return status;
     }
 
-    public void setStatus(ReportStatus status) {
+    public void setStatus(TrangThaiBaoCao status) {
         this.status = status;
     }
 

@@ -3,9 +3,9 @@ package com.example.Oboe.Controller;
 import com.example.Oboe.Config.CustomUserDetails;
 import com.example.Oboe.DTOs.BlogReportDTO;
 import com.example.Oboe.DTOs.ReportDtos;
-import com.example.Oboe.Entity.ActionType;
-import com.example.Oboe.Entity.Report;
-import com.example.Oboe.Entity.ReportStatus;
+import com.example.Oboe.Entity.LoaiXuLy;
+import com.example.Oboe.Entity.BaoCao;
+import com.example.Oboe.Entity.TrangThaiBaoCao;
 import com.example.Oboe.Service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +25,7 @@ public class ReportController {
 
     // 1. Gửi báo cáo
     @PostMapping
-    public Report createReport(@RequestBody ReportDtos reportDtos,
+    public BaoCao createReport(@RequestBody ReportDtos reportDtos,
                                @AuthenticationPrincipal CustomUserDetails userDetails) {
         return reportService.createReport(reportDtos, userDetails.getUserID());
     }
@@ -33,20 +33,20 @@ public class ReportController {
 
     // 2. Lấy tất cả báo cáo
     @GetMapping
-    public List<Report> getAllReports() {
+    public List<BaoCao> getAllReports() {
         return reportService.getAllReports();
     }
 
     // 3. Cập nhật trạng thái
     @PatchMapping("/{reportId}/status")
-    public String updateStatus(@PathVariable UUID reportId, @RequestParam ReportStatus status) {
+    public String updateStatus(@PathVariable UUID reportId, @RequestParam TrangThaiBaoCao status) {
         boolean updated = reportService.updateStatus(reportId, status);
         return updated ? "Cập nhật thành công" : "Không tìm thấy báo cáo";
     }
 
     // 4. Lấy báo cáo theo user
     @GetMapping("/user/{userId}")
-    public List<Report> getReportsByUser(@PathVariable UUID userId) {
+    public List<BaoCao> getReportsByUser(@PathVariable UUID userId) {
         return reportService.getReportsByUserId(userId);
     }
 
@@ -60,7 +60,7 @@ public class ReportController {
         public List<BlogReportDTO> searchBlogReports(
                 @RequestParam(required = false) String title,
                 @RequestParam(required = false) String type,
-                @RequestParam(required = false) ReportStatus status
+                @RequestParam(required = false) TrangThaiBaoCao status
         )
         {
             return reportService.searchBlogReports(title, type, status);
@@ -72,10 +72,10 @@ public class ReportController {
     @PutMapping("/approve/{reportId}")
     public ResponseEntity<String> approveReport(
             @PathVariable UUID reportId,
-            @RequestParam ActionType actionType,
+            @RequestParam LoaiXuLy loaiXuLy,
             @RequestParam(required = false) String note) {
 
-        reportService.approveReport(reportId, actionType, note);
+        reportService.approveReport(reportId, loaiXuLy, note);
         return ResponseEntity.ok("Report approved successfully");
     }
 

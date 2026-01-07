@@ -3,21 +3,16 @@
     <div class="filters">
       <div class="search-box">
         <i class="fas fa-search"></i>
-        <input 
-          type="text" 
-          v-model="searchQuery" 
-          placeholder="Tìm kiếm người dùng..."
-          @input="handleSearch"
-        >
+        <input type="text" v-model="searchQuery" placeholder="Tìm kiếm người dùng..." @input="handleSearch">
       </div>
-      
+
       <div class="filter-options">
         <select v-model="roleFilter">
           <option value="">Tất cả vai trò</option>
           <option value="user">Người dùng</option>
           <option value="admin">Quản trị viên</option>
         </select>
-        
+
         <select v-model="statusFilter">
           <option value="">Tất cả trạng thái</option>
           <option value="active">Hoạt động</option>
@@ -40,6 +35,7 @@
             <th>Email</th>
             <th>Vai trò</th>
             <th>Trạng thái</th>
+            <th>Loại tài khoản</th>
             <th class="sortable-header cursor-pointer hover:bg-gray-50" @click="toggleDateSort">
               Ngày tham gia
               <span class="sort-icon ml-1">{{ getSortIcon() }}</span>
@@ -54,10 +50,9 @@
               <img :src="user.avatar" :alt="user.name">
               <div>
                 <span class="user-name">{{ user.name }}</span>
-                <span class="user-username">@{{ user.username }}</span>
               </div>
             </td>
-            <td>{{ user.email }}</td>
+            <td>{{ user.username }}</td>
             <td>
               <span class="role-badge" :class="user.role">
                 {{ getRoleName(user.role) }}
@@ -68,37 +63,24 @@
                 {{ getStatusName(user.status) }}
               </span>
             </td>
+            <td>
+              <span class="account-type-badge" :class="user.accountType">
+                {{ getAccountTypeName(user.accountType) }}
+              </span>
+            </td>
             <td>{{ formatDate(user.joinDate) }}</td>
             <td>
               <div class="actions">
-                <button 
-                  class="btn-edit"
-                  @click="editUser(user)"
-                  title="Chỉnh sửa"
-                >
+                <button class="btn-edit" @click="editUser(user)" title="Chỉnh sửa">
                   <i class="fas fa-edit"></i>
                 </button>
-                <button 
-                  class="btn-ban"
-                  v-if="user.status !== 'banned'"
-                  @click="banUser(user)"
-                  title="Cấm người dùng"
-                >
+                <button class="btn-ban" v-if="user.status !== 'banned'" @click="banUser(user)" title="Cấm người dùng">
                   <i class="fas fa-ban"></i>
                 </button>
-                <button 
-                  class="btn-unban"
-                  v-else
-                  @click="unbanUser(user)"
-                  title="Bỏ cấm"
-                >
+                <button class="btn-unban" v-else @click="unbanUser(user)" title="Bỏ cấm">
                   <i class="fas fa-undo"></i>
                 </button>
-                <button 
-                  class="btn-delete"
-                  @click="deleteUser(user)"
-                  title="Xóa"
-                >
+                <button class="btn-delete" @click="deleteUser(user)" title="Xóa">
                   <i class="fas fa-trash"></i>
                 </button>
               </div>
@@ -112,64 +94,41 @@
     <div class="pagination-container">
       <div class="pagination-info">
         <span>
-          Hiển thị {{ (currentPage - 1) * itemsPerPage + 1 }} - 
-          {{ Math.min(currentPage * itemsPerPage, filteredUsers.length) }} 
+          Hiển thị {{ (currentPage - 1) * itemsPerPage + 1 }} -
+          {{ Math.min(currentPage * itemsPerPage, filteredUsers.length) }}
           trong tổng số {{ filteredUsers.length }} người dùng
         </span>
       </div>
-      
+
       <div class="pagination">
-        <button 
-          class="pagination-btn"
-          :disabled="currentPage === 1"
-          @click="currentPage = 1"
-          title="Trang đầu"
-        >
+        <button class="pagination-btn" :disabled="currentPage === 1" @click="currentPage = 1" title="Trang đầu">
           <i class="fas fa-angle-double-left"></i>
         </button>
-        
-        <button 
-          class="pagination-btn"
-          :disabled="currentPage === 1"
-          @click="currentPage--"
-          title="Trang trước"
-        >
+
+        <button class="pagination-btn" :disabled="currentPage === 1" @click="currentPage--" title="Trang trước">
           <i class="fas fa-chevron-left"></i>
         </button>
-        
+
         <div class="pagination-numbers">
-           <template v-for="page in visiblePages" :key="page">
-             <span v-if="page === '...'" class="pagination-ellipsis">...</span>
-             <button
-               v-else
-               class="pagination-number"
-               :class="{ active: page === currentPage }"
-               @click="currentPage = page"
-             >
-               {{ page }}
-             </button>
-           </template>
-         </div>
-        
-        <button 
-          class="pagination-btn"
-          :disabled="currentPage === totalPages"
-          @click="currentPage++"
-          title="Trang sau"
-        >
+          <template v-for="page in visiblePages" :key="page">
+            <span v-if="page === '...'" class="pagination-ellipsis">...</span>
+            <button v-else class="pagination-number" :class="{ active: page === currentPage }"
+              @click="currentPage = page">
+              {{ page }}
+            </button>
+          </template>
+        </div>
+
+        <button class="pagination-btn" :disabled="currentPage === totalPages" @click="currentPage++" title="Trang sau">
           <i class="fas fa-chevron-right"></i>
         </button>
-        
-        <button 
-          class="pagination-btn"
-          :disabled="currentPage === totalPages"
-          @click="currentPage = totalPages"
-          title="Trang cuối"
-        >
+
+        <button class="pagination-btn" :disabled="currentPage === totalPages" @click="currentPage = totalPages"
+          title="Trang cuối">
           <i class="fas fa-angle-double-right"></i>
         </button>
       </div>
-      
+
       <div class="items-per-page">
         <label>Hiển thị:</label>
         <select v-model="itemsPerPage" @change="currentPage = 1">
@@ -185,11 +144,16 @@
     <!-- Edit User Modal -->
     <div class="modal" v-if="showEditModal">
       <div class="modal-content">
-        <h3>Chỉnh sửa người dùng</h3>
+        <div class="modal-content-header">
+          <h3>Chỉnh sửa người dùng</h3>
+          <button @click="showEditModal = false" class="btn-close">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
         <form @submit.prevent="saveUserEdit">
           <div class="form-group">
             <label>Họ</label>
-            <input type="text" v-model="editingUser.ho" required>
+            <input type="text" v-model="editingUser.firstName" required>
           </div>
           <div class="form-group">
             <label>Tên</label>
@@ -198,6 +162,10 @@
           <div class="form-group">
             <label>Tên đăng nhập</label>
             <input type="text" v-model="editingUser.username" required>
+          </div>
+          <div class="form-group">
+            <label>Mật khẩu (nếu không cập nhật hãy bỏ qua)</label>
+            <input type="password" minlength="6" v-model="editingUser.passWord" placeholder="Để trống nếu không đổi mật khẩu">
           </div>
           <div class="form-group">
             <label>Địa chỉ</label>
@@ -240,19 +208,24 @@
     <!-- Add User Modal -->
     <div class="modal" v-if="showAddModal">
       <div class="modal-content">
-        <h3>Thêm người dùng mới</h3>
+        <div class="modal-content-header">
+          <h3>Thêm người dùng mới</h3>
+          <button @click="showAddModal = false" class="btn-close">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
         <form @submit.prevent="showConfirmation">
           <div class="form-group">
             <label>Họ</label>
-            <input type="text" v-model="newUser.ho" required>
+            <input type="text" v-model="newUser.firstName" required>
           </div>
           <div class="form-group">
             <label>Tên</label>
             <input type="text" v-model="newUser.lastName" required>
           </div>
           <div class="form-group">
-            <label>Tên đăng nhập (Email/Số điện thoại)</label>
-            <input type="text" v-model="newUser.userName" required>
+            <label>Email</label>
+            <input type="email" v-model="newUser.userName" required>
           </div>
           <div class="form-group">
             <label>Mật khẩu</label>
@@ -260,11 +233,18 @@
           </div>
           <div class="form-group">
             <label>Địa chỉ</label>
-            <input type="text" v-model="newUser.address" required>
+            <input type="text" v-model="newUser.address">
           </div>
           <div class="form-group">
             <label>Ngày sinh</label>
-            <input type="date" v-model="newUser.dayOfBirth" required>
+            <input type="date" v-model="newUser.dayOfBirth">
+          </div>
+          <div class="form-group">
+            <label>Loại tài khoản</label>
+            <select v-model="newUser.accountType">
+              <option value="FREE" selected>Miễn phí</option>
+              <option value="PREMIUM">Cao cấp</option>
+            </select>
           </div>
           <div class="form-group">
             <label>Vai trò</label>
@@ -286,51 +266,27 @@
     </div>
 
     <!-- Confirm Popup -->
-    <ThePopup
-      v-if="showConfirmPopup"
-      title="Xác nhận thêm người dùng"
-      :message="getConfirmMessage()"
-      confirm-text="Thêm người dùng"
-      @confirm="confirmAddUser"
-      @cancel="cancelAddUser"
-    />
+    <ThePopup v-if="showConfirmPopup" title="Xác nhận thêm người dùng" :message="getConfirmMessage()"
+      confirm-text="Thêm người dùng" @confirm="confirmAddUser" @cancel="cancelAddUser" />
 
     <!-- Error Popup -->
-    <ThePopup
-      v-if="showErrorPopup"
-      title="Lỗi"
-      :message="errorMessage"
-      confirm-text="Đóng"
-      :show-cancel="false"
-      @confirm="closeErrorPopup"
-    />
+    <ThePopup v-if="showErrorPopup" title="Lỗi" :message="errorMessage" confirm-text="Đóng" :show-cancel="false"
+      @confirm="closeErrorPopup" />
 
     <!-- Ban User Confirmation Popup -->
-    <ThePopup
-      v-if="showBanConfirmPopup"
-      title="Xác nhận cấm người dùng"
-      :message="getBanConfirmMessage()"
-      confirm-text="Cấm"
-      @confirm="confirmBanUser"
-      @cancel="cancelBanUser"
-    />
+    <ThePopup v-if="showBanConfirmPopup" title="Xác nhận cấm người dùng" :message="getBanConfirmMessage()"
+      confirm-text="Cấm" @confirm="confirmBanUser" @cancel="cancelBanUser" />
 
     <!-- Delete User Confirmation Popup -->
-    <ThePopup
-      v-if="showDeleteConfirmPopup"
-      title="Xác nhận xóa người dùng"
-      :message="getDeleteConfirmMessage()"
-      confirm-text="Xóa"
-      @confirm="confirmDeleteUser"
-      @cancel="cancelDeleteUser"
-    />
+    <ThePopup v-if="showDeleteConfirmPopup" title="Xác nhận xóa người dùng" :message="getDeleteConfirmMessage()"
+      confirm-text="Xóa" @confirm="confirmDeleteUser" @cancel="cancelDeleteUser" />
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue';
 import api from '@/api';
-import { toast } from 'sonner';
+import { toast } from 'vue-sonner';
 import ThePopup from '@/components/common/popup/ThePopup.vue';
 const users = ref([]);
 const loading = ref(false);
@@ -352,12 +308,13 @@ const userToDelete = ref(null);
 // Biến cho chức năng sắp xếp theo ngày tham gia
 const sortOrder = ref('none'); // 'none', 'asc' (cũ nhất trước), 'desc' (mới nhất trước)
 const newUser = ref({
-  ho: '',
+  firstName: '',
   lastName: '',
   userName: '',
   password: '',
   address: '',
   dayOfBirth: '',
+  accountType: 'FREE',
   role: 'ROLE_USER'
 });
 
@@ -366,7 +323,7 @@ const fetchUsers = async () => {
   try {
     loading.value = true;
     const data = await api.admin.getAllUsers();
-    
+
     // Kiểm tra xem data có phải là array không
     if (!Array.isArray(data)) {
       console.warn('API returned non-array data:', data);
@@ -377,7 +334,7 @@ const fetchUsers = async () => {
     users.value = data.map(user => {
       return {
         id: user.maNguoiDung, // Sử dụng maNguoiDung từ API
-        name: `${user.ho} ${user.lastName}`,
+        name: `${user.firstName} ${user.lastName}`,
         username: user.userName,
         email: user.userName, // API không có email riêng, dùng userName
         role: user.role === 'ROLE_ADMIN' ? 'admin' : 'user',
@@ -392,7 +349,7 @@ const fetchUsers = async () => {
         verified: user.verified,
         originalRole: user.role, // ROLE_ADMIN hoặc ROLE_USER
         originalStatus: user.status, // ACTION hoặc BANNED
-        ho: user.ho,
+        firstName: user.firstName,
         lastName: user.lastName,
         createAt: user.create_at,
         updateAt: user.update_at
@@ -412,33 +369,33 @@ const fetchUsers = async () => {
 // Computed properties - Client-side filtering
 const filteredUsers = computed(() => {
   let result = users.value;
-  
+
   // Search theo tên người dùng (client-side)
   if (searchQuery.value.trim()) {
     const query = searchQuery.value.toLowerCase();
-    result = result.filter(user => 
+    result = result.filter(user =>
       user.name.toLowerCase().includes(query) ||
       user.username.toLowerCase().includes(query) ||
       user.email.toLowerCase().includes(query)
     );
   }
-  
+
   // Áp dụng role filter
   if (roleFilter.value) {
     result = result.filter(user => user.role === roleFilter.value);
   }
-  
+
   // Áp dụng status filter
   if (statusFilter.value) {
     result = result.filter(user => user.status === statusFilter.value);
   }
-  
+
   // Áp dụng sắp xếp theo ngày tham gia
   if (sortOrder.value !== 'none') {
     result = [...result].sort((a, b) => {
       const dateA = new Date(a.createAt || a.joinDate);
       const dateB = new Date(b.createAt || b.joinDate);
-      
+
       if (sortOrder.value === 'asc') {
         return dateA - dateB; // Cũ nhất trước
       } else if (sortOrder.value === 'desc') {
@@ -447,11 +404,11 @@ const filteredUsers = computed(() => {
       return 0;
     });
   }
-  
+
   return result;
 });
 
-const totalPages = computed(() => 
+const totalPages = computed(() =>
   Math.ceil(filteredUsers.value.length / itemsPerPage.value)
 );
 
@@ -465,7 +422,7 @@ const visiblePages = computed(() => {
   const pages = [];
   const total = totalPages.value;
   const current = currentPage.value;
-  
+
   if (total <= 7) {
     // Hiển thị tất cả trang nếu ít hơn 7 trang
     for (let i = 1; i <= total; i++) {
@@ -474,7 +431,7 @@ const visiblePages = computed(() => {
   } else {
     // Luôn hiển thị trang đầu
     pages.push(1);
-    
+
     if (current <= 4) {
       // Nếu trang hiện tại gần đầu
       for (let i = 2; i <= 5; i++) {
@@ -498,7 +455,7 @@ const visiblePages = computed(() => {
       pages.push(total);
     }
   }
-  
+
   return pages;
 });
 
@@ -517,6 +474,14 @@ const getStatusName = (status) => {
     banned: 'Đã cấm'
   };
   return statuses[status] || status;
+};
+
+const getAccountTypeName = (accountType) => {
+  const types = {
+    FREE: 'FREE',
+    PREMIUM: 'PREMIUM'
+  };
+  return types[accountType] || accountType;
 };
 
 const formatDate = (date) => {
@@ -551,7 +516,7 @@ const handleSearch = () => {
 };
 
 const editUser = (user) => {
-  editingUser.value = { ...user };
+  editingUser.value = { ...user, passWord: '' }; // Thêm trường password rỗng để chỉnh sửa
   showEditModal.value = true;
 };
 
@@ -560,25 +525,26 @@ const saveUserEdit = async () => {
     // Prepare data for API - theo đúng cấu trúc body yêu cầu từ API response
     const updateData = {
       userName: editingUser.value.username,
-      ho: editingUser.value.ho,
+      firstName: editingUser.value.firstName,
       lastName: editingUser.value.lastName,
       avatarUrl: editingUser.value.avatar || 'https://thumbs.dreamstime.com/b/default-avatar-profile-image-vector-social-media-user-icon-potrait-182347582.jpg',
       address: editingUser.value.address,
       day_of_birth: editingUser.value.dayOfBirth,
       accountType: editingUser.value.accountType || 'FREE',
-      role: editingUser.value.originalRole // Sử dụng trực tiếp originalRole từ dropdown
+      role: editingUser.value.originalRole, // Sử dụng trực tiếp originalRole từ dropdown
+      passWord: editingUser.value.passWord || undefined // Chỉ gửi nếu có thay đổi
     };
-    
+
     // Sử dụng maNguoiDung để gọi API update
     await api.admin.updateUser(editingUser.value.id, updateData);
-    
+
     // Update local data với dữ liệu mới
     const index = users.value.findIndex(u => u.id === editingUser.value.id);
     if (index !== -1) {
-      users.value[index] = { 
+      users.value[index] = {
         ...users.value[index],
-        name: `${updateData.ho} ${updateData.lastName}`,
-        ho: updateData.ho,
+        name: `${updateData.firstName} ${updateData.lastName}`,
+        firstName: updateData.firstName,
         lastName: updateData.lastName,
         username: updateData.userName,
         avatar: updateData.avatarUrl,
@@ -589,7 +555,7 @@ const saveUserEdit = async () => {
         role: updateData.role === 'ROLE_ADMIN' ? 'admin' : 'user' // Cập nhật role hiển thị
       };
     }
-    
+
     showEditModal.value = false;
     toast.success('Cập nhật người dùng thành công');
   } catch (error) {
@@ -612,13 +578,13 @@ const getBanConfirmMessage = () => {
 const confirmBanUser = async () => {
   showBanConfirmPopup.value = false;
   if (!userToBan.value) return;
-  
+
   try {
     // Sử dụng API updateStatus với status BANNED
     const response = await api.admin.updateStatus(userToBan.value.id, 'BAN');
     // Refresh toàn bộ danh sách từ server để đảm bảo dữ liệu đồng bộ
     await fetchUsers();
-    
+
     toast.success('Đã cấm người dùng');
   } catch (error) {
     console.error('=== ERROR BANNING USER ===');
@@ -642,7 +608,7 @@ const unbanUser = async (user) => {
     await api.admin.updateStatus(user.id, 'ACTION');
     // Refresh toàn bộ danh sách từ server để đảm bảo dữ liệu đồng bộ
     await fetchUsers();
-    
+
     toast.success('Đã bỏ cấm người dùng');
   } catch (error) {
     console.error('=== ERROR UNBANNING USER ===');
@@ -666,14 +632,14 @@ const getDeleteConfirmMessage = () => {
 const confirmDeleteUser = async () => {
   showDeleteConfirmPopup.value = false;
   if (!userToDelete.value) return;
-  
+
   try {
     // Sử dụng maNguoiDung để gọi API delete
     await api.admin.deleteUser(userToDelete.value.id);
-    
+
     // Refresh toàn bộ danh sách từ server
     await fetchUsers();
-    
+
     toast.success('Đã xóa người dùng');
   } catch (error) {
     console.error('=== ERROR DELETING USER ===');
@@ -700,7 +666,7 @@ const showConfirmation = () => {
 const getConfirmMessage = () => {
   return `Bạn có chắc chắn muốn thêm người dùng với thông tin sau không?
 
-Họ tên: ${newUser.value.ho} ${newUser.value.lastName}
+Họ tên: ${newUser.value.firstName} ${newUser.value.lastName}
 Tên đăng nhập: ${newUser.value.userName}
 Địa chỉ: ${newUser.value.address}
 Ngày sinh: ${newUser.value.dayOfBirth}
@@ -730,35 +696,37 @@ const saveNewUser = async () => {
     const userData = {
       userName: newUser.value.userName,
       passWord: newUser.value.passWord,
-      ho: newUser.value.ho,
+      firstName: newUser.value.firstName,
       lastName: newUser.value.lastName,
       address: newUser.value.address,
       day_of_birth: newUser.value.dayOfBirth, // Format: YYYY-MM-DD
-      role: newUser.value.role
+      role: newUser.value.role,
+      accountType: newUser.value.accountType
     };
-    
+
     await api.admin.createUser(userData);
     // Refresh user list
     await fetchUsers();
-    
+
     // Reset form
     newUser.value = {
-      ho: '',
+      firstName: '',
       lastName: '',
       userName: '',
-      password: '',
+      passWord: '',
       address: '',
       dayOfBirth: '',
-      role: 'ROLE_USER'
+      role: 'ROLE_USER',
+      accountType: 'FREE'
     };
-    
+
     // Close modal
     showAddModal.value = false;
-    
+
     toast.success('Đã thêm người dùng mới thành công');
   } catch (error) {
     console.error('Error creating user:', error);
-    
+
     // Hiển thị popup lỗi thay vì toast
     errorMessage.value = `Không thể thêm người dùng!\n\nLỗi: ${error.message}`;
     showErrorPopup.value = true;

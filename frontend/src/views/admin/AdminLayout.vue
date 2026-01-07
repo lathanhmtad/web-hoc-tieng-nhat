@@ -6,64 +6,42 @@
         <img :src="ImagePaths.logo.logoTab" alt="Logo" class="w-45px" />
         <h1>Admin Panel</h1>
       </div>
-      
+
       <nav class="sidebar-nav">
-        <router-link 
-          to="/admin" 
-          class="nav-item" 
-          :class="{ 'active': $route.path === '/admin' }"
-          :title="isSidebarCollapsed ? 'Tổng quan' : ''"
-          exact
-        >
+        <router-link to="/admin" class="nav-item" :class="{ 'active': $route.path === '/admin' }"
+          :title="isSidebarCollapsed ? 'Tổng quan' : ''" exact>
           <i class="fas fa-chart-line"></i>
           <span>Tổng quan</span>
         </router-link>
-        
-        <router-link 
-          to="/admin/users" 
-          class="nav-item" 
-          :class="{ 'active': $route.path.startsWith('/admin/users') }"
-          :title="isSidebarCollapsed ? 'Quản lý người dùng' : ''"
-        >
+
+        <router-link to="/admin/users" class="nav-item" :class="{ 'active': $route.path.startsWith('/admin/users') }"
+          :title="isSidebarCollapsed ? 'Quản lý người dùng' : ''">
           <i class="fas fa-users"></i>
           <span>Quản lý người dùng</span>
         </router-link>
-        
-        <router-link 
-          to="/admin/reports" 
-          class="nav-item" 
+
+        <router-link to="/admin/reports" class="nav-item"
           :class="{ 'active': $route.path.startsWith('/admin/reports') }"
-          :title="isSidebarCollapsed ? 'Bài viết bị báo cáo' : ''"
-        >
+          :title="isSidebarCollapsed ? 'Bài viết bị báo cáo' : ''">
           <i class="fas fa-flag"></i>
           <span>Bài viết bị báo cáo</span>
         </router-link>
-        
-        <router-link 
-          to="/admin/feedback" 
-          class="nav-item" 
+
+        <router-link to="/admin/feedback" class="nav-item"
           :class="{ 'active': $route.path.startsWith('/admin/feedback') }"
-          :title="isSidebarCollapsed ? 'Đóng góp ý kiến' : ''"
-        >
+          :title="isSidebarCollapsed ? 'Đóng góp ý kiến' : ''">
           <i class="fas fa-comments"></i>
           <span>Đóng góp ý kiến</span>
         </router-link>
 
-        <router-link 
-          to="/admin/dictionary" 
-          class="nav-item" 
+        <router-link to="/admin/dictionary" class="nav-item"
           :class="{ 'active': $route.path.startsWith('/admin/dictionary') }"
-          :title="isSidebarCollapsed ? 'Quản lý từ điển' : ''"
-        >
+          :title="isSidebarCollapsed ? 'Quản lý từ điển' : ''">
           <i class="fas fa-book"></i>
           <span>Quản lý từ điển</span>
         </router-link>
 
-        <router-link 
-          to="/" 
-          class="nav-item"
-          :title="isSidebarCollapsed ? 'Quay lại trang chủ' : ''"
-        >
+        <router-link to="/" class="nav-item" :title="isSidebarCollapsed ? 'Quay lại trang chủ' : ''">
           <i class="fas fa-arrow-left"></i>
           <span>Quay lại trang chủ</span>
         </router-link>
@@ -83,21 +61,24 @@
         </div>
         <div class="header-right">
           <div class="admin-profile">
-            <img :src="adminAvatar" alt="Admin" class="admin-avatar">
-            <span class="admin-name">{{ adminName }}</span>
+            <div style="display: flex; align-items: center; gap: 5px;">
+              <img :src="adminAvatar" alt="Admin" class="admin-avatar">
+              <span class="admin-name">{{ adminName }}</span>
+            </div>
             <button class="btn-logout" @click="handleLogout">
               <i class="fas fa-sign-out-alt"></i>
-              <span>Đăng xuất</span>
+              <span style="margin-left: 4px;">Đăng xuất</span>
             </button>
           </div>
         </div>
       </div>
-      
+
       <div class="admin-content">
         <router-view></router-view>
       </div>
     </div>
   </div>
+  <Toaster position="top-center" richColors />
 </template>
 
 <script setup>
@@ -105,6 +86,8 @@ import { ImagePaths } from '@/assets/img/imagePaths';
 import { computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
+import 'vue-sonner/style.css'
+import { Toaster } from 'vue-sonner'
 
 const route = useRoute();
 const router = useRouter();
@@ -123,20 +106,20 @@ const currentUser = computed(() => store.getters['auth/currentUser']);
 // Admin avatar with fallback
 const adminAvatar = computed(() => {
   if (!currentUser.value) return 'https://ui-avatars.com/api/?name=Admin';
-  
-  return currentUser.value.avatarUrl || 
-         currentUser.value.photoURL || 
-         `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.value.displayName || currentUser.value.userName || 'Admin')}`;
+
+  return currentUser.value.avatarUrl ||
+    currentUser.value.photoURL ||
+    `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.value.displayName || currentUser.value.userName || 'Admin')}`;
 });
 
 // Admin name with fallback
 const adminName = computed(() => {
   if (!currentUser.value) return 'Admin';
-  
-  return currentUser.value.displayName || 
-         currentUser.value.userName || 
-         `${currentUser.value.ho || ''} ${currentUser.value.lastName || ''}`.trim() ||
-         'Admin';
+
+  return currentUser.value.displayName ||
+    currentUser.value.userName ||
+    `${currentUser.value.ho || ''} ${currentUser.value.lastName || ''}`.trim() ||
+    'Admin';
 });
 
 

@@ -9,12 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.UUID;
 
 public interface QuestionsRepository extends JpaRepository<CauHoi, UUID> {
-    Page<CauHoi> findByQuiz(BaiKiemTra quiz, Pageable pageable);
+    Page<CauHoi> findByBaiKiemTra(BaiKiemTra quiz, Pageable pageable);
 
-    int countByQuiz_QuizzesID(UUID quizzesId);
-
-
-
-
-
+    int countByBaiKiemTra_MaBaiKiemTra(UUID quizzesId);
 }

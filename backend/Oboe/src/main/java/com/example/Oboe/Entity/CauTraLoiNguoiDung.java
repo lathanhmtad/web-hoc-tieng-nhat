@@ -1,23 +1,28 @@
 package com.example.Oboe.Entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.UUID;
 
+@Getter
+@Setter
 @Entity
-@Table(name = "UserAnswers")
+@Table(name = "cau_tra_loi_nguoi_dung")
 public class CauTraLoiNguoiDung {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "UserAnswersId", updatable = false, nullable = false)
-    private UUID userAnswersId;
+    @Column(name = "ma_cau_tra_loi", updatable = false, nullable = false)
+    private UUID maCauTraLoi;
 
-    private String answer;
-    private boolean isCorrect;
+    private String cauTraLoi;
+    private boolean laChinhXac;
 
     @ManyToOne
-    @JoinColumn(name = "QuestionID", nullable = false)
-    private CauHoi question;
+    @JoinColumn(name = "maCauHoi", nullable = false)
+    private CauHoi cauHoi;
 
     @ManyToOne
     @JoinColumn(name = "maNguoiDung", nullable = false)
@@ -37,53 +42,4 @@ public class CauTraLoiNguoiDung {
 
     @Column(name = "attempt_number")
     private int attemptNumber;
-
-    // Getters and Setters
-    public UUID getUserAnswersId() {
-        return userAnswersId;
-    }
-
-    public void setUserAnswersId(UUID userAnswersId) {
-        this.userAnswersId = userAnswersId;
-    }
-
-    public String getAnswer() {
-        return answer;
-    }
-
-    public void setAnswer(String answer) {
-        this.answer = answer;
-    }
-
-    public boolean isCorrect() {
-        return isCorrect;
-    }
-
-    public void setCorrect(boolean correct) {
-        isCorrect = correct;
-    }
-
-    public CauHoi getQuestion() {
-        return question;
-    }
-
-    public void setQuestion(CauHoi question) {
-        this.question = question;
-    }
-
-    public NguoiDung getUser() {
-        return nguoiDung;
-    }
-
-    public void setUser(NguoiDung nguoiDung) {
-        this.nguoiDung = nguoiDung;
-    }
-
-    public BaiKiemTra getQuiz() {
-        return quiz;
-    }
-
-    public void setQuiz(BaiKiemTra quiz) {
-        this.quiz = quiz;
-    }
 }

@@ -11,9 +11,8 @@ import java.util.UUID;
 
 @Repository
 public interface SampleSentenceRepository extends JpaRepository<MauCau, UUID> {
-    @Query("SELECT s FROM MauCau s WHERE LOWER(s.vietnameseMeaning) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-            "OR LOWER(s.vietnamesePronunciation) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-            "OR LOWER(s.japaneseText) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    @Query("SELECT s FROM MauCau s " +
+            "WHERE LOWER(s.nghiaTiengViet) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "OR LOWER(s.cauTiengNhat) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<MauCau> searchByVietnameseMeaning(@Param("keyword") String keyword);
-
 }

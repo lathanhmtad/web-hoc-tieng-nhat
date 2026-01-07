@@ -1,85 +1,33 @@
 package com.example.Oboe.DTOs;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collector;
 
+@Getter
+@Setter
 public class VocabularyDTOs {
 
     private UUID vocalbId;
     private String words;
     private String meanning;
-    private String wordType;
-    private String scriptType;
+    private String wordType; // noun, verb, adj,...
+    private String scriptType; // hiragana, katakana, kanji
     private UUID kanjiId;
+    private List<KanjiLink> kanjiLinks;
     private String vietnamese_pronunciation;
-
-    public String getVietnamese_pronunciation() {
-        return vietnamese_pronunciation;
-    }
-
-    public void setVietnamese_pronunciation(String vietnamese_pronunciation) {
-        this.vietnamese_pronunciation = vietnamese_pronunciation;
-    }
-
-
-
-
     private List<ReadingDTO> readings;
+    private String readingRomaji;
 
-    // Getters & Setters
-    public UUID getVocalbId() {
-        return vocalbId;
-    }
-
-    public void setVocalbId(UUID vocalbId) {
-        this.vocalbId = vocalbId;
-    }
-
-    public String getWords() {
-        return words;
-    }
-
-    public void setWords(String words) {
-        this.words = words;
-    }
-
-    public String getMeanning() {
-        return meanning;
-    }
-
-    public void setMeanning(String meanning) {
-        this.meanning = meanning;
-    }
-
-    public String getWordType() {
-        return wordType;
-    }
-
-    public void setWordType(String wordType) {
-        this.wordType = wordType;
-    }
-
-    public String getScriptType() {
-        return scriptType;
-    }
-
-    public void setScriptType(String scriptType) {
-        this.scriptType = scriptType;
-    }
-
-    public UUID getKanjiId() {
-        return kanjiId;
-    }
-
-    public void setKanjiId(UUID kanjiId) {
-        this.kanjiId = kanjiId;
-    }
-
-    public List<ReadingDTO> getReadings() {
-        return readings;
-    }
-
-    public void setReadings(List<ReadingDTO> readings) {
-        this.readings = readings;
+    @Getter
+    @Setter
+    @Builder
+    public static class KanjiLink {
+        private String label;
+        private UUID value;
     }
 }

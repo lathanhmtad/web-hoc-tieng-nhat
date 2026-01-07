@@ -139,7 +139,7 @@ public class UserService implements UserDetailsService {
     }
 
     public UserProfileDTOwithStatistical getUserByIds(UUID userId) {
-        NguoiDung nguoiDung = userRepository.findBymaNguoiDung(userId).orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+        NguoiDung nguoiDung = userRepository.findByMaNguoiDung(userId).orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
 
         // Thống kê số lượng nội dung của user
         long blogCount = blogRepository.countBlogsByUserId(userId);
@@ -156,7 +156,7 @@ public class UserService implements UserDetailsService {
     }
 
     public void deleteUser(UUID userId) {
-        NguoiDung nguoiDung = userRepository.findBymaNguoiDung(userId).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        NguoiDung nguoiDung = userRepository.findByMaNguoiDung(userId).orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         // Xóa comment của user
         commentRepository.deleteUserbyComment(userId);

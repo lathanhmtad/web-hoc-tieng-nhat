@@ -1,6 +1,6 @@
 package com.example.Oboe.Entity;
 
-public enum ReportStatus {
+public enum TrangThaiBaoCao {
     PENDING,
     APPROVED,
     REJECTED

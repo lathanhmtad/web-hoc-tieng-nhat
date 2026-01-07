@@ -24,12 +24,12 @@ public class KanjiController {
     @GetMapping
     public ResponseEntity<Map<String, Object>> getKanjis(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false, defaultValue = "") String search
     )
     {
-        return ResponseEntity.ok(kanjiService.getAllKanji(page, size));
+        return ResponseEntity.ok(kanjiService.getAllKanji(page, size, search));
     }
-
 
     //  GET by ID
     @GetMapping("/{id}")
@@ -65,7 +65,7 @@ public class KanjiController {
     public ResponseEntity<?> deleteKanji(@PathVariable UUID id) {
         try {
             kanjiService.deleteKanji(id);
-            return ResponseEntity.noContent().build(); // 204 No Content
+            return ResponseEntity.ok(1);
         } catch (SecurityException e) {
             throw new AccessDeniedException(e.getMessage());
         }

@@ -46,7 +46,6 @@ public class AdminController {
         }
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
 //    @DeleteMapping("/delete/{id}")
 //    public ResponseEntity<?> deleteUser(@PathVariable UUID id) {
 //        try {
@@ -58,6 +57,8 @@ public class AdminController {
 //            return ResponseEntity.trangThai(500).body("Lỗi hệ thống: " + e.getMessage());
 //        }
 //    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/delete/{userId}")
     public String deleteUser(@PathVariable UUID userId) {
         try {

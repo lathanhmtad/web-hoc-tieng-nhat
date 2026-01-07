@@ -27,6 +27,7 @@ public class AdminService {
     private final BlogRepository blogRepository;
     private final CommentRepository commentRepository;
     private final FlashCardRepository flashCardRepository;
+
     @Value("${app.default-avatar}")
     private String defaultAvatar;
 
@@ -95,8 +96,8 @@ public class AdminService {
     }
 
     private void validatePassword(String password) {
-        if (password == null || password.length() < 8) {
-            throw new IllegalArgumentException("Mật khẩu phải ít nhất 8 ký tự.");
+        if (password == null || password.length() < 6) {
+            throw new IllegalArgumentException("Mật khẩu phải ít nhất 6 ký tự.");
         }
     }
 
@@ -114,28 +115,19 @@ public class AdminService {
     // Cập nhật người dùng
     public NguoiDung updateUser(UUID id, UserDTOs dto) {
         NguoiDung nguoiDung = getUserById(id);
+        nguoiDung.setEmail(dto.getUserName());
         nguoiDung.setHo(dto.getFirstName());
         nguoiDung.setTen(dto.getLastName());
         nguoiDung.setDiaChi(dto.getAddress());
+        if(dto.getPassWord() != null && dto.getPassWord() .length() > 6) {
+            nguoiDung.setMatKhau(passwordEncoder.encode(dto.getPassWord()));
+        }
         nguoiDung.setNgaySinh(dto.getDay_of_birth());
         nguoiDung.setLoaiTaiKhoan(dto.getAccountType());
         nguoiDung.setVaiTro(dto.getRole());
         nguoiDung.setNgayCapNhat(LocalDateTime.now());
         return userRepository.save(nguoiDung);
     }
-
-    // Xoá người dùng
-//    public void deleteUser(UUID id) {
-//        User user = userRepository.findById(id)
-//                .orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy người dùng."));
-//
-//        commentRepository.deleteUserbyComment(id);
-//
-//        blogRepository.deleteBlogsbyUser(id);
-//
-//
-//        userRepository.delete(user);
-//    }
 
 
     // Đổi role

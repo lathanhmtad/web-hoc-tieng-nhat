@@ -25,6 +25,8 @@
       @skip="handleSkipLanguageSelection"
     />
   </div>
+
+  <Toaster position="top-center" richColors />
 </template>
 
 <script setup>
@@ -39,6 +41,7 @@ import { useStore } from 'vuex'
 import ChatBox from '@/components/layout/chat-box/ChatBox.vue'
 import LanguageSelectionPopup from '@/components/common/popup/LanguageSelectionPopup.vue'
 import { useLanguage } from '@/composables/useLanguage'
+import { Toaster } from 'vue-sonner'
 
 const route = useRoute()
 const store = useStore()

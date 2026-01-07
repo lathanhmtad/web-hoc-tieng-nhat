@@ -1,62 +1,76 @@
 @use '@/assets/css/index.scss' as *;
+
 .swiper {
-    width: 800px; 
-    height: 500px; 
-    margin: auto;
+	width: 800px;
+	height: 500px;
+	margin: auto;
 	--swiper-pagination-fraction-color: #FF5B79;
 	--swiper-pagination-color: #FF5B79;
-    --swiper-pagination-bullet-inactive-color: rgba(255, 255, 255, 0.3);
-    --swiper-pagination-bullet-size: 10px;
-    --swiper-pagination-bullet-opacity: 1;
+	--swiper-pagination-bullet-inactive-color: rgba(255, 255, 255, 0.3);
+	--swiper-pagination-bullet-size: 10px;
+	--swiper-pagination-bullet-opacity: 1;
 }
+
 .swiper-slide,
 .swiper-slide-shadow,
 .swiper-slide-duplicate {
-  background-color: transparent  !important;
+	background-color: transparent !important;
 }
+
 .swiper-slide {
-    width: 100% !important;
-    height: 100% !important;
+	width: 100% !important;
+	height: 100% !important;
 	position: relative;
-    transform-style: preserve-3d;
-    border-radius: 50px;
+	transform-style: preserve-3d;
+	border-radius: 50px;
 }
+
 .slider-button {
+	color: #fff;
 	transition: 0.5s;
 	outline: none;
 	position: absolute;
 	width: 100px;
 	z-index: 10;
-	top: 50%;
-	transform: translateY(-50%);
+
+	bottom: 20px;
+	top: auto;
+	width: 60px; 
+    height: 30px;
+    display: flex;
+	align-items: center;
+    justify-content: center;
+
 	cursor: pointer;
 	background: rgba(255, 255, 255, 0.2);
 
 	border-radius: 10px;
 	backdrop-filter: blur(5px);
 	padding: 15px;
-	/* border: 1px solid rgba(255, 255, 255, 0.2); */
 	box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-	
 }
+
 .slider-button:hover {
 	background: #411a29;
 	background: linear-gradient(331deg, #FF5B79 0%, #411a29 100%);
-	box-shadow: 0 15px 50px rgba(65, 26, 41, 0.5), inset 0 0 100px rgba(255, 91, 121, 0.2);	
+	box-shadow: 0 15px 50px rgba(65, 26, 41, 0.5), inset 0 0 100px rgba(255, 91, 121, 0.2);
 }
 
 
 .slider-button-prev {
-	left: 24px;
+	left: 50%;
+	transform: translateX(-150%);
 }
 
 .slider-button-next {
-	right: 24px;
+	right: 50%;
+	transform: translateX(150%);
 }
 
 .swiper-button-disabled {
 	display: none;
 }
+
 .card {
 	position: relative;
 	margin: auto;
@@ -65,7 +79,7 @@
 	border-radius: 50px;
 	overflow: hidden !important;
 	box-shadow: 0 15px 50px rgba(9, 9, 9, 0.5);
-	transition: all 0.5s ease-in-out;
+	transition: all 0.3s ease-in-out;
 }
 
 .card:hover {
@@ -150,24 +164,29 @@
 	letter-spacing: 0.5px;
 	position: relative;
 	padding: 0 5px;
-	
+
 }
-.webkit-box{
+
+.webkit-box {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	display: -webkit-box;
 	-webkit-box-orient: vertical;
 }
-.webkit-line-2{
+
+.webkit-line-2 {
 	-webkit-line-clamp: 2;
 }
-.webkit-line-3{
+
+.webkit-line-3 {
 	-webkit-line-clamp: 3;
 }
-.see-more{
-	justify-content: end; 
+
+.see-more {
+	justify-content: end;
 
 }
+
 .cta-button {
 	position: relative;
 	color: #fff;
@@ -185,8 +204,7 @@
 	background: transparent;
 }
 
-Loại bỏ mọi hiệu ứng thanh sáng
-.cta-button::before,
+Loại bỏ mọi hiệu ứng thanh sáng .cta-button::before,
 .cta-button::after {
 	display: none;
 }
@@ -223,11 +241,12 @@ Loại bỏ mọi hiệu ứng thanh sáng
 	left: -100%;
 	width: 100%;
 	height: 100%;
-	background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+	background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
 	transition: 0.5s;
 }
 
-.card.slide-item .cta-button:hover::before ,.cta-button:hover::before {
+.card.slide-item .cta-button:hover::before,
+.cta-button:hover::before {
 	left: 100%;
 }
 
@@ -240,6 +259,7 @@ Loại bỏ mọi hiệu ứng thanh sáng
 	from {
 		transform: rotate(0deg);
 	}
+
 	to {
 		transform: rotate(360deg);
 	}
@@ -261,130 +281,126 @@ Loại bỏ mọi hiệu ứng thanh sáng
 }
 
 
-.card-content, .card-ghost-info {
+.card-content,
+.card-ghost-info {
 	transform: translateZ(10px);
 }
 
 
 @keyframes flipCard {
 	0% {
-	  transform: rotateX(0deg);
+		transform: rotateX(0deg);
 	}
+
 	49.9% {
-	  transform: rotateX(90deg);
+		transform: rotateX(90deg);
 	}
+
 	50% {
-	  transform: rotateX(90deg) ;
+		transform: rotateX(90deg);
 	}
+
 	100% {
-	  transform: rotateX(0deg);
+		transform: rotateX(0deg);
 	}
-  }
-  
+}
+
 @keyframes unflipCard {
 	0% {
 		transform: rotateX(0deg);
-	  }
-	  49.9% {
-		transform: rotateX(90deg);
-	  }
-	  50% {
-		transform: rotateX(90deg) ;
-	  }
-	  100% {
-		transform: rotateX(0deg) ;
-	  }
-  }
-  .card.animation-started.is-flipped {
-	animation: flipCard 1.5s forwards;
-  }
-  
-  .card.animation-started:not(.is-flipped) {
-	animation: unflipCard 1.5s forwards;
-  }
-  
+	}
 
-.slide-content{
+	49.9% {
+		transform: rotateX(90deg);
+	}
+
+	50% {
+		transform: rotateX(90deg);
+	}
+
+	100% {
+		transform: rotateX(0deg);
+	}
+}
+
+.card.animation-started.is-flipped {
+	animation: flipCard 0.6s forwards;
+}
+
+.card.animation-started:not(.is-flipped) {
+	animation: unflipCard 0.6s forwards;
+}
+
+
+.slide-content {
 	width: 100%;
 	flex-grow: 1;
-	align-items: center; /* căn giữa theo chiều dọc */
- 	justify-content: center; /* nếu muốn căn giữa luôn cả chiều ngang */
+	align-items: center;
+	/* căn giữa theo chiều dọc */
+	justify-content: center;
+	/* nếu muốn căn giữa luôn cả chiều ngang */
 }
-.card-box{
-}
+
+.card-box {}
+
 .main-content-text {
-	font-size: 1.4rem; 
-	line-height: 1.8; 
-	font-weight: 500; 
+	font-size: 1.4rem;
+	line-height: 1.8;
+	font-weight: 500;
 	text-align: center;
-  }
-  .slide-image {
+}
+
+.slide-image {
 	max-width: 30%;
 	object-fit: contain;
 	border-radius: 10px;
 	display: block;
 	margin: 0 auto;
-	box-shadow:0px  4px 15px rgba(36, 28, 31, 0.3);
-  }
-  
-.swiper-pagination{
-	color: white;
-	bottom: 20px !important;
-  }
-  
-.swiper-pagination-fraction {
-	color: white;
-	font-size: 16px;
-	font-weight: 500;
-	background: rgba(0, 0, 0, 0.3);
-	width: auto;
-	left: 50%;
-	transform: translateX(-50%);
-	padding: 4px 12px;
-	border-radius: 20px;
-  }
+	box-shadow: 0px 4px 15px rgba(36, 28, 31, 0.3);
+}
+
 .card-content.front.hidden {
-  display: none;
+	display: none;
 }
 
 .card-content.back {
-  display: none;
+	display: none;
 }
 
 .card-content.back.visible {
-  display: flex;
+	display: flex;
 }
 
 @media screen and (max-width: 768px) {
-	.ip-feature-card{
+	.ip-feature-card {
 		width: 250px !important;
 		height: 400px !important;
 	}
 }
 
 @media (max-width: 768px) {
-  .slider-button {
-    display: none !important;
-  }
+	.slider-button {
+		display: none !important;
+	}
 
-  .card-title {
-    font-size: 12px !important;
-  }
+	.card-title {
+		font-size: 12px !important;
+	}
 
-  .cta-button {
-    font-size: 12px !important;
-    padding: 6px 10px !important;
-  }
+	.cta-button {
+		font-size: 12px !important;
+		padding: 6px 10px !important;
+	}
 
-  .card-content {
-    padding: 20px;
-  }
+	.card-content {
+		padding: 20px;
+	}
 
-  .card-description {
-    font-size: 8px;
-  }
+	.card-description {
+		font-size: 8px;
+	}
 
-  .main-content-text {
-    font-size: 12px;
-  }
+	.main-content-text {
+		font-size: 12px;
+	}
 }

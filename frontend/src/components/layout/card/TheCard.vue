@@ -2,12 +2,13 @@
   <Swiper ref="swiperRef" class="swiper" :modules="[Autoplay, Pagination, Navigation, EffectCards, Keyboard]"
     effect="cards" grabCursor :slides-per-view="1" :space-between="30" :autoplay="autoplay" :pagination="pagination"
     :navigation="{ nextEl: '.slider-button-next', prevEl: '.slider-button-prev' }" :keyboard="{ enabled: true }"
-    :mousewheel="true" @autoplayTimeLeft="onAutoplayTimeLeft" @swiper="onSwiper" @slideChange="handleSlideChange"
-    :style="{
+    :mousewheel="true" @autoplayTimeLeft="onAutoplayTimeLeft" @swiper="onSwiper" 
+    @reachBeginning="onReachBeginning" @slideChange="handleSlideChange" :style="{
       width: width + 'px',
       height: height + 'px',
     }">
-    <SwiperSlide v-for="(slide, index) in slides" :key="index" :data-bg-color="slide.bgColor"
+
+    <SwiperSlide v-for="(slide, index) in slides" :key="slide.id" :data-bg-color="slide.bgColor"
       :data-progress-color="slide.progressColor">
       <div class="card slide-item"
         :class="{ 'is-flipped': flippedIndex === index, 'animation-started': animationStartedList[index] }"
@@ -26,7 +27,8 @@
           </div>
           <p class="card-description webkit-box webkit-line-3">{{ slide.description }}</p>
           <div class="flex see-more">
-            <button class="cta-button" @click.stop="onSeeMore(slide)" :style="{ fontSize: buttonFontSize, padding: buttonPadding }">Oboe Sensei</button>
+            <button class="cta-button" @click.stop="onSeeMore(slide)"
+              :style="{ fontSize: buttonFontSize, padding: buttonPadding }">Oboe Sensei</button>
           </div>
         </div>
         <div class="card-content flex" :class="{ 'back': true, 'visible': showBackIndex === index }">
@@ -43,26 +45,34 @@
           </div>
           <!-- <p class="card-description webkit-box webkit-line-3">{{ slide.backdescription }}</p> -->
           <div class="flex see-more">
-            <button class="cta-button" @click.stop="onSeeMore(slide)" :style="{ fontSize: buttonFontSize, padding: buttonPadding }">Oboe Sensei</button>
+            <button class="cta-button" @click.stop="onSeeMore(slide)"
+              :style="{ fontSize: buttonFontSize, padding: buttonPadding }">Oboe Sensei</button>
           </div>
         </div>
       </div>
     </SwiperSlide>
 
-    <div class="slider-button-prev slider-button"></div>
-    <div class="slider-button-next slider-button"></div>
+    <!-- Tạo một slide ảo ở cuối để làm vòng lặp -->
+    <SwiperSlide data-bg-color="#ffffff" data-progress-color="$primary-color"><div class="card slide-item"></div></SwiperSlide>
+
+    <div class="slider-button-prev slider-button">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+    </div>
+    <div class="slider-button-next slider-button">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </div>
   </Swiper>
-  
+
   <!-- Premium Required Popup -->
-  <ThePopup
-    v-if="showPremiumPopup"
-    :title="premiumPopupTitle"
-    :message="premiumPopupMessage"
-    confirmText="Nâng cấp Premium"
-    @confirm="handlePremiumPopupConfirm"
-    @cancel="handlePremiumPopupCancel"
-    :showCancel="true"
-  />
+  <ThePopup v-if="showPremiumPopup" :title="premiumPopupTitle" :message="premiumPopupMessage"
+    confirmText="Nâng cấp Premium" @confirm="handlePremiumPopupConfirm" @cancel="handlePremiumPopupCancel"
+    :showCancel="true" />
 </template>
 
 <script setup>
@@ -77,6 +87,8 @@ import 'swiper/css'
 import 'swiper/css/effect-cards'
 import 'swiper/css/pagination'
 import 'swiper/css/navigation'
+
+const FLIP_ANIMATION_DURATION = 600; // 600ms (tương đương 0.6s trong CSS)
 
 const { slides, width, height, pagination, autoplay, canFlip, buttonFontSize, titleFontSize, buttonPadding } = defineProps({
   slides: {
@@ -120,10 +132,10 @@ const { slides, width, height, pagination, autoplay, canFlip, buttonFontSize, ti
 const emit = defineEmits(['translate-request', 'swiper', 'slideChange', 'card-flipped']);
 
 // Premium check
-const { 
-  checkPremiumFeature, 
-  showPremiumPopup, 
-  premiumPopupMessage, 
+const {
+  checkPremiumFeature,
+  showPremiumPopup,
+  premiumPopupMessage,
   premiumPopupTitle,
   handlePremiumPopupConfirm,
   handlePremiumPopupCancel
@@ -151,7 +163,7 @@ async function onSeeMore(slide) {
   if (!(await checkPremiumFeature())) {
     return
   }
-  
+
   // Emit event với nội dung cần dịch
   emit('translate-request', slide.content || slide.backcontent || '');
 }
@@ -162,42 +174,49 @@ function isImage(content) {
   return /\.(jpg|jpeg|png|webp|gif|bmp|svg)$/i.test(content);
 }
 
-
 // Hàm lật thẻ (flip) slide
 function flipCard(index) {
   if (!canFlip) return; // Nếu không cho lật, thoát luôn
   if (!animationStartedList.value[index]) {
     animationStartedList.value[index] = true;
-  } if (flippedIndex.value === index) {
+  }
+  const contentSwitchDelay = FLIP_ANIMATION_DURATION / 2;
+  if (flippedIndex.value === index) {
     // Đang ở mặt sau => lật về mặt trước
     flippedIndex.value = null;
+
+    // Đổi nội dung ngay khi thẻ đang nằm ngang (90 độ)
     setTimeout(() => {
-      showBackIndex.value = null; // Delay 600ms mới ẩn mặt sau
-    }, 600);
+      showBackIndex.value = null;
+    }, contentSwitchDelay);
+
     emit('card-flipped', { index, isFlipped: false });
   } else {
     // Lật sang mặt sau
     flippedIndex.value = index;
+
+    // Đổi nội dung ngay khi thẻ đang nằm ngang (90 độ)
     setTimeout(() => {
       showBackIndex.value = index;
-    }, 600);
+    }, contentSwitchDelay);
     emit('card-flipped', { index, isFlipped: true });
   }
 }
-
 
 // Xử lý khi chuyển slide (slideChange event)
 function handleSlideChange() {
   if (swiperInstance.value) {
     activeIndex.value = swiperInstance.value.activeIndex
+    const totalSlides = slides.length;
+    if (swiperInstance.value.activeIndex >= totalSlides) {
+      swiperInstance.value.slideTo(0)
+    }
   }
   flippedIndex.value = null
   showBackIndex.value = null
   // Emit slideChange event cho parent component
   emit('slideChange', activeIndex.value);
 }
-
-
 
 // Xử lý khi autoplay đang đếm ngược thời gian
 function onAutoplayTimeLeft(swiper, time, progress) {
@@ -224,6 +243,18 @@ onUnmounted(() => {
 })
 </script>
 
+<style>
+.swiper-pagination {
+  color: white;
+  bottom: 24px !important;
+}
+
+.swiper-pagination-fraction {
+  font-size: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+</style>
 
 <style lang="scss" scoped>
 @use "@/components/layout/card/TheCard.scss";

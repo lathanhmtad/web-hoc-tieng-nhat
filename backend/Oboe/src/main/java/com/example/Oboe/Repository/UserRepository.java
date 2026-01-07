@@ -21,8 +21,7 @@ public interface UserRepository extends JpaRepository<NguoiDung, UUID> {
     List<NguoiDung> findAllByUserNameAndAuthProvider(@Param("userName") String userName,
                                                      @Param("authProvider") PhuongThucXacThuc phuongThucXacThuc);
 
-    @Query(value = "SELECT * FROM nguoi_dung WHERE maNguoiDung = :userId", nativeQuery = true)
-    Optional<NguoiDung> findBymaNguoiDung(@Param("userId") UUID userId);
+    Optional<NguoiDung> findByMaNguoiDung(UUID maNguoiDung);
 
     boolean existsByEmailAndPhuongThucXacThuc(String email, PhuongThucXacThuc phuongThucXacThuc);
 

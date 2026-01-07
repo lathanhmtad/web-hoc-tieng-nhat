@@ -59,12 +59,13 @@
 
       <!-- Card ở giữa -->
       <div class="card-section">
-        <TheCard ref="cardRef" :slides="slides" :pagination="{
+        <TheCard ref="cardRef" :slides="slides" 
+        :pagination="{
           type: 'fraction',
           clickable: true,
           formatFractionCurrent: (number) => number,
-          formatFractionTotal: (number) => number
-        }" :canFlip="true" :speed="300" :keyboard="{
+          formatFractionTotal: () => slides.length
+        }" :canFlip="true" :speed="600" :keyboard="{
             enabled: true,
             onlyInViewport: true
           }" :class="{ 'fullscreen-card': isFullscreen }" @swiper="onSwiper" @card-flipped="onCardFlip"

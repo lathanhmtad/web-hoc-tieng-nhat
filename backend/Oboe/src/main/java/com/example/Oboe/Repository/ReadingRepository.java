@@ -1,7 +1,6 @@
 package com.example.Oboe.Repository;
 
-import com.example.Oboe.Entity.Message;
-import com.example.Oboe.Entity.Reading;
+import com.example.Oboe.Entity.CachDoc;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,14 +10,14 @@ import java.util.UUID;
 
 
 
-public interface ReadingRepository extends JpaRepository<Reading, UUID> {
+public interface ReadingRepository extends JpaRepository<CachDoc, UUID> {
 
-    List<Reading> findByOwnerTypeAndOwnerId(String ownerType, UUID ownerId);
+    List<CachDoc> findByLoaiDoiTuongAndMaDoiTuong(String ownerType, UUID ownerId);
     @Query("""
-    SELECT r FROM Reading r 
-    WHERE LOWER(r.readingText) LIKE LOWER(CONCAT('%', :keyword, '%'))
+    SELECT r FROM CachDoc r
+    WHERE LOWER(r.cachDocThucTe) LIKE LOWER(CONCAT('%', :keyword, '%'))
     """)
-    List<Reading> searchReadingsByText(@Param("keyword") String keyword);
+    List<CachDoc> searchReadingsByText(@Param("keyword") String keyword);
 
 
 

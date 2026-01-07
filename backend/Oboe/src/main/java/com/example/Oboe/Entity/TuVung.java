@@ -13,25 +13,15 @@ import java.util.UUID;
 public class TuVung {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "Vocalb_id", updatable = false, nullable = false)
+    @Column(name = "ma_tu_vung", updatable = false, nullable = false)
+    private UUID maTuVung;
 
-    private UUID vocalbId;
-
-    private String words;
-
-    private String meanning;
-
-    private String wordType; //  lưu loại từ: noun, verb, adj...
-
-    private String scriptType; //  hiragana, katakana
-
-    @Column(name = "vietnamese_pronunciation")
-    private String vietnamesePronunciation;
-
-    @ManyToOne
-    @JoinColumn(name ="kanjiId")
-    private HanTu hanTu;
+    private String noiDungTu;
+    private String nghia;
+    private String loaiTu; //  lưu loại từ: noun, verb, adj...
+    private String kieuChu; //  hiragana, katakana
+    private String phatAmTiengViet;
 
     @OneToMany(mappedBy = "tuVung")
-    private List<ChiTietTuVung> chiTietHanTu;
+    private List<ChiTietTuVung> chiTietTuVungs;
 }

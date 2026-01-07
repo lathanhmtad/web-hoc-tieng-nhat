@@ -58,17 +58,20 @@ public class LearningMaterialService {
     private LearningMaterialDTO toDTO(BaiKiemTra quiz) {
         LearningMaterialDTO dto = new LearningMaterialDTO();
 
-        if (quiz.getUser() != null) {
-            dto.setAuthor(quiz.getUser().getEmail());
-            dto.setAvatarUrl(quiz.getUser().getAnhDaiDien());
+        if (quiz.getNguoiDung() != null) {
+            dto.setAuthor(
+                    String.format("%s %s",
+                            quiz.getNguoiDung().getHo(),
+                            quiz.getNguoiDung().getTen()));
+            dto.setAvatarUrl(quiz.getNguoiDung().getAnhDaiDien());
         } else {
             dto.setAuthor("Unknown");
             dto.setAvatarUrl(null);
         }
 
-        dto.setTitle(quiz.getTitle());
-        dto.setDescription(quiz.getDescription());
-        dto.setQuizId(quiz.getQuizzesID());
+        dto.setTitle(quiz.getTieuDe());
+        dto.setDescription(quiz.getMoTa());
+        dto.setQuizId(quiz.getMaBaiKiemTra());
 
         return dto;
     }
@@ -80,7 +83,6 @@ public class LearningMaterialService {
                 .map(this::toDTO)
                 .collect(Collectors.toList());
     }
-
 
 
 }

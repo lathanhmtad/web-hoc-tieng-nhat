@@ -126,8 +126,9 @@ public class AuthController {
                     "lastName", nguoiDung.getTen(),
                     "role", nguoiDung.getVaiTro().name(),
                     "displayName", nguoiDung.getHo() + " " + nguoiDung.getTen(),
+                    "accountType", nguoiDung.getLoaiTaiKhoan().name(),
                     "avatarUrl", nguoiDung.getAnhDaiDien(), // Thêm avatarUrl
-                    "photoURL", nguoiDung.getAnhDaiDien() != null && !nguoiDung.getAnhDaiDien().isBlank()
+                    "photoURL", !nguoiDung.getAnhDaiDien().isBlank()
                             ? nguoiDung.getAnhDaiDien()
                             : "https://ui-avatars.com/api/?name=" + nguoiDung.getHo() + "+" + nguoiDung.getTen()
             ));
@@ -255,13 +256,15 @@ public class AuthController {
             response.put("message", "Firebase login successful!");
             response.put("token", jwt);
             response.put("user", Map.of(
+                    "userId", nguoiDung.getMaNguoiDung(),
                     "username", nguoiDung.getEmail(),
                     "firstName", nguoiDung.getHo(),
                     "lastName", nguoiDung.getTen(),
                     "role", nguoiDung.getVaiTro().name(),
+                    "accountType", nguoiDung.getLoaiTaiKhoan().name(),
                     "displayName", nguoiDung.getHo() + " " + nguoiDung.getTen(),
                     "avatarUrl", nguoiDung.getAnhDaiDien(), // Thêm avatarUrl
-                    "photoURL", nguoiDung.getAnhDaiDien() != null && !nguoiDung.getAnhDaiDien().isBlank()
+                    "photoURL", !nguoiDung.getAnhDaiDien().isBlank()
                             ? nguoiDung.getAnhDaiDien()
                             : "https://ui-avatars.com/api/?name=" + nguoiDung.getHo() + "+" + nguoiDung.getTen()
             ));

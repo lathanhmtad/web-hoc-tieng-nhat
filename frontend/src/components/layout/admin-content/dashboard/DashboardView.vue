@@ -113,7 +113,7 @@
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import api from '@/api';
-import { toast } from 'sonner';
+import { toast } from 'vue-sonner';
 
 const router = useRouter();
 

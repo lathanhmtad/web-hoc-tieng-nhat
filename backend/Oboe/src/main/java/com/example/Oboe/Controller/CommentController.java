@@ -53,7 +53,7 @@ public class CommentController {
     ) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         UUID userId = userDetails.getUserID();
-        CommentDTOs reply = commentService.Commentreply(commentId, userId, dto);
+        CommentDTOs reply = commentService.CommentReply(commentId, userId, dto);
         if (reply == null) return ResponseEntity.badRequest().build();
         return ResponseEntity.ok(reply);
     }
