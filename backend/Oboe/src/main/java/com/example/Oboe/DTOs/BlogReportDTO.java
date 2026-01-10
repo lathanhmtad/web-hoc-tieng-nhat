@@ -1,7 +1,7 @@
 package com.example.Oboe.DTOs;
 
-import com.example.Oboe.Entity.PhuongThucXacThuc;
-import com.example.Oboe.Entity.TrangThaiBaoCao;
+import com.example.Oboe.Entity.PHUONG_THUC_XAC_THUC;
+import com.example.Oboe.Entity.TRANG_THAI_BAO_CAO;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -11,19 +11,19 @@ public class BlogReportDTO {
     private String blogTitle;
     private String blogContent;
     private String userName;
-    private PhuongThucXacThuc phuongThucXacThuc;
+    private PHUONG_THUC_XAC_THUC phuongThucXacThuc;
     private String avatarUrl;
     private String type; // report tieuDe
     private String content; // report content
-    private TrangThaiBaoCao status;
+    private TRANG_THAI_BAO_CAO status;
     private LocalDate  report_at;
     private UUID blogId;
     private long reportCount;
 
     public BlogReportDTO() {}
     public BlogReportDTO(UUID reportId, String blogTitle, String blogContent, String userName,
-                         PhuongThucXacThuc phuongThucXacThuc, String avatarUrl, String type,
-                         String content, TrangThaiBaoCao status, LocalDate report_at, UUID blogId, long reportCount) {
+                         PHUONG_THUC_XAC_THUC phuongThucXacThuc, String avatarUrl, String type,
+                         String content, TRANG_THAI_BAO_CAO status, LocalDate report_at, UUID blogId, long reportCount) {
         this.reportId = reportId;
         this.blogTitle = blogTitle;
         this.blogContent = blogContent;
@@ -87,11 +87,11 @@ public class BlogReportDTO {
         this.userName = userName;
     }
 
-    public PhuongThucXacThuc getAuthProvider() {
+    public PHUONG_THUC_XAC_THUC getAuthProvider() {
         return phuongThucXacThuc;
     }
 
-    public void setAuthProvider(PhuongThucXacThuc phuongThucXacThuc) {
+    public void setAuthProvider(PHUONG_THUC_XAC_THUC phuongThucXacThuc) {
         this.phuongThucXacThuc = phuongThucXacThuc;
     }
 
@@ -119,11 +119,11 @@ public class BlogReportDTO {
         this.content = content;
     }
 
-    public TrangThaiBaoCao getStatus() {
+    public TRANG_THAI_BAO_CAO getStatus() {
         return status;
     }
 
-    public void setStatus(TrangThaiBaoCao status) {
+    public void setStatus(TRANG_THAI_BAO_CAO status) {
         this.status = status;
     }
 

@@ -4,10 +4,10 @@ import com.example.Oboe.Config.CustomUserDetails;
 import com.example.Oboe.DTOs.PassWordChangeDTOs;
 import com.example.Oboe.DTOs.UserDTOs;
 import com.example.Oboe.DTOs.UserProfileDTOwithStatistical;
-import com.example.Oboe.Entity.LoaiTaiKhoan;
-import com.example.Oboe.Entity.PhuongThucXacThuc;
-import com.example.Oboe.Entity.NguoiDung;
-import com.example.Oboe.Entity.VaiTro;
+import com.example.Oboe.Entity.LOAI_TAI_KHOAN;
+import com.example.Oboe.Entity.PHUONG_THUC_XAC_THUC;
+import com.example.Oboe.Entity.NGUOI_DUNG;
+import com.example.Oboe.Entity.VAI_TRO;
 import com.example.Oboe.Repository.BlogRepository;
 import com.example.Oboe.Repository.CommentRepository;
 import com.example.Oboe.Repository.FlashCardRepository;
@@ -80,23 +80,23 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public NguoiDung verifyAccount(String token) {
+    public NGUOI_DUNG verifyAccount(String token) {
         UserDTOs signupRequest = VerificationHolder.getInstance().getSignupRequest(token);
         if (signupRequest == null) throw new IllegalArgumentException("Invalid or expired verification token.");
         signupRequest.setVerified(true);
-        NguoiDung nguoiDung = addUser(signupRequest);
+        NGUOI_DUNG nguoiDung = addUser(signupRequest);
         VerificationHolder.getInstance().removeToken(token);
         return nguoiDung;
     }
 
-    public NguoiDung addUser(UserDTOs userDTOs) {
-        PhuongThucXacThuc provider = userDTOs.getAuthProvider();
+    public NGUOI_DUNG addUser(UserDTOs userDTOs) {
+        PHUONG_THUC_XAC_THUC provider = userDTOs.getAuthProvider();
         String username = userDTOs.getUserName();
 
         // Cho phép trùng username nếu khác provider
-        List<NguoiDung> existingNguoiDungs = userRepository.findAllByUserNameAndAuthProvider(username, provider);
+        List<NGUOI_DUNG> existingNguoiDungs = userRepository.findAllByUserNameAndAuthProvider(username, provider);
         if (!existingNguoiDungs.isEmpty()) {
-            if (provider == PhuongThucXacThuc.EMAIL) {
+            if (provider == PHUONG_THUC_XAC_THUC.EMAIL) {
                 throw new IllegalStateException("Tài khoản email đã được sử dụng.");
             } else {
                 return existingNguoiDungs.get(0); // Google/Facebook → dùng lại
@@ -104,21 +104,21 @@ public class UserService implements UserDetailsService {
         }
 
         // Tạo mới nếu chưa tồn tại
-        NguoiDung nguoiDung = new NguoiDung();
+        NGUOI_DUNG nguoiDung = new NGUOI_DUNG();
         nguoiDung.setEmail(username);
         nguoiDung.setPhuongThucXacThuc(provider);
         nguoiDung.setHo(userDTOs.getFirstName());
         nguoiDung.setTen(userDTOs.getLastName());
         nguoiDung.setNgaySinh(userDTOs.getDay_of_birth());
         nguoiDung.setDiaChi(userDTOs.getAddress());
-        nguoiDung.setVaiTro(VaiTro.ROLE_USER);
+        nguoiDung.setVaiTro(VAI_TRO.ROLE_USER);
         nguoiDung.setDaXacThuc(userDTOs.isVerified());
-        nguoiDung.setLoaiTaiKhoan(LoaiTaiKhoan.FREE);
+        nguoiDung.setLoaiTaiKhoan(LOAI_TAI_KHOAN.FREE);
 //        nguoiDung.setProviderId(userDTOs.getProviderId());
         nguoiDung.setNgayTao(LocalDateTime.now());
         nguoiDung.setNgayCapNhat(LocalDateTime.now());
         nguoiDung.setAnhDaiDien(defaultAvatar);
-        if (provider == PhuongThucXacThuc.EMAIL) {
+        if (provider == PHUONG_THUC_XAC_THUC.EMAIL) {
             if (userDTOs.getPassWord() == null || userDTOs.getPassWord().length() < 8) {
                 throw new IllegalArgumentException("Mật khẩu phải ít nhất 8 ký tự.");
             }
@@ -130,16 +130,16 @@ public class UserService implements UserDetailsService {
         return userRepository.save(nguoiDung);
     }
 
-    public List<NguoiDung> findByUserName(String userName) {
+    public List<NGUOI_DUNG> findByUserName(String userName) {
         return userRepository.searchUsers(userName);
     }
 
-    public List<NguoiDung> findByUserNameAndAuthProvider(String userName, PhuongThucXacThuc provider) {
+    public List<NGUOI_DUNG> findByUserNameAndAuthProvider(String userName, PHUONG_THUC_XAC_THUC provider) {
         return userRepository.findAllByUserNameAndAuthProvider(userName, provider);
     }
 
     public UserProfileDTOwithStatistical getUserByIds(UUID userId) {
-        NguoiDung nguoiDung = userRepository.findByMaNguoiDung(userId).orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+        NGUOI_DUNG nguoiDung = userRepository.findByMaNguoiDung(userId).orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
 
         // Thống kê số lượng nội dung của user
         long blogCount = blogRepository.countBlogsByUserId(userId);
@@ -156,7 +156,7 @@ public class UserService implements UserDetailsService {
     }
 
     public void deleteUser(UUID userId) {
-        NguoiDung nguoiDung = userRepository.findByMaNguoiDung(userId).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        NGUOI_DUNG nguoiDung = userRepository.findByMaNguoiDung(userId).orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         // Xóa comment của user
         commentRepository.deleteUserbyComment(userId);
@@ -171,12 +171,12 @@ public class UserService implements UserDetailsService {
         userRepository.delete(nguoiDung);
     }
 
-    public List<NguoiDung> findAllByUserName(String userName) {
+    public List<NGUOI_DUNG> findAllByUserName(String userName) {
         return userRepository.searchUsers(userName);
     }
 
     public UserDetails loadUserByUsername(String username) {
-        List<NguoiDung> nguoiDungs = userRepository.findAllByUserNameAndAuthProvider(username, PhuongThucXacThuc.EMAIL);
+        List<NGUOI_DUNG> nguoiDungs = userRepository.findAllByUserNameAndAuthProvider(username, PHUONG_THUC_XAC_THUC.EMAIL);
 
         if (nguoiDungs.isEmpty()) {
             throw new UsernameNotFoundException("User not found (EMAIL)");
@@ -185,7 +185,7 @@ public class UserService implements UserDetailsService {
             throw new UsernameNotFoundException("Tồn tại nhiều người dùng trùng thông tin đăng nhập.");
         }
 
-        NguoiDung nguoiDung = nguoiDungs.get(0);
+        NGUOI_DUNG nguoiDung = nguoiDungs.get(0);
 
         if (!nguoiDung.isDaXacThuc()) {
             throw new UsernameNotFoundException("Tài khoản chưa xác minh email.");
@@ -198,8 +198,8 @@ public class UserService implements UserDetailsService {
         return buildPrincipal(nguoiDung);
     }
 
-    public UserDetails loadUserByUsernameAndProvider(String username, PhuongThucXacThuc provider) {
-        List<NguoiDung> nguoiDungs = userRepository.findAllByUserNameAndAuthProvider(username, provider);
+    public UserDetails loadUserByUsernameAndProvider(String username, PHUONG_THUC_XAC_THUC provider) {
+        List<NGUOI_DUNG> nguoiDungs = userRepository.findAllByUserNameAndAuthProvider(username, provider);
 
         if (nguoiDungs.isEmpty()) {
             throw new UsernameNotFoundException("User not found (" + provider + ")");
@@ -208,7 +208,7 @@ public class UserService implements UserDetailsService {
             throw new UsernameNotFoundException("Tồn tại nhiều người dùng trùng thông tin đăng nhập.");
         }
 
-        NguoiDung nguoiDung = nguoiDungs.get(0);
+        NGUOI_DUNG nguoiDung = nguoiDungs.get(0);
 
         if (nguoiDung.getTrangThaiTaiKhoan() != null && nguoiDung.getTrangThaiTaiKhoan().toString().equalsIgnoreCase("BANNED")) {
             throw new UsernameNotFoundException("Tài khoản đã bị khóa.");
@@ -217,18 +217,18 @@ public class UserService implements UserDetailsService {
         return buildPrincipal(nguoiDung);
     }
 
-    private UserDetails buildPrincipal(NguoiDung nguoiDung) {
+    private UserDetails buildPrincipal(NGUOI_DUNG nguoiDung) {
         String password = nguoiDung.getMatKhau();
 
-        if (nguoiDung.getPhuongThucXacThuc() == PhuongThucXacThuc.EMAIL && (password == null || password.isBlank())) {
+        if (nguoiDung.getPhuongThucXacThuc() == PHUONG_THUC_XAC_THUC.EMAIL && (password == null || password.isBlank())) {
             throw new UsernameNotFoundException("Password is missing for email login.");
         }
 
         return new CustomUserDetails(nguoiDung);
     }
 
-    public NguoiDung updateMyOwnProfile(String username, PhuongThucXacThuc phuongThucXacThuc, UserDTOs userDTOs) {
-        List<NguoiDung> nguoiDungs = userRepository.findAllByUserNameAndAuthProvider(username, phuongThucXacThuc);
+    public NGUOI_DUNG updateMyOwnProfile(String username, PHUONG_THUC_XAC_THUC phuongThucXacThuc, UserDTOs userDTOs) {
+        List<NGUOI_DUNG> nguoiDungs = userRepository.findAllByUserNameAndAuthProvider(username, phuongThucXacThuc);
 
         if (nguoiDungs.isEmpty()) {
             throw new UsernameNotFoundException("User not found");
@@ -237,7 +237,7 @@ public class UserService implements UserDetailsService {
             throw new UsernameNotFoundException("Trùng thông tin tài khoản.");
         }
 
-        NguoiDung nguoiDung = nguoiDungs.get(0);
+        NGUOI_DUNG nguoiDung = nguoiDungs.get(0);
 
         nguoiDung.setHo(userDTOs.getUserName());
         nguoiDung.setTen(userDTOs.getLastName());
@@ -249,7 +249,7 @@ public class UserService implements UserDetailsService {
     }
 
     public void changePassword(String username, PassWordChangeDTOs passWordChange) {
-        List<NguoiDung> nguoiDungs = userRepository.findAllByUserNameAndAuthProvider(username, PhuongThucXacThuc.EMAIL);
+        List<NGUOI_DUNG> nguoiDungs = userRepository.findAllByUserNameAndAuthProvider(username, PHUONG_THUC_XAC_THUC.EMAIL);
 
         if (nguoiDungs.isEmpty()) {
             throw new UsernameNotFoundException("User not found");
@@ -259,9 +259,9 @@ public class UserService implements UserDetailsService {
             throw new IllegalStateException("Tồn tại nhiều người dùng với cùng username.");
         }
 
-        NguoiDung nguoiDung = nguoiDungs.get(0);
+        NGUOI_DUNG nguoiDung = nguoiDungs.get(0);
 
-        if (nguoiDung.getPhuongThucXacThuc() != PhuongThucXacThuc.EMAIL) {
+        if (nguoiDung.getPhuongThucXacThuc() != PHUONG_THUC_XAC_THUC.EMAIL) {
             throw new IllegalArgumentException("Không thể đổi mật khẩu với tài khoản Google/Facebook.");
         }
 
@@ -311,12 +311,12 @@ public class UserService implements UserDetailsService {
         return email != null && email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
     }
 
-    public NguoiDung getUserById(UUID id) {
+    public NGUOI_DUNG getUserById(UUID id) {
         return userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + id));
     }
 
-    public NguoiDung uploadAvatarForUser(String username, PhuongThucXacThuc provider, MultipartFile file) throws Exception {
-        List<NguoiDung> nguoiDungs = userRepository.findAllByUserNameAndAuthProvider(username, provider);
+    public NGUOI_DUNG uploadAvatarForUser(String username, PHUONG_THUC_XAC_THUC provider, MultipartFile file) throws Exception {
+        List<NGUOI_DUNG> nguoiDungs = userRepository.findAllByUserNameAndAuthProvider(username, provider);
 
         if (nguoiDungs.isEmpty()) {
             throw new UsernameNotFoundException("User not found");
@@ -325,18 +325,18 @@ public class UserService implements UserDetailsService {
             throw new IllegalStateException("Tồn tại nhiều người dùng trùng username + provider.");
         }
 
-        NguoiDung nguoiDung = nguoiDungs.get(0);
+        NGUOI_DUNG nguoiDung = nguoiDungs.get(0);
         String avatarUrl = s3Service.uploadFile(file, "upload-avatar/");
         nguoiDung.setAnhDaiDien(avatarUrl);
         nguoiDung.setNgayCapNhat(LocalDateTime.now());
         return userRepository.save(nguoiDung);
     }
 
-    public Optional<NguoiDung> findById(UUID id) {
+    public Optional<NGUOI_DUNG> findById(UUID id) {
         return userRepository.findById(id);
     }
 
-    public NguoiDung saveUser(NguoiDung nguoiDung) {
+    public NGUOI_DUNG saveUser(NGUOI_DUNG nguoiDung) {
         return userRepository.save(nguoiDung);
     }
 }

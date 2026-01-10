@@ -664,7 +664,6 @@ import '@vueform/multiselect/themes/default.css'
 import { Form, Field, ErrorMessage } from 'vee-validate';
 import * as z from 'zod';
 import { toTypedSchema } from '@vee-validate/zod';
-import { it } from 'zod/locales'
 
 // State
 const activeTab = ref('vocabulary')

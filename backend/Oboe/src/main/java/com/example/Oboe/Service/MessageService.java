@@ -3,9 +3,9 @@
 
     import com.example.Oboe.DTOs.MessageDTO;
     import com.example.Oboe.DTOs.UserSummaryDTO;
-    import com.example.Oboe.Entity.TinNhan;
-    import com.example.Oboe.Entity.NguoiDung;
-    import com.example.Oboe.Entity.ThongBao;
+    import com.example.Oboe.Entity.TIN_NHAN;
+    import com.example.Oboe.Entity.NGUOI_DUNG;
+    import com.example.Oboe.Entity.THONG_BAO;
     import com.example.Oboe.Repository.MessageRepository;
     import com.example.Oboe.Repository.NotificationsRepository;
     import com.example.Oboe.Repository.UserRepository;
@@ -42,15 +42,15 @@
         }
         public MessageDTO sendMessage(UUID senderId, MessageDTO messageDto) {
             // Lấy người gửi từ token
-            NguoiDung sender = userRepository.findById(senderId)
+            NGUOI_DUNG sender = userRepository.findById(senderId)
                     .orElseThrow(() -> new RuntimeException("Sender not found"));
 
             // Lấy người nhận từ DTO
-            NguoiDung receiver = userRepository.findById(messageDto.getReceiverId())
+            NGUOI_DUNG receiver = userRepository.findById(messageDto.getReceiverId())
                     .orElseThrow(() -> new RuntimeException("Receiver not found"));
 
             // Tạo và lưu message
-            TinNhan tinNhan = new TinNhan();
+            TIN_NHAN tinNhan = new TIN_NHAN();
             tinNhan.setNguoiGui(sender);
             tinNhan.setNguoiNhan(receiver);
             tinNhan.setNoiDung(messageDto.getSentMessage());
@@ -59,10 +59,10 @@
             LocalDateTime localDateTimeVN = LocalDateTime.now(zoneVN);
             tinNhan.setThoiGianGui(localDateTimeVN);
 
-            TinNhan savedTinNhan = messageRepository.save(tinNhan);
+            TIN_NHAN savedTinNhan = messageRepository.save(tinNhan);
 
             // Tạo thông báo
-            ThongBao notification = new ThongBao();
+            THONG_BAO notification = new THONG_BAO();
             notification.setNguoiDung(receiver);
             notification.setNoiDung("Bạn nhận được một tin nhắn mới từ " + sender.getEmail());
             notification.setDaDuocDoc(false);
@@ -107,11 +107,11 @@
 
         public List<UserSummaryDTO> getChatPartners(UUID userId) {
             List<UUID> partnerIds = messageRepository.findAllPartnerIds(userId);
-            List<NguoiDung> nguoiDungs = userRepository.findByUserIdIn(partnerIds);
+            List<NGUOI_DUNG> nguoiDungs = userRepository.findByUserIdIn(partnerIds);
             Pageable limitOne = PageRequest.of(0, 1);
 
             return nguoiDungs.stream().map(user -> {
-                TinNhan lastMsg = messageRepository
+                TIN_NHAN lastMsg = messageRepository
                         .findMessageNew(userId, user.getMaNguoiDung(), limitOne)
                         .stream().findFirst().orElse(null);
 
@@ -130,7 +130,7 @@
         //lấy tất cả cuộc hội thoại
         public List<MessageDTO> getMessagesBetweenUsers(UUID userA, UUID userB) {
             Pageable top30 = PageRequest.of(0, 30); // chỉ lấy 30 tin mới nhất
-            List<TinNhan> tinNhans = messageRepository.findConversation(userA, userB,top30);
+            List<TIN_NHAN> tinNhans = messageRepository.findConversation(userA, userB,top30);
 
             Collections.reverse(tinNhans); //  chuyển tin nhắn từ  cũ sang mới
 
@@ -139,7 +139,7 @@
                     .collect(Collectors.toList());
         }
         public boolean deleteMessage(UUID messageId, UUID userId) {
-            TinNhan tinNhan = getMessage(messageId);
+            TIN_NHAN tinNhan = getMessage(messageId);
             // Kiểm tra quyền: chỉ sender mới được xóa
             if (!tinNhan.getNguoiGui().getMaNguoiDung().equals(userId)) {
                 return false;
@@ -148,11 +148,11 @@
             return true;
         }
 
-        public TinNhan getMessage(UUID messageId) {
+        public TIN_NHAN getMessage(UUID messageId) {
             return messageRepository.findById(messageId).orElse(null);
         }
 
-        private MessageDTO toDTO(TinNhan tinNhan) {
+        private MessageDTO toDTO(TIN_NHAN tinNhan) {
             MessageDTO dto = new MessageDTO();
             dto.setMessageId(tinNhan.getMaTinNhan());
             dto.setSenderId(tinNhan.getNguoiGui().getMaNguoiDung());

@@ -11,7 +11,7 @@ public class KanjiDTOs {
     private UUID kanjiId;
     private String characterName;
     private String meaning;
-    private String strokes;
+    private Integer strokes;
     private String VietnamesePronunciation;
     private String onYomi;
     private String kunYomi;

@@ -3,9 +3,9 @@ package com.example.Oboe.Controller;
 import com.example.Oboe.Config.CustomUserDetails;
 import com.example.Oboe.DTOs.BlogReportDTO;
 import com.example.Oboe.DTOs.ReportDtos;
-import com.example.Oboe.Entity.LoaiXuLy;
-import com.example.Oboe.Entity.BaoCao;
-import com.example.Oboe.Entity.TrangThaiBaoCao;
+import com.example.Oboe.Entity.LOAI_XU_LY;
+import com.example.Oboe.Entity.BAO_CAO;
+import com.example.Oboe.Entity.TRANG_THAI_BAO_CAO;
 import com.example.Oboe.Service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,28 +25,28 @@ public class ReportController {
 
     // 1. Gửi báo cáo
     @PostMapping
-    public BaoCao createReport(@RequestBody ReportDtos reportDtos,
-                               @AuthenticationPrincipal CustomUserDetails userDetails) {
+    public BAO_CAO createReport(@RequestBody ReportDtos reportDtos,
+                                @AuthenticationPrincipal CustomUserDetails userDetails) {
         return reportService.createReport(reportDtos, userDetails.getUserID());
     }
 
 
     // 2. Lấy tất cả báo cáo
     @GetMapping
-    public List<BaoCao> getAllReports() {
+    public List<BAO_CAO> getAllReports() {
         return reportService.getAllReports();
     }
 
     // 3. Cập nhật trạng thái
     @PatchMapping("/{reportId}/status")
-    public String updateStatus(@PathVariable UUID reportId, @RequestParam TrangThaiBaoCao status) {
+    public String updateStatus(@PathVariable UUID reportId, @RequestParam TRANG_THAI_BAO_CAO status) {
         boolean updated = reportService.updateStatus(reportId, status);
         return updated ? "Cập nhật thành công" : "Không tìm thấy báo cáo";
     }
 
     // 4. Lấy báo cáo theo user
     @GetMapping("/user/{userId}")
-    public List<BaoCao> getReportsByUser(@PathVariable UUID userId) {
+    public List<BAO_CAO> getReportsByUser(@PathVariable UUID userId) {
         return reportService.getReportsByUserId(userId);
     }
 
@@ -60,7 +60,7 @@ public class ReportController {
         public List<BlogReportDTO> searchBlogReports(
                 @RequestParam(required = false) String title,
                 @RequestParam(required = false) String type,
-                @RequestParam(required = false) TrangThaiBaoCao status
+                @RequestParam(required = false) TRANG_THAI_BAO_CAO status
         )
         {
             return reportService.searchBlogReports(title, type, status);
@@ -72,7 +72,7 @@ public class ReportController {
     @PutMapping("/approve/{reportId}")
     public ResponseEntity<String> approveReport(
             @PathVariable UUID reportId,
-            @RequestParam LoaiXuLy loaiXuLy,
+            @RequestParam LOAI_XU_LY loaiXuLy,
             @RequestParam(required = false) String note) {
 
         reportService.approveReport(reportId, loaiXuLy, note);

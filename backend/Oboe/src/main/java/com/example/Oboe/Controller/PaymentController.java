@@ -1,18 +1,17 @@
 package com.example.Oboe.Controller;
 import com.example.Oboe.Config.CustomUserDetails;
-import com.example.Oboe.Entity.DonHang;
+import com.example.Oboe.Entity.DON_HANG;
+import com.example.Oboe.Entity.TRANG_THAI_THANH_TOAN;
 import com.example.Oboe.Repository.PaymentRepository;
 import com.example.Oboe.Repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import com.example.Oboe.Service.MomoService;
 import com.example.Oboe.Service.PayOsService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
+import java.math.BigDecimal;
 import java.util.*;
 
 @RestController
@@ -51,7 +50,9 @@ public class PaymentController {
             CustomUserDetails customUser = (CustomUserDetails) authentication.getPrincipal();
             UUID userId = customUser.getUserID();
 
-            var result = payOsService.createPayment(99000, "Thanh toán Oboeru", userId);
+            BigDecimal fixedAmount = BigDecimal.valueOf(19000);
+
+            var result = payOsService.createPayment(fixedAmount, "Thanh toán Oboeru", userId);
 
             if (result == null || result.getCheckoutUrl() == null) {
                 return ResponseEntity.status(500).body(Map.of(
@@ -62,25 +63,21 @@ public class PaymentController {
 
             // Lấy lại payment từ orderCode
             long orderCode = result.getOrderCode();
-            DonHang donHang = paymentRepository.findByMaDonHang(orderCode);
+            DON_HANG donHang = paymentRepository.findByMaDonHang(orderCode);
             if (donHang == null) {
                 return ResponseEntity.status(500).body(Map.of("error", "Không tìm thấy đơn hàng vừa tạo"));
             }
 
-            String encodedCheckoutUrl = URLEncoder.encode(result.getCheckoutUrl(), StandardCharsets.UTF_8);
-//            String qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" + result.getCheckoutUrl();
-
             String qrUrl = result.getQrCode();
 
             Map<String, Object> body = new HashMap<>();
-            body.put("amount", donHang.getSoTien());
+            body.put("amount", donHang.getSoTien().intValue());
             body.put("orderCode", donHang.getMaDonHang());
-            body.put("status", donHang.getTrangThai());
+            body.put("status", donHang.getTrangThai().name());
             body.put("paid_at", donHang.getThoiGianThanhToan());
             body.put("qrUrl", qrUrl);
             body.put("checkoutUrl", result.getCheckoutUrl());
 
-            System.out.println("Checkout result: " + result);
             return ResponseEntity.ok(body);
 
         } catch (Exception e) {
@@ -92,7 +89,6 @@ public class PaymentController {
         }
     }
 
-
     @PostMapping("/payos-notify")
     public ResponseEntity<?> handlePayOsCallback(@RequestBody String rawJson) {
         try {
@@ -102,7 +98,6 @@ public class PaymentController {
 
             System.out.println("Payment trangThai updated for orderCode: " + data.getOrderCode() +
                     ", trangThai code: " + data.getCode());
-
 
             return ResponseEntity.ok("Received");
         } catch (Exception e) {
@@ -134,10 +129,10 @@ public class PaymentController {
 
         try {
             Long orderCodeLong = Long.parseLong(orderCode);
-            DonHang donHang = paymentRepository.findByMaDonHang(orderCodeLong);
+            DON_HANG donHang = paymentRepository.findByMaDonHang(orderCodeLong);
 
             if (donHang != null) {
-                donHang.setTrangThai("CANCELLED");
+                donHang.setTrangThai(TRANG_THAI_THANH_TOAN.CANCELLED);
                 paymentRepository.save(donHang);
             }
 
@@ -152,7 +147,7 @@ public class PaymentController {
 
     @GetMapping("/status")
     public ResponseEntity<?> getPaymentStatus(@RequestParam Long orderCode) {
-        DonHang donHang = paymentRepository.findByMaDonHang(orderCode);
+        DON_HANG donHang = paymentRepository.findByMaDonHang(orderCode);
         if (donHang == null) {
             return ResponseEntity.status(404).body(Map.of("error", "Không tìm thấy đơn hàng"));
         }

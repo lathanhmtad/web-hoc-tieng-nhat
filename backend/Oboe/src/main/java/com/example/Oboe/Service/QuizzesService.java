@@ -1,10 +1,9 @@
 package com.example.Oboe.Service;
 
-import com.example.Oboe.DTOs.QuestionDTO;
 import com.example.Oboe.DTOs.QuizDTO;
 import com.example.Oboe.DTOs.QuizWithQuestionsDTO;
-import com.example.Oboe.Entity.NguoiDung;
-import com.example.Oboe.Entity.BaiKiemTra;
+import com.example.Oboe.Entity.NGUOI_DUNG;
+import com.example.Oboe.Entity.BAI_KIEM_TRA;
 import com.example.Oboe.Repository.QuizzesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -39,9 +38,9 @@ public class QuizzesService {
                 .collect(Collectors.toList());
     }
     public List<QuizDTO> getAllByUserId(UUID userId) {
-        Optional<NguoiDung> userOpt = userService.findById(userId);
+        Optional<NGUOI_DUNG> userOpt = userService.findById(userId);
         if (userOpt.isEmpty()) return List.of(); // Trả về danh sách rỗng thay vì null
-        List<BaiKiemTra> quizzes = quizzesRepository.findQuizzesByUserId(userId);
+        List<BAI_KIEM_TRA> quizzes = quizzesRepository.findQuizzesByUserId(userId);
         return quizzes.stream()
                 .map(this::toDTO)
                 .toList();
@@ -54,16 +53,16 @@ public class QuizzesService {
 
     public Page<QuizDTO> getQuizzesByUser(UUID userId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<BaiKiemTra> quizzesPage = quizzesRepository.findQuizzesByUserIds(userId, pageable);
+        Page<BAI_KIEM_TRA> quizzesPage = quizzesRepository.findQuizzesByUserIds(userId, pageable);
         List<QuizDTO> dtoList = quizzesPage.stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
         return new PageImpl<>(dtoList, pageable, quizzesPage.getTotalElements());
     }
     public QuizDTO create(QuizDTO dto , UUID userId ) {
-        Optional<NguoiDung> userOpt = userService.findById(userId);
+        Optional<NGUOI_DUNG> userOpt = userService.findById(userId);
         if (userOpt.isEmpty()) return null;
-        BaiKiemTra quiz = new BaiKiemTra();
+        BAI_KIEM_TRA quiz = new BAI_KIEM_TRA();
         quiz.setTieuDe(dto.getTitle());
         quiz.setMoTa(dto.getDescription());
         quiz.setNguoiDung(userOpt.get());
@@ -71,7 +70,7 @@ public class QuizzesService {
     }
 
     public QuizDTO update(UUID id, QuizDTO dto, UUID userId) {
-        BaiKiemTra quiz = quizzesRepository.findById(id)
+        BAI_KIEM_TRA quiz = quizzesRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Quiz not found"));
         //  Kiểm tra quyền sở hữu
         if (!quiz.getNguoiDung().getMaNguoiDung().equals(userId)) {
@@ -85,7 +84,7 @@ public class QuizzesService {
 
 
     public void delete(UUID id, UUID userId) {
-        BaiKiemTra quiz = quizzesRepository.findById(id)
+        BAI_KIEM_TRA quiz = quizzesRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Quiz not found"));
 
         //  Kiểm tra quyền sở hữu
@@ -96,7 +95,7 @@ public class QuizzesService {
         quizzesRepository.delete(quiz);
     }
     public QuizWithQuestionsDTO getQuizById(UUID id) {
-        BaiKiemTra quiz = quizzesRepository.findById(id)
+        BAI_KIEM_TRA quiz = quizzesRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Quiz not found"));
 
         QuizWithQuestionsDTO dto = new QuizWithQuestionsDTO();
@@ -138,7 +137,7 @@ public class QuizzesService {
 
 
     // Convert Entity -> DTO
-    private QuizDTO toDTO(BaiKiemTra entity) {
+    private QuizDTO toDTO(BAI_KIEM_TRA entity) {
         QuizDTO dto = new QuizDTO();
         dto.setQuizzesID(entity.getMaBaiKiemTra());
         dto.setTitle(entity.getTieuDe());

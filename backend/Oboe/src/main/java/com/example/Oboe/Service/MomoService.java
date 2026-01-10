@@ -1,8 +1,8 @@
 package com.example.Oboe.Service;
 
-import com.example.Oboe.Entity.DonHang;
-import com.example.Oboe.Entity.LoaiTaiKhoan;
-import com.example.Oboe.Entity.NguoiDung;
+import com.example.Oboe.Entity.DON_HANG;
+import com.example.Oboe.Entity.LOAI_TAI_KHOAN;
+import com.example.Oboe.Entity.NGUOI_DUNG;
 import com.example.Oboe.Repository.PaymentRepository;
 import com.example.Oboe.Repository.UserRepository;
 import com.example.Oboe.Util.HmacUtil;
@@ -50,7 +50,7 @@ public class MomoService {
     private String notifyUrl;
 
     public Map<String, String> createPayment(UUID userId) throws Exception {
-        NguoiDung nguoiDung = userRepository.findById(userId)
+        NGUOI_DUNG nguoiDung = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         String orderId = UUID.randomUUID().toString();
@@ -123,12 +123,12 @@ public class MomoService {
                 UUID userId = UUID.fromString(extraData);
 
                 userRepository.findById(userId).ifPresent(user -> {
-                    user.setLoaiTaiKhoan(LoaiTaiKhoan.PREMIUM);
+                    user.setLoaiTaiKhoan(LOAI_TAI_KHOAN.PREMIUM);
                     userRepository.save(user);
 
-                    DonHang donHang = new DonHang();
-                    donHang.setSoTien(Integer.parseInt(amount));
-                    donHang.setTrangThai("SUCCESS");
+                    DON_HANG donHang = new DON_HANG();
+//                    donHang.setSoTien(Integer.parseInt(amount));
+//                    donHang.setTrangThai("SUCCESS");
                     donHang.setNguoiDung(user);
                     paymentRepository.save(donHang);
                 });

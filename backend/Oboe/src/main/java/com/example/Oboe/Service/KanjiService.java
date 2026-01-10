@@ -1,7 +1,7 @@
 package com.example.Oboe.Service;
 
 import com.example.Oboe.DTOs.KanjiDTOs;
-import com.example.Oboe.Entity.HanTu;
+import com.example.Oboe.Entity.HAN_TU;
 import com.example.Oboe.Repository.KanjiRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
@@ -28,7 +28,7 @@ public class KanjiService {
 
     public Map<String, Object> getAllKanji(int page, int size, String keyword) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<HanTu> kanjiPage = kanjiRepository.getAll(keyword, pageable);
+        Page<HAN_TU> kanjiPage = kanjiRepository.getAll(keyword, pageable);
 
         List<KanjiDTOs> kanjiDTOs = kanjiPage.getContent()
                 .stream()
@@ -53,22 +53,22 @@ public class KanjiService {
             throw new SecurityException("Bạn không có quyền tạo Kanji.");
         }
 
-        HanTu hanTu = new HanTu();
+        HAN_TU hanTu = new HAN_TU();
         hanTu.setSoNet(dto.getStrokes());
         hanTu.setNghia(dto.getMeaning());
         hanTu.setKyTu(dto.getCharacterName());
         hanTu.setPhatAmTiengViet(dto.getVietnamesePronunciation());
-        hanTu.setTrinhDoJLPT(dto.getJlptLevel());
+        hanTu.setTrinhDoJlpt(dto.getJlptLevel());
         hanTu.setOnYomi(dto.getOnYomi());
         hanTu.setKunYomi(dto.getKunYomi());
 
-        HanTu saved = kanjiRepository.save(hanTu);
+        HAN_TU saved = kanjiRepository.save(hanTu);
         return kanjiToDTO(saved);
     }
 
 
     public KanjiDTOs getKanjiByKanjiId(UUID kanjiId) {
-        HanTu hanTu = kanjiRepository.findById(kanjiId)
+        HAN_TU hanTu = kanjiRepository.findById(kanjiId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy Kanji với ID: " + kanjiId));
         return kanjiToDTO(hanTu);
     }
@@ -81,7 +81,7 @@ public class KanjiService {
             throw new SecurityException("Bạn không có quyền cập nhật Kanji.");
         }
 
-        HanTu hanTu = getKanjiEntityById(kanjiId);
+        HAN_TU hanTu = getKanjiEntityById(kanjiId);
         if (hanTu == null) return null;
 
         if (dto.getCharacterName() != null) {
@@ -97,7 +97,7 @@ public class KanjiService {
             hanTu.setPhatAmTiengViet(dto.getVietnamesePronunciation());
         }
         if(dto.getJlptLevel() != null) {
-            hanTu.setTrinhDoJLPT(dto.getJlptLevel());
+            hanTu.setTrinhDoJlpt(dto.getJlptLevel());
         }
         if(dto.getOnYomi() != null) {
             hanTu.setOnYomi(dto.getOnYomi());
@@ -106,7 +106,7 @@ public class KanjiService {
             hanTu.setKunYomi(dto.getKunYomi());
         }
 
-        HanTu updated = kanjiRepository.save(hanTu);
+        HAN_TU updated = kanjiRepository.save(hanTu);
         return kanjiToDTO(updated);
     }
 
@@ -118,7 +118,7 @@ public class KanjiService {
             throw new SecurityException("Bạn không có quyền xóa Kanji.");
         }
 
-        HanTu hanTu = getKanjiEntityById(kanjiId);
+        HAN_TU hanTu = getKanjiEntityById(kanjiId);
         if (hanTu == null) throw new RuntimeException("Không tìm thấy Kanji với ID: " + kanjiId);
 
         kanjiRepository.delete(hanTu);
@@ -126,7 +126,7 @@ public class KanjiService {
 
 
     public List<KanjiDTOs> searchKanji(String keyword) {
-        List<HanTu> hanTus = kanjiRepository.searchKanji(keyword);
+        List<HAN_TU> hanTus = kanjiRepository.searchKanji(keyword);
         return hanTus.stream()
                 .map(this::kanjiToDTO)
                 .collect(Collectors.toList());
@@ -134,11 +134,11 @@ public class KanjiService {
 
 
     public List<KanjiDTOs> getRelatedKanji(UUID kanjiId) {
-        HanTu hanTu = kanjiRepository.findById(kanjiId)
+        HAN_TU hanTu = kanjiRepository.findById(kanjiId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy Kanji"));
 
         String meaning = hanTu.getNghia();
-        List<HanTu> relatedHanTus = kanjiRepository.findRelatedByMeaning(meaning, kanjiId);
+        List<HAN_TU> relatedHanTus = kanjiRepository.findRelatedByMeaning(meaning, kanjiId);
 
         return relatedHanTus.stream()
                 .map(this::kanjiToDTO)
@@ -146,12 +146,12 @@ public class KanjiService {
     }
 
 
-    public HanTu getKanjiEntityById(UUID kanjiId) {
+    public HAN_TU getKanjiEntityById(UUID kanjiId) {
         return kanjiRepository.findById(kanjiId).orElse(null);
     }
 
 
-    public KanjiDTOs kanjiToDTO(HanTu hanTu) {
+    public KanjiDTOs kanjiToDTO(HAN_TU hanTu) {
         KanjiDTOs dto = new KanjiDTOs();
         dto.setKanjiId(hanTu.getMaHanTu());
         dto.setCharacterName(hanTu.getKyTu());
@@ -160,7 +160,7 @@ public class KanjiService {
         dto.setOnYomi(hanTu.getOnYomi());
         dto.setKunYomi(hanTu.getKunYomi());
         dto.setVietnamesePronunciation(hanTu.getPhatAmTiengViet());
-        dto.setJlptLevel(hanTu.getTrinhDoJLPT());
+        dto.setJlptLevel(hanTu.getTrinhDoJlpt());
         return dto;
     }
 }

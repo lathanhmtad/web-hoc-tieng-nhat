@@ -50,22 +50,22 @@ public class AdminService {
     }
 
     // Tạo tài khoản mới (Admin hoặc User)
-    public NguoiDung createUser(UserDTOs userDTO) {
-        PhuongThucXacThuc provider = userDTO.getAuthProvider();
+    public NGUOI_DUNG createUser(UserDTOs userDTO) {
+        PHUONG_THUC_XAC_THUC provider = userDTO.getAuthProvider();
         String username = userDTO.getUserName();
 
-        List<NguoiDung> existingNguoiDungs = userRepository.findAllByUserNameAndAuthProvider(username, provider);
+        List<NGUOI_DUNG> existingNguoiDungs = userRepository.findAllByUserNameAndAuthProvider(username, provider);
 
         if (!existingNguoiDungs.isEmpty()) {
-            if (provider == PhuongThucXacThuc.EMAIL) {
+            if (provider == PHUONG_THUC_XAC_THUC.EMAIL) {
                 throw new IllegalStateException("Tài khoản email đã được sử dụng.");
             }
             return existingNguoiDungs.get(0);
         }
 
-        NguoiDung nguoiDung = buildNewUser(userDTO);
+        NGUOI_DUNG nguoiDung = buildNewUser(userDTO);
 
-        if (provider == PhuongThucXacThuc.EMAIL) {
+        if (provider == PHUONG_THUC_XAC_THUC.EMAIL) {
             validatePassword(userDTO.getPassWord());
             nguoiDung.setMatKhau(passwordEncoder.encode(userDTO.getPassWord()));
         } else {
@@ -76,17 +76,17 @@ public class AdminService {
     }
 
 
-    private NguoiDung buildNewUser(UserDTOs dto) {
-        NguoiDung nguoiDung = new NguoiDung();
+    private NGUOI_DUNG buildNewUser(UserDTOs dto) {
+        NGUOI_DUNG nguoiDung = new NGUOI_DUNG();
         nguoiDung.setEmail(dto.getUserName());
         nguoiDung.setPhuongThucXacThuc(dto.getAuthProvider());
         nguoiDung.setHo(dto.getFirstName());
         nguoiDung.setTen(dto.getLastName());
         nguoiDung.setNgaySinh(dto.getDay_of_birth());
         nguoiDung.setDiaChi(dto.getAddress());
-        nguoiDung.setVaiTro(VaiTro.ROLE_USER);
+        nguoiDung.setVaiTro(VAI_TRO.ROLE_USER);
         nguoiDung.setDaXacThuc(dto.isVerified());
-        nguoiDung.setLoaiTaiKhoan(LoaiTaiKhoan.FREE);
+        nguoiDung.setLoaiTaiKhoan(LOAI_TAI_KHOAN.FREE);
 //        nguoiDung.setProviderId(dto.getProviderId());
         nguoiDung.setNgayTao(LocalDateTime.now());
         nguoiDung.setNgayCapNhat(LocalDateTime.now());
@@ -113,8 +113,8 @@ public class AdminService {
     }
 
     // Cập nhật người dùng
-    public NguoiDung updateUser(UUID id, UserDTOs dto) {
-        NguoiDung nguoiDung = getUserById(id);
+    public NGUOI_DUNG updateUser(UUID id, UserDTOs dto) {
+        NGUOI_DUNG nguoiDung = getUserById(id);
         nguoiDung.setEmail(dto.getUserName());
         nguoiDung.setHo(dto.getFirstName());
         nguoiDung.setTen(dto.getLastName());
@@ -131,39 +131,39 @@ public class AdminService {
 
 
     // Đổi role
-    public NguoiDung changeRole(UUID id, VaiTro newVaiTro) {
-        NguoiDung nguoiDung = getUserById(id);
+    public NGUOI_DUNG changeRole(UUID id, VAI_TRO newVaiTro) {
+        NGUOI_DUNG nguoiDung = getUserById(id);
         nguoiDung.setVaiTro(newVaiTro);
         nguoiDung.setNgayCapNhat(LocalDateTime.now());
         return userRepository.save(nguoiDung);
     }
 
     // Ban hoặc unban
-    public NguoiDung updateStatus(UUID id, TrangThaiTaiKhoan trangThaiTaiKhoan) {
-        NguoiDung nguoiDung = getUserById(id);
+    public NGUOI_DUNG updateStatus(UUID id, TRANG_THAI_TAI_KHOAN trangThaiTaiKhoan) {
+        NGUOI_DUNG nguoiDung = getUserById(id);
         nguoiDung.setTrangThaiTaiKhoan(trangThaiTaiKhoan);
         nguoiDung.setNgayCapNhat(LocalDateTime.now());
         return userRepository.save(nguoiDung);
     }
 
     // Reset mật khẩu
-    public NguoiDung resetPassword(UUID id, String newPassword) {
+    public NGUOI_DUNG resetPassword(UUID id, String newPassword) {
         if (newPassword == null || newPassword.length() < 8) {
             throw new IllegalArgumentException("Mật khẩu phải ít nhất 8 ký tự");
         }
-        NguoiDung nguoiDung = getUserById(id);
+        NGUOI_DUNG nguoiDung = getUserById(id);
         nguoiDung.setMatKhau(passwordEncoder.encode(newPassword));
         nguoiDung.setNgayCapNhat(LocalDateTime.now());
         return userRepository.save(nguoiDung);
     }
 
     // Lấy toàn bộ người dùng
-    public List<NguoiDung> getAllUsers() {
+    public List<NGUOI_DUNG> getAllUsers() {
         return userRepository.findAll();
     }
 
     // Lấy người dùng theo ID
-    public NguoiDung getUserById(UUID id) {
+    public NGUOI_DUNG getUserById(UUID id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy người dùng với id: " + id));
     }
@@ -174,16 +174,16 @@ public class AdminService {
                 .toList();
     }
     // Tìm kiếm theo từ khóa
-    public List<NguoiDung> searchUsers(String keyword) {
+    public List<NGUOI_DUNG> searchUsers(String keyword) {
         return userRepository.searchUsers(keyword);
     }
 
-    public List<NguoiDung> findByUserName(String userName) {
+    public List<NGUOI_DUNG> findByUserName(String userName) {
         return userRepository.searchUsers(userName);
     }
 
 
-    public Optional<NguoiDung> findById(UUID id) {
+    public Optional<NGUOI_DUNG> findById(UUID id) {
         return userRepository.findById(id);
     }
 

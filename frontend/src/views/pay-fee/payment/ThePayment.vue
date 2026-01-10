@@ -62,7 +62,7 @@
                   <span class="value amount">{{ formatAmount(paymentData.amount) }}</span>
                 </div>
                 <div class="info-item">
-                  <span class="label">{{ $t('payment.status') }}:</span>
+                  <span class="label">{{ $t('payment.statusLabel') }}:</span>
                   <span class="value" :class="getStatusClass(paymentData.status)">{{ getStatusText(paymentData.status) }}</span>
                 </div>
                 

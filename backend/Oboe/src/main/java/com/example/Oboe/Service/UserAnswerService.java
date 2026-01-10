@@ -1,6 +1,5 @@
 package com.example.Oboe.Service;
 
-
 import com.example.Oboe.DTOs.QuizResultDTO;
 import com.example.Oboe.DTOs.UserAnswerDTO;
 import com.example.Oboe.Entity.*;
@@ -31,12 +30,12 @@ public class UserAnswerService {
     }
     public QuizResultDTO saveUserAnswer(List<UserAnswerDTO> answers, UUID userId, UUID quizzesId) {
         // Lấy QuizID
-        BaiKiemTra quiz = quizzesRepository.findById(quizzesId).orElse(null);
+        BAI_KIEM_TRA quiz = quizzesRepository.findById(quizzesId).orElse(null);
         if (quiz == null) {
             return new QuizResultDTO("Không tìm thấy Quiz!", 0, 0, 0, LocalDateTime.now());
         }
         //Lấy Userid
-        NguoiDung nguoiDung = userRepository.findById(userId).orElse(null);
+        NGUOI_DUNG nguoiDung = userRepository.findById(userId).orElse(null);
         if (nguoiDung == null) {
             return new QuizResultDTO("Không tìm thấy User!", 0, 0, 0, LocalDateTime.now());
         }
@@ -56,10 +55,9 @@ public class UserAnswerService {
             return new QuizResultDTO("Bạn đã trả lời nhiều hơn số câu hỏi trong quiz này!", 0, totalQuestions, answers.size(), LocalDateTime.now());
         }
 
-
         //  Tìm attemptNumber lớn nhất đã có
-        Integer latestAttempt = userAnswerRepository.findMaxAttemptNumber(userId, quizzesId);
-        int currentAttempt = (latestAttempt == null) ? 1 : latestAttempt + 1;
+//        Integer latestAttempt = userAnswerRepository.findMaxAttemptNumber(userId, quizzesId);
+//        int currentAttempt = (latestAttempt == null) ? 1 : latestAttempt + 1;
 
         long correctAnswers = 0;
 

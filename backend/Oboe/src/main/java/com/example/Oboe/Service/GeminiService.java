@@ -181,4 +181,47 @@ public class GeminiService {
             throw new RuntimeException("Lỗi khi phân tích JSON từ Gemini: " + e.getMessage());
         }
     }
+
+    public String generateFlashcardContent(String topic, String kanjiMode, int quantity) {
+        // Xây dựng chỉ thị cho AI
+        StringBuilder prompt = new StringBuilder();
+        prompt.append("Hãy tạo danh sách từ vựng tiếng Nhật về chủ đề: '").append(topic).append("'. ");
+        prompt.append("Số lượng: ").append(quantity).append(" từ. ");
+
+        // Xử lý logic Kanji/Hiragana
+        if ("NO_KANJI".equals(kanjiMode)) {
+            prompt.append("Yêu cầu: Chỉ sử dụng Hiragana/Katakana, không dùng Kanji. ");
+        } else if ("KANJI_ONLY".equals(kanjiMode)) {
+            prompt.append("Yêu cầu: Tập trung vào từ có Kanji. ");
+        } else if("BOTH".equals(kanjiMode)) {
+            prompt.append("Yêu cầu: Bao gồm cả Kanji và Hiragana. ");
+        }
+
+        // Quan trọng: Ép định dạng JSON để Frontend đọc được
+        prompt.append("Trả về kết quả CHỈ LÀ MỘT JSON ARRAY thuần túy (không có markdown ```json), ");
+        prompt.append("với cấu trúc mỗi phần tử: ");
+        prompt.append("{ \"term\": \"từ tiếng Nhật\", \"mean\": \"nghĩa tiếng Việt\", \"example\": \"ví dụ câu (nếu có)\" }.");
+
+        // Gọi hàm getContent (giả sử bạn đã có hàm gọi API Gemini trong service này)
+//        return getContent(prompt.toString());
+        return null;
+    }
+
+    public String generateQuizFromVocabularyList(List<String> vocabList, int quantity, String kanjiMode, String level) {
+        StringBuilder prompt = new StringBuilder();
+        prompt.append("Tạo một bài trắc nghiệm (Quiz) gồm ").append(quantity).append(" câu hỏi tiếng Nhật. ");
+        prompt.append("Nội dung CHỈ được lấy từ danh sách từ vựng sau: ").append(String.join(", ", vocabList)).append(". ");
+
+        if ("NO_KANJI".equals(kanjiMode)) {
+            prompt.append("Yêu cầu: Câu hỏi và đáp án dùng Hiragana/Katakana, không dùng Kanji. ");
+        } else if ("KANJI_ONLY".equals(kanjiMode)) {
+            prompt.append("Yêu cầu: Ưu tiên hỏi về cách đọc Kanji hoặc ý nghĩa Hán tự. ");
+        }
+
+        prompt.append("Trả về định dạng JSON Array chuẩn (không markdown) với cấu trúc: ");
+        prompt.append("[{\"question\": \"...\", \"options\": [\"A\", \"B\", \"C\", \"D\"], \"correctAnswer\": \"đáp án đúng\", \"type\": \"VOCABULARY\"}]");
+
+        return null;
+//        return getContent(prompt.toString());
+    }
 }

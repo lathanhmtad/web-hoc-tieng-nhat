@@ -2,8 +2,8 @@ package com.example.Oboe.Service;
 
 import com.example.Oboe.DTOs.BlogDTO;
 import com.example.Oboe.DTOs.TopicPostProjection;
-import com.example.Oboe.Entity.BaiViet;
-import com.example.Oboe.Entity.NguoiDung;
+import com.example.Oboe.Entity.BAI_VIET;
+import com.example.Oboe.Entity.NGUOI_DUNG;
 import com.example.Oboe.Repository.BlogRepository;
 import com.example.Oboe.Repository.CommentRepository;
 
@@ -33,7 +33,7 @@ public class BlogService {
         Map<String, Object> response = new HashMap<>();
         try {
             Pageable pageable = PageRequest.of(page, size, Sort.by("ngayTao").descending());
-            Page<BaiViet> blogPage = blogRepository.findAll(pageable);
+            Page<BAI_VIET> blogPage = blogRepository.findAll(pageable);
 
             List<BlogDTO> blogDTOs = blogPage.getContent()
                     .stream()
@@ -59,7 +59,7 @@ public class BlogService {
 
     //  Lấy Blog theo ID
     public BlogDTO getBlogDTOById(UUID id) {
-        Optional<BaiViet> blogOpt = blogRepository.findById(id);
+        Optional<BAI_VIET> blogOpt = blogRepository.findById(id);
         if (blogOpt.isEmpty()) {
 
             return null;
@@ -69,11 +69,11 @@ public class BlogService {
 
     // Tạo Blog mới từ DTO và userId
     public BlogDTO createBlogFromDTO(BlogDTO blogDTO, UUID userId) {
-        Optional<NguoiDung> userOpt = userService.findById(userId);
+        Optional<NGUOI_DUNG> userOpt = userService.findById(userId);
         if (userOpt.isEmpty()) return null;
         ZoneId vietnamZone = ZoneId.of("Asia/Ho_Chi_Minh");
         LocalDateTime vietnamTime = LocalDateTime.now(vietnamZone);
-        BaiViet baiViet = new BaiViet();
+        BAI_VIET baiViet = new BAI_VIET();
         baiViet.setTieuDe(blogDTO.getTitle());
         baiViet.setNoiDung(blogDTO.getContent());
         baiViet.setNguoiDung(userOpt.get());
@@ -84,23 +84,23 @@ public class BlogService {
         baiViet.setChuDe(blogDTO.getTopics());
 
 
-        BaiViet saved = blogRepository.save(baiViet);
+        BAI_VIET saved = blogRepository.save(baiViet);
         return toDTO(saved);
     }
 
     // Cập nhật blog (chỉ nếu người dùng là chủ sở hữu)
     public BlogDTO updateBlogFromDTO(UUID id, BlogDTO blogDTO, UUID userId) {
-        Optional<BaiViet> blogOpt = blogRepository.findById(id);
+        Optional<BAI_VIET> blogOpt = blogRepository.findById(id);
         if (blogOpt.isEmpty()) return null;
 
-        Optional<NguoiDung> userOpt = userService.findById(userId);
+        Optional<NGUOI_DUNG> userOpt = userService.findById(userId);
         if (userOpt.isEmpty()) return null;
 
 
         ZoneId vietnamZone = ZoneId.of("Asia/Ho_Chi_Minh");
         LocalDateTime vietnamTime = LocalDateTime.now(vietnamZone);
-        BaiViet baiViet = blogOpt.get();
-        NguoiDung currentNguoiDung = userOpt.get();
+        BAI_VIET baiViet = blogOpt.get();
+        NGUOI_DUNG currentNguoiDung = userOpt.get();
 
         if (baiViet.getNguoiDung() == null || !baiViet.getNguoiDung().getMaNguoiDung().equals(currentNguoiDung.getMaNguoiDung())) {
             return null;
@@ -113,20 +113,20 @@ public class BlogService {
         baiViet.setThe(blogDTO.getTags());
         baiViet.setChuDe(blogDTO.getTopics());
 
-        BaiViet updated = blogRepository.save(baiViet);
+        BAI_VIET updated = blogRepository.save(baiViet);
         return toDTO(updated);
     }
 
     //  Xóa blog nếu người dùng là chủ sở hữu
     public boolean deleteBlogById(UUID id, UUID userId) {
-        Optional<BaiViet> blogOpt = blogRepository.findById(id);
+        Optional<BAI_VIET> blogOpt = blogRepository.findById(id);
         if (blogOpt.isEmpty()) return false;
 
-        Optional<NguoiDung> userOpt = userService.findById(userId);
+        Optional<NGUOI_DUNG> userOpt = userService.findById(userId);
         if (userOpt.isEmpty()) return false;
 
-        BaiViet baiViet = blogOpt.get();
-        NguoiDung nguoiDung = userOpt.get();
+        BAI_VIET baiViet = blogOpt.get();
+        NGUOI_DUNG nguoiDung = userOpt.get();
 
         // Kiểm tra quyền sở hữu
         if (baiViet.getNguoiDung() == null || !baiViet.getNguoiDung().getMaNguoiDung().equals(nguoiDung.getMaNguoiDung())) {
@@ -140,7 +140,7 @@ public class BlogService {
     //  Tìm kiếm Blog theo từ khóa tiêu đề
 
     public List<BlogDTO> searchBlogs(String keyword, String field) {
-        List<BaiViet> baiViets;
+        List<BAI_VIET> baiViets;
 
         switch (field.toLowerCase()) {
             case "tieuDe":
@@ -163,10 +163,10 @@ public class BlogService {
 
     //  Lấy tất cả Blog của một User cụ thể phân trang
     public Page<BlogDTO> getAllBlogByUserIds(UUID userId, int page, int size) {
-        Optional<NguoiDung> userOpt = userService.findById(userId);
+        Optional<NGUOI_DUNG> userOpt = userService.findById(userId);
         if (userOpt.isEmpty()) return Page.empty();
         Pageable pageable = PageRequest.of(page, size);
-        Page<BaiViet> blogPage = blogRepository.findBlogsByUserIds(userId, pageable);
+        Page<BAI_VIET> blogPage = blogRepository.findBlogsByUserIds(userId, pageable);
         // Chuyển đổi Page<Blog> thành Page<BlogDTO>
         List<BlogDTO> blogDTOs = blogPage.stream()
                 .map(this::toDTO)
@@ -174,10 +174,10 @@ public class BlogService {
         return new PageImpl<>(blogDTOs, pageable, blogPage.getTotalElements());
     }
     public List<BlogDTO> getAllBlogByUserId(UUID userId) {
-        Optional<NguoiDung> userOpt = userService.findById(userId);
+        Optional<NGUOI_DUNG> userOpt = userService.findById(userId);
         if (userOpt.isEmpty()) return List.of();
 
-        List<BaiViet> baiViets = blogRepository.findBlogsByUserId(userId);
+        List<BAI_VIET> baiViets = blogRepository.findBlogsByUserId(userId);
         return baiViets.stream()
                 .map(this::toDTO)
                 .toList();
@@ -191,7 +191,7 @@ public class BlogService {
 
 
     //  Chuyển đổi từ Entity sang DTO
-    private BlogDTO toDTO(BaiViet baiViet) {
+    private BlogDTO toDTO(BAI_VIET baiViet) {
         BlogDTO dto = new BlogDTO();
         dto.setId(baiViet.getMaBaiViet());
 
@@ -229,10 +229,10 @@ public class BlogService {
     }
 
     public boolean deleteBlogAsAdmin(UUID blogId) {
-        Optional<BaiViet> blogOpt = blogRepository.findById(blogId);
+        Optional<BAI_VIET> blogOpt = blogRepository.findById(blogId);
         if (blogOpt.isEmpty()) return false;
 
-        BaiViet baiViet = blogOpt.get();
+        BAI_VIET baiViet = blogOpt.get();
         blogRepository.delete(baiViet);
         return true;
     }

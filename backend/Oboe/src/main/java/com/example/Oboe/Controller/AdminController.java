@@ -2,9 +2,9 @@ package com.example.Oboe.Controller;
 
 import com.example.Oboe.DTOs.UserDTOs;
 import com.example.Oboe.DTOs.UserProfileDTO;
-import com.example.Oboe.Entity.NguoiDung;
-import com.example.Oboe.Entity.VaiTro;
-import com.example.Oboe.Entity.TrangThaiTaiKhoan;
+import com.example.Oboe.Entity.NGUOI_DUNG;
+import com.example.Oboe.Entity.VAI_TRO;
+import com.example.Oboe.Entity.TRANG_THAI_TAI_KHOAN;
 import com.example.Oboe.Service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,8 +26,8 @@ public class AdminController {
     @PostMapping("/create")
     public ResponseEntity<?> createUser(@RequestBody UserDTOs dto) {
         try {
-            NguoiDung created = adminService.createUser(dto);
-            if (created == null && dto.getRole() == VaiTro.ROLE_USER) {
+            NGUOI_DUNG created = adminService.createUser(dto);
+            if (created == null && dto.getRole() == VAI_TRO.ROLE_USER) {
                 return ResponseEntity.ok("Đã gửi email xác minh cho tài khoản người dùng.");
             }
             return ResponseEntity.ok(created);
@@ -72,7 +72,7 @@ public class AdminController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/change-role/{id}")
-    public ResponseEntity<?> changeRole(@PathVariable UUID id, @RequestParam VaiTro vaiTro) {
+    public ResponseEntity<?> changeRole(@PathVariable UUID id, @RequestParam VAI_TRO vaiTro) {
         try {
             return ResponseEntity.ok(adminService.changeRole(id, vaiTro));
         } catch (Exception e) {
@@ -82,9 +82,9 @@ public class AdminController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/update-status/{id}")
-    public ResponseEntity<?> updateStatus(@PathVariable UUID id, @RequestParam TrangThaiTaiKhoan trangThaiTaiKhoan) {
+    public ResponseEntity<?> updateStatus(@PathVariable UUID id, @RequestParam TRANG_THAI_TAI_KHOAN trangThaiTaiKhoan) {
         try {
-            NguoiDung updatedNguoiDung = adminService.updateStatus(id, trangThaiTaiKhoan);
+            NGUOI_DUNG updatedNguoiDung = adminService.updateStatus(id, trangThaiTaiKhoan);
             return ResponseEntity.ok(new UserProfileDTO(updatedNguoiDung));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -121,7 +121,7 @@ public class AdminController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/search")
-    public ResponseEntity<List<NguoiDung>> searchUsers(@RequestParam String keyword) {
+    public ResponseEntity<List<NGUOI_DUNG>> searchUsers(@RequestParam String keyword) {
         return ResponseEntity.ok(adminService.searchUsers(keyword));
     }
 }

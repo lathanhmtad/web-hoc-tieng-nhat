@@ -1,7 +1,7 @@
 package com.example.Oboe.Service;
 
 import com.example.Oboe.DTOs.NotificationsDTO;
-import com.example.Oboe.Entity.ThongBao;
+import com.example.Oboe.Entity.THONG_BAO;
 import com.example.Oboe.Repository.NotificationsRepository;
 import com.example.Oboe.Repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -26,7 +26,7 @@ public class NotificationsService {
 
     public List<NotificationsDTO> getAllNotification(UUID userId) {
         Pageable top30 = PageRequest.of(0, 30); // chỉ lấy 30 thông báo mới nhất
-        List<ThongBao> notifications = notificationsRepository.findConversation(userId, top30);
+        List<THONG_BAO> notifications = notificationsRepository.findConversation(userId, top30);
         return notifications.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
@@ -39,7 +39,7 @@ public class NotificationsService {
 
     @Transactional
     public boolean markNotificationAsRead(UUID notificationId) {
-        ThongBao read = notificationsRepository.findById(notificationId).orElse(null);
+        THONG_BAO read = notificationsRepository.findById(notificationId).orElse(null);
         if (read != null && !read.isDaDuocDoc()) {
             read.setDaDuocDoc(true); // Đánh dấu đã đọc
             notificationsRepository.save(read); // Lưu lại
@@ -48,7 +48,7 @@ public class NotificationsService {
         return false;
     }
 
-    public NotificationsDTO convertToDTO(ThongBao thongBao) {
+    public NotificationsDTO convertToDTO(THONG_BAO thongBao) {
         return new NotificationsDTO(
                 thongBao.getMaThongBao(),
                 thongBao.getNguoiDung().getMaNguoiDung(),

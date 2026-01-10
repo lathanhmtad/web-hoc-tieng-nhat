@@ -43,7 +43,8 @@
     "studyMaterial": "Học liệu",
     "home": "Trang chủ",
     "profile": "Hồ sơ",
-    "library": "Thư viện"
+    "library": "Thư viện",
+    "ok": "OK"
   },
   "navigation": {
     "home": "Trang chủ",
@@ -1131,7 +1132,6 @@
     "accountNumber": "Số tài khoản",
     "orderCode": "Mã đơn hàng",
     "amount": "Số tiền",
-    "status": "Trạng thái",
     "instructionsTitle": "Hướng dẫn thanh toán",
     "instruction1": "Mở ứng dụng ngân hàng hoặc ví điện tử trên điện thoại",
     "instruction2": "Chọn chức năng \"Quét mã QR\" hoặc \"QR Pay\"",
@@ -1182,7 +1182,7 @@
     "orderSummary": "Tóm tắt đơn hàng",
     "accountInfo": "Thông tin tài khoản",
     "oboePro": "Gói Oboe Pro (Hàng tháng)",
-    "monthlyPrice": "99.000đ",
+    "monthlyPrice": "19.000đ",
     "total": "Tổng cộng",
     "premium": "PREMIUM",
     "premiumAccountDescription": "Tài khoản của bạn đã được nâng cấp lên Premium với đầy đủ tính năng cao cấp.",

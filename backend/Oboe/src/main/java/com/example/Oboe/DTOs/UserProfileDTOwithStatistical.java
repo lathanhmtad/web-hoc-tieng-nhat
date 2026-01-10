@@ -1,6 +1,6 @@
 package com.example.Oboe.DTOs;
 
-import com.example.Oboe.Entity.NguoiDung;
+import com.example.Oboe.Entity.NGUOI_DUNG;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -29,7 +29,7 @@ public class UserProfileDTOwithStatistical {
     }
 
     // Constructor nhận User entity
-    public UserProfileDTOwithStatistical(NguoiDung nguoiDung) {
+    public UserProfileDTOwithStatistical(NGUOI_DUNG nguoiDung) {
         this.maNguoiDung = nguoiDung.getMaNguoiDung();
         this.userName = nguoiDung.getEmail();
         this.firstName = nguoiDung.getHo();

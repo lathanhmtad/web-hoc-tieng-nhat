@@ -18,6 +18,7 @@
     "firebase": "^10.14.1",
     "firebaseui": "^6.1.0",
     "flag-icons": "^7.5.0",
+    "hanzi-writer": "^3.7.3",
     "jwt-decode": "^4.0.0",
     "sockjs-client": "^1.6.1",
     "swiper": "^11.2.6",
@@ -28,8 +29,7 @@
     "vue-sonner": "^2.0.9",
     "vuefire": "^3.2.1",
     "vuex": "^4.0.2",
-    "vuex-persistedstate": "^4.1.0",
-    "zod": "^4.1.13"
+    "vuex-persistedstate": "^4.1.0"
   },
   "devDependencies": {
     "@tailwindcss/aspect-ratio": "^0.4.2",

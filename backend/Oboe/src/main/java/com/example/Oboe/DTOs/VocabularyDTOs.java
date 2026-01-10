@@ -17,11 +17,11 @@ public class VocabularyDTOs {
     private String meanning;
     private String wordType; // noun, verb, adj,...
     private String scriptType; // hiragana, katakana, kanji
-    private UUID kanjiId;
     private List<KanjiLink> kanjiLinks;
     private String vietnamese_pronunciation;
     private List<ReadingDTO> readings;
     private String readingRomaji;
+    private List<SampleSentenceDTO> listSampleSentences;
 
     @Getter
     @Setter
@@ -29,5 +29,6 @@ public class VocabularyDTOs {
     public static class KanjiLink {
         private String label;
         private UUID value;
+        private String kiTu;
     }
 }

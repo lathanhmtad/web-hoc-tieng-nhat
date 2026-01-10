@@ -1,6 +1,6 @@
 package com.example.Oboe.Repository;
 
-import com.example.Oboe.Entity.NguPhap;
+import com.example.Oboe.Entity.NGU_PHAP;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,12 +12,12 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface GrammarRepository extends JpaRepository<NguPhap, UUID> {
-    @Query("SELECT g FROM NguPhap g WHERE LOWER(g.cauTruc) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+public interface GrammarRepository extends JpaRepository<NGU_PHAP, UUID> {
+    @Query("SELECT g FROM NGU_PHAP g WHERE LOWER(g.cauTruc) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
             "OR LOWER(g.giaiThich) LIKE LOWER(CONCAT('%', :keyword, '%')) ")
-    List<NguPhap> searchGrammar(@Param("keyword") String keyword);
+    List<NGU_PHAP> searchGrammar(@Param("keyword") String keyword);
 
-    @Query("SELECT g FROM NguPhap g WHERE LOWER(g.cauTruc) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+    @Query("SELECT g FROM NGU_PHAP g WHERE LOWER(g.cauTruc) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
             "OR LOWER(g.giaiThich) LIKE LOWER(CONCAT('%', :keyword, '%')) ")
-    Page<NguPhap> getALl(@Param("keyword") String keyword, Pageable pageable);
+    Page<NGU_PHAP> getALl(@Param("keyword") String keyword, Pageable pageable);
 }

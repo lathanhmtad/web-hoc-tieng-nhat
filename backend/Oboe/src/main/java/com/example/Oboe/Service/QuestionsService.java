@@ -1,12 +1,11 @@
 package com.example.Oboe.Service;
 
 import com.example.Oboe.DTOs.QuestionDTO;
-import com.example.Oboe.Entity.CauHoi;
-import com.example.Oboe.Entity.BaiKiemTra;
+import com.example.Oboe.Entity.CAU_HOI;
+import com.example.Oboe.Entity.BAI_KIEM_TRA;
 import com.example.Oboe.Repository.QuestionsRepository;
 import com.example.Oboe.Repository.QuizzesRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -31,16 +30,16 @@ public class QuestionsService {
         List<QuestionDTO> createdQuestions = new ArrayList<>();
 
         for (QuestionDTO dto : dtoList) {
-            BaiKiemTra quiz = quizzesRepository.findById(dto.getQuizId())
+            BAI_KIEM_TRA quiz = quizzesRepository.findById(dto.getQuizId())
                     .orElseThrow(() -> new RuntimeException("Quiz not found with ID: " + dto.getQuizId()));
 
-            CauHoi question = new CauHoi();
+            CAU_HOI question = new CAU_HOI();
             question.setTenCauHoi(dto.getQuestionName());
             question.setDapAnChinhXac(dto.getCorrectAnswer());
-            question.setLuuChon(String.join(";", dto.getOptions()));
+            question.setLuaChon(String.join(";", dto.getOptions()));
             question.setBaiKiemTra(quiz);
 
-            CauHoi saved = questionsRepository.save(question);
+            CAU_HOI saved = questionsRepository.save(question);
             createdQuestions.add(toDTO(saved));
         }
 
@@ -48,7 +47,7 @@ public class QuestionsService {
     }
 
     public Page<QuestionDTO> getQuestionsByQuizId(UUID quizId, Pageable pageable) {
-        BaiKiemTra quiz = quizzesRepository.findById(quizId)
+        BAI_KIEM_TRA quiz = quizzesRepository.findById(quizId)
                 .orElseThrow(() -> new RuntimeException("Quiz not found"));
 
         return questionsRepository.findByBaiKiemTra(quiz, pageable)
@@ -57,13 +56,13 @@ public class QuestionsService {
 
 
 
-    private QuestionDTO toDTO(CauHoi q) {
+    private QuestionDTO toDTO(CAU_HOI q) {
         QuestionDTO dto = new QuestionDTO();
         dto.setQuestionID(q.getMaCauHoi());
         dto.setQuestionName(q.getTenCauHoi());
         dto.setCorrectAnswer(q.getDapAnChinhXac());
 
-        String optionsStr = q.getLuuChon().trim();
+        String optionsStr = q.getLuaChon().trim();
 
         if (optionsStr.startsWith("[") && optionsStr.endsWith("]")) {
             // Trường hợp bị lưu kiểu JSON string

@@ -2,34 +2,20 @@ package com.example.Oboe.Service;
 
 import com.example.Oboe.Entity.*;
 import com.example.Oboe.Repository.*;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+@AllArgsConstructor
 @Service
 public class SearchService {
 
-    @Autowired
     private KanjiRepository kanjiRepository;
-
-    @Autowired
     private VocabularyRepository vocabularyRepository;
-
-    @Autowired
     private GrammarRepository grammarRepository;
-
-    @Autowired
     private SampleSentenceRepository sampleSentenceRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private QuizzesRepository quizzesRepository;
-
-    @Autowired
-    private FlashCardRepository flashCardRepository;
 
     // Gợi ý tất cả các loại học liệu (cho /suggest)
     public List<Map<String, String>> suggestAllTypes(String keyword) {
@@ -49,7 +35,7 @@ public class SearchService {
 
         switch (type.toLowerCase()) {
             case "vocabulary":
-                for (TuVung v : vocabularyRepository.searchVocabulary(keyword)) {
+                for (TU_VUNG v : vocabularyRepository.searchVocabulary(keyword)) {
                     Map<String, String> item = new HashMap<>();
                     item.put("type", "vocabulary");
                     item.put("word", v.getNoiDungTu());
@@ -61,7 +47,7 @@ public class SearchService {
                 break;
 
             case "kanji":
-                for (HanTu k : kanjiRepository.searchKanji(keyword)) {
+                for (HAN_TU k : kanjiRepository.searchKanji(keyword)) {
                     Map<String, String> item = new HashMap<>();
                     item.put("type", "kanji");
                     item.put("word", k.getKyTu());
@@ -73,7 +59,7 @@ public class SearchService {
                 break;
 
             case "grammar":
-                for (NguPhap g : grammarRepository.searchGrammar(keyword)) {
+                for (NGU_PHAP g : grammarRepository.searchGrammar(keyword)) {
                     Map<String, String> item = new HashMap<>();
                     item.put("type", "grammar");
                     item.put("word", g.getCauTruc());
@@ -85,7 +71,7 @@ public class SearchService {
                 break;
 
             case "sentence":
-                for (MauCau s : sampleSentenceRepository.searchByVietnameseMeaning(keyword)) {
+                for (MAU_CAU s : sampleSentenceRepository.searchByVietnameseMeaning(keyword)) {
                     Map<String, String> item = new HashMap<>();
                     item.put("type", "sentence");
                     item.put("word", s.getCauTiengNhat());

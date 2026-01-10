@@ -1,7 +1,7 @@
 package com.example.Oboe.Controller;
 
-import com.example.Oboe.Entity.NguoiDung;
-import com.example.Oboe.Entity.PhuongThucXacThuc;
+import com.example.Oboe.Entity.NGUOI_DUNG;
+import com.example.Oboe.Entity.PHUONG_THUC_XAC_THUC;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.example.Oboe.DTOs.LoginRequest;
 import com.example.Oboe.DTOs.PassWordChangeDTOs;
@@ -52,10 +52,10 @@ public class AuthController {
             return ResponseEntity.badRequest().body("Password is required.");
         }
 
-        PhuongThucXacThuc currentProvider = userDTOs.getAuthProvider() != null ? userDTOs.getAuthProvider() : PhuongThucXacThuc.EMAIL;
-        List<NguoiDung> existingNguoiDungs = userService.findByUserName(userDTOs.getUserName());
+        PHUONG_THUC_XAC_THUC currentProvider = userDTOs.getAuthProvider() != null ? userDTOs.getAuthProvider() : PHUONG_THUC_XAC_THUC.EMAIL;
+        List<NGUOI_DUNG> existingNguoiDungs = userService.findByUserName(userDTOs.getUserName());
 
-        for (NguoiDung existing : existingNguoiDungs) {
+        for (NGUOI_DUNG existing : existingNguoiDungs) {
             if (existing.getPhuongThucXacThuc() == currentProvider) {
                 return ResponseEntity.status(HttpStatus.CONFLICT)
                         .body("Tài khoản đã tồn tại với nhà cung cấp " + currentProvider);
@@ -83,14 +83,14 @@ public class AuthController {
         String password = loginRequest.getPassWord();
 
         // Kiểm tra người dùng có tồn tại
-        List<NguoiDung> nguoiDungList = userService.findByUserNameAndAuthProvider(username, PhuongThucXacThuc.EMAIL);
+        List<NGUOI_DUNG> nguoiDungList = userService.findByUserNameAndAuthProvider(username, PHUONG_THUC_XAC_THUC.EMAIL);
         if (nguoiDungList.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
         }
         if (nguoiDungList.size() > 1) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Nhiều tài khoản trùng username và provider.");
         }
-        NguoiDung nguoiDung = nguoiDungList.get(0);
+        NGUOI_DUNG nguoiDung = nguoiDungList.get(0);
 
 
         // Không cho đăng nhập nếu chưa xác minh
@@ -100,7 +100,7 @@ public class AuthController {
         }
 
         // Nếu là tài khoản Google/Facebook, không cho đăng nhập password
-        if (nguoiDung.getPhuongThucXacThuc() != PhuongThucXacThuc.EMAIL) {
+        if (nguoiDung.getPhuongThucXacThuc() != PHUONG_THUC_XAC_THUC.EMAIL) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Hãy đăng nhập bằng " + nguoiDung.getPhuongThucXacThuc());
         }
@@ -115,7 +115,7 @@ public class AuthController {
 
             // Lấy userDetails từ authentication và sinh JWT
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            String jwt = jwtUtil.generateToken(userDetails, PhuongThucXacThuc.EMAIL.name());
+            String jwt = jwtUtil.generateToken(userDetails, PHUONG_THUC_XAC_THUC.EMAIL.name());
 
             Map<String, Object> response = new HashMap<>();
             response.put("message", "Login successful!");
@@ -145,7 +145,7 @@ public class AuthController {
         String username = authentication.getName();
 
         try {
-            NguoiDung updatedNguoiDung = userService.updateMyOwnProfile(username, PhuongThucXacThuc.EMAIL, userDTOs);
+            NGUOI_DUNG updatedNguoiDung = userService.updateMyOwnProfile(username, PHUONG_THUC_XAC_THUC.EMAIL, userDTOs);
             return ResponseEntity.ok(updatedNguoiDung);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -181,7 +181,7 @@ public class AuthController {
         String username = authentication.getName();
 
         try {
-            NguoiDung nguoiDung = userService.uploadAvatarForUser(username, PhuongThucXacThuc.EMAIL, file);
+            NGUOI_DUNG nguoiDung = userService.uploadAvatarForUser(username, PHUONG_THUC_XAC_THUC.EMAIL, file);
             return ResponseEntity.ok(Map.of("avatarUrl", nguoiDung.getAnhDaiDien()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Upload failed: " + e.getMessage());
@@ -204,14 +204,14 @@ public class AuthController {
         String username = jwtUtil.getEmailFromToken(token);
         String providerStr = jwtUtil.getProviderFromToken(token);
 
-        PhuongThucXacThuc provider;
+        PHUONG_THUC_XAC_THUC provider;
         try {
-            provider = PhuongThucXacThuc.valueOf(providerStr);
+            provider = PHUONG_THUC_XAC_THUC.valueOf(providerStr);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Provider không hợp lệ: " + providerStr);
         }
 
-        NguoiDung nguoiDung = userService.findByUserNameAndAuthProvider(username, provider)
+        NGUOI_DUNG nguoiDung = userService.findByUserNameAndAuthProvider(username, provider)
                 .stream().findFirst().orElse(null);
 
         if (nguoiDung == null) {
@@ -247,7 +247,7 @@ public class AuthController {
 
         try {
             FirebaseToken decodedToken = firebaseService.verifyIdToken(request.getIdToken());
-            NguoiDung nguoiDung = firebaseService.processFirebaseUser(decodedToken);
+            NGUOI_DUNG nguoiDung = firebaseService.processFirebaseUser(decodedToken);
             UserDetails userDetails = userService.loadUserByUsernameAndProvider(
                     nguoiDung.getEmail(), nguoiDung.getPhuongThucXacThuc());
             String jwt = jwtUtil.generateToken(userDetails, nguoiDung.getPhuongThucXacThuc().name());

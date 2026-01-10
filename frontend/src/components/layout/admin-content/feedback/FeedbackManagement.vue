@@ -296,15 +296,15 @@ const fetchFeedback = async () => {
     
     // Map dữ liệu từ API vào định dạng component
     feedbackList.value = response.map(feedback => ({
-      id: feedback.feedbackId,
-      title: feedback.title,
-      message: feedback.content,
-      category: mapTopicToCategory(feedback.topic),
+      id: feedback.maPhanHoi,
+      title: feedback.tieuDe,
+      message: feedback.noiDung,
+      category: mapTopicToCategory(feedback.chuDe),
       status: 'new', // Mặc định là new vì API không có status
-      createdAt: feedback.createdAt,
+      createdAt: feedback.ngayTao,
       user: {
-        id: feedback.feedbackId, // Sử dụng feedbackId làm user id tạm thời
-        name: feedback.fullName,
+        id: feedback.maPhanHoi, // Sử dụng maPhanHoi làm user id tạm thời
+        name: feedback.hoVaTen,
         email: feedback.email
       }
     }));

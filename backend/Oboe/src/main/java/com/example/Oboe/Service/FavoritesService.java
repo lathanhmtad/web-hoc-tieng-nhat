@@ -33,7 +33,7 @@ public class FavoritesService {
         this.sampleSentenceRepository = sampleSentenceRepository;
     }
     public FavoritesDTO toggleFavorite(FavoritesDTO dto, UUID userId) {
-        YeuThich existing = null;
+        YEU_THICH existing = null;
         // Kiểm tra xem nội dung yêu thích là loại nào (Kanji, Grammar, Vocab, hoặc Sentence)
         // Và tìm trong database xem người dùng đã từng thích mục đó chưa.
         if (dto.getKanjiId() != null) {
@@ -71,35 +71,35 @@ public class FavoritesService {
     }
 
     public FavoritesDTO createFavorite(FavoritesDTO dto, UUID userId) {
-        YeuThich yeuThich = new YeuThich();
+        YEU_THICH yeuThich = new YEU_THICH();
 
         yeuThich.setNgayTao(dto.getFavoritesAt() != null ? dto.getFavoritesAt() : java.time.LocalDate.now());
 
-        NguoiDung nguoiDung = userRepository.findById(userId)
+        NGUOI_DUNG nguoiDung = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         yeuThich.setNguoiDung(nguoiDung);
 
         if (dto.getKanjiId() != null) {
-            HanTu hanTu = kanjiRepository.findById(dto.getKanjiId())
+            HAN_TU hanTu = kanjiRepository.findById(dto.getKanjiId())
                     .orElseThrow(() -> new RuntimeException("Kanji not found"));
             yeuThich.setHanTu(hanTu);
             yeuThich.setTieuDe(hanTu.getKyTu());
             yeuThich.setNoiDung(hanTu.getNghia());
         } else if (dto.getGrammaId() != null) {
-            NguPhap nguPhap = grammarRepository.findById(dto.getGrammaId())
+            NGU_PHAP nguPhap = grammarRepository.findById(dto.getGrammaId())
                     .orElseThrow(() -> new RuntimeException("Grammar not found"));
             yeuThich.setNguPhap(nguPhap);
             yeuThich.setTieuDe(nguPhap.getCauTruc());
             yeuThich.setNoiDung(nguPhap.getGiaiThich());
         }  else if (dto.getVocabularyId() != null) {
-        TuVung tuVung = vocabularyRepository.findById(dto.getVocabularyId())
+        TU_VUNG tuVung = vocabularyRepository.findById(dto.getVocabularyId())
                 .orElseThrow(() -> new RuntimeException("Vocabulary not found"));
             yeuThich.setTuVung(tuVung);
             yeuThich.setTieuDe(tuVung.getNoiDungTu());
             yeuThich.setNoiDung(tuVung.getNghia());
         }
         else if (dto.getSampleSentenceId() != null)  {
-                MauCau mauCau = sampleSentenceRepository.findById(dto.getSampleSentenceId())
+                MAU_CAU mauCau = sampleSentenceRepository.findById(dto.getSampleSentenceId())
                         .orElseThrow(() -> new RuntimeException("SampleSentence not found"));
             yeuThich.setMauCau(mauCau);
             yeuThich.setTieuDe(mauCau.getCauTiengNhat());
@@ -116,7 +116,7 @@ public class FavoritesService {
 
     //lấy tất các từ yêu thích theo type
     public List<FavoritesDTO> getFavoritesByUserIdAndType(UUID userId, String type) {
-        List<YeuThich> list = favoritesRepository.findByUserId(userId);
+        List<YEU_THICH> list = favoritesRepository.findByUserId(userId);
 
         return list.stream()
                 .filter(fav -> {
@@ -137,7 +137,7 @@ public class FavoritesService {
     }
     //lấy tất cả các tử yêu thích
     public List<FavoritesDTO> getAllFavoritesByUserId(UUID userId) {
-        List<YeuThich> list = favoritesRepository.findByUserId(userId);
+        List<YEU_THICH> list = favoritesRepository.findByUserId(userId);
 
         return list.stream()
                 .map(fav -> {
@@ -162,7 +162,7 @@ public class FavoritesService {
     // Xóa mục yêu thích dựa trên ID và kiểm tra quyền sở hữu của người dùng
     public void deleteFavorite(UUID favoriteId, UUID userId) {
         // Tìm mục yêu thích theo ID, nếu không tồn tại thì ném ra lỗi
-        YeuThich favorite = favoritesRepository.findById(favoriteId)
+        YEU_THICH favorite = favoritesRepository.findById(favoriteId)
                 .orElseThrow(() -> new RuntimeException("Favorite not found"));
 
         // Kiểm tra xem mục yêu thích này có thuộc về người dùng hiện tại không
@@ -175,10 +175,10 @@ public class FavoritesService {
     }
 
 
-    public static FavoritesDTO toDTO(YeuThich yeuThich) {
+    public static FavoritesDTO toDTO(YEU_THICH yeuThich) {
         if (yeuThich == null) return null;
         FavoritesDTO dto = new FavoritesDTO(
-                yeuThich.getFavoritesID(),
+                yeuThich.getMaYeuThich(),
                 yeuThich.getTieuDe(),
                 yeuThich.getNoiDung(),
                 yeuThich.getNgayTao(),

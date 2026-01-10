@@ -1,10 +1,10 @@
 package com.example.Oboe.Controller;
 
 import com.example.Oboe.DTOs.AIBlogReplyDTO;
-import com.example.Oboe.Entity.AIPhanHoiBaiViet;
+import com.example.Oboe.Entity.AI_PHAN_HOI_BAI_VIET;
 //import com.example.Oboe.Entity.AICommentReply;
-import com.example.Oboe.Entity.BaiViet;
-import com.example.Oboe.Entity.BinhLuan;
+import com.example.Oboe.Entity.BAI_VIET;
+import com.example.Oboe.Entity.BINH_LUAN;
 import com.example.Oboe.Repository.AIBlogReplyRepository;
 //import com.example.Oboe.Repository.AICommentReplyRepository;
 import com.example.Oboe.Repository.BlogRepository;
@@ -37,7 +37,7 @@ public class AIReplyController {
 
     @PostMapping("/blog/{blogId}")
     public ResponseEntity<?> getOrCreateAIBlogReply(@PathVariable UUID blogId) {
-        BaiViet baiViet = blogRepository.findById(blogId).orElse(null);
+        BAI_VIET baiViet = blogRepository.findById(blogId).orElse(null);
         if (baiViet == null) {
             Map<String, String> error = new HashMap<>();
             error.put("error", "Blog not found with ID: " + blogId);
@@ -45,7 +45,7 @@ public class AIReplyController {
         }
 
         // Kiểm tra đã có phản hồi AI chưa
-        AIPhanHoiBaiViet existingReply = aiBlogReplyRepository.findByBaiViet_maBaiViet(blogId);
+        AI_PHAN_HOI_BAI_VIET existingReply = aiBlogReplyRepository.findByBaiViet_maBaiViet(blogId);
         AIBlogReplyDTO dto = new AIBlogReplyDTO();
 
         if (existingReply != null) {
@@ -68,7 +68,7 @@ public class AIReplyController {
         String response = geminiService.generateTextFromPrompt(prompt);
 
         // Tạo phản hồi mới
-        AIPhanHoiBaiViet newReply = new AIPhanHoiBaiViet();
+        AI_PHAN_HOI_BAI_VIET newReply = new AI_PHAN_HOI_BAI_VIET();
         newReply.setMaPhanHoi(UUID.randomUUID());
         newReply.setBaiViet(baiViet);
         newReply.setNoiDung(response);
@@ -87,7 +87,7 @@ public class AIReplyController {
 
     @PostMapping("/comment/{commentId}")
     public ResponseEntity<?> replyToComment(@PathVariable UUID commentId) {
-        BinhLuan binhLuan = commentRepository.findById(commentId).orElse(null);
+        BINH_LUAN binhLuan = commentRepository.findById(commentId).orElse(null);
         if (binhLuan == null) {
             Map<String, String> error = new HashMap<>();
             error.put("error", "Comment not found with ID: " + commentId);

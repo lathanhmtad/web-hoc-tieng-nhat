@@ -1,9 +1,9 @@
 package com.example.Oboe.Config;
 
-import com.example.Oboe.Entity.LoaiTaiKhoan;
-import com.example.Oboe.Entity.PhuongThucXacThuc;
-import com.example.Oboe.Entity.NguoiDung;
-import com.example.Oboe.Entity.TrangThaiTaiKhoan;
+import com.example.Oboe.Entity.LOAI_TAI_KHOAN;
+import com.example.Oboe.Entity.PHUONG_THUC_XAC_THUC;
+import com.example.Oboe.Entity.NGUOI_DUNG;
+import com.example.Oboe.Entity.TRANG_THAI_TAI_KHOAN;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.UUID;
 
 public class CustomUserDetails implements UserDetails {
-    private final NguoiDung nguoiDung;
+    private final NGUOI_DUNG nguoiDung;
 
-    public CustomUserDetails(NguoiDung nguoiDung) {
+    public CustomUserDetails(NGUOI_DUNG nguoiDung) {
         this.nguoiDung = nguoiDung;
     }
 
@@ -35,7 +35,7 @@ public class CustomUserDetails implements UserDetails {
         return nguoiDung.getEmail();
     }
 
-    public PhuongThucXacThuc getAuthProvider() {
+    public PHUONG_THUC_XAC_THUC getAuthProvider() {
         return nguoiDung.getPhuongThucXacThuc();
     }
     public UUID getUserID() {
@@ -46,9 +46,9 @@ public class CustomUserDetails implements UserDetails {
     @Override public boolean isCredentialsNonExpired() { return true; }
     @Override
     public boolean isEnabled() {
-        return nguoiDung.getTrangThaiTaiKhoan() != null && nguoiDung.getTrangThaiTaiKhoan() != TrangThaiTaiKhoan.BAN;
+        return nguoiDung.getTrangThaiTaiKhoan() != null && nguoiDung.getTrangThaiTaiKhoan() != TRANG_THAI_TAI_KHOAN.BAN;
     }
-    public LoaiTaiKhoan getLoaiTaiKhoan() {
+    public LOAI_TAI_KHOAN getLoaiTaiKhoan() {
         return nguoiDung.getLoaiTaiKhoan();
     }
 }

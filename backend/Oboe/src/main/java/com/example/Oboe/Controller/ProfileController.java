@@ -4,12 +4,11 @@ import com.example.Oboe.Config.CustomUserDetails;
 import com.example.Oboe.DTOs.ActivityDTO;
 import com.example.Oboe.DTOs.UserProfileDTO;
 import com.example.Oboe.DTOs.UserProfileDTOwithStatistical;
-import com.example.Oboe.Entity.PhuongThucXacThuc;
-import com.example.Oboe.Entity.NguoiDung;
+import com.example.Oboe.Entity.PHUONG_THUC_XAC_THUC;
+import com.example.Oboe.Entity.NGUOI_DUNG;
 import com.example.Oboe.Service.StatisticalUserSerivce;
 import com.example.Oboe.Service.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -43,9 +42,9 @@ public class ProfileController {
         }
 
         String username = customUserDetails.getUsername();
-        PhuongThucXacThuc phuongThucXacThuc = customUserDetails.getAuthProvider();
+        PHUONG_THUC_XAC_THUC phuongThucXacThuc = customUserDetails.getAuthProvider();
 
-        List<NguoiDung> nguoiDungs = userService.findByUserNameAndAuthProvider(username, phuongThucXacThuc);
+        List<NGUOI_DUNG> nguoiDungs = userService.findByUserNameAndAuthProvider(username, phuongThucXacThuc);
 
         if (nguoiDungs.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
@@ -55,7 +54,7 @@ public class ProfileController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Tìm thấy nhiều người dùng trùng username và provider.");
         }
 
-        NguoiDung nguoiDung = nguoiDungs.get(0);
+        NGUOI_DUNG nguoiDung = nguoiDungs.get(0);
         return ResponseEntity.ok(new UserProfileDTO(nguoiDung));
     }
     @GetMapping("/{id}")

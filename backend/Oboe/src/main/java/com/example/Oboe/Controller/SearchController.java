@@ -6,7 +6,7 @@ import com.example.Oboe.Repository.FlashCardRepository;
 import com.example.Oboe.Repository.QuizzesRepository;
 import com.example.Oboe.Repository.UserRepository;
 import com.example.Oboe.Service.SearchService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,21 +17,14 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/api/search")
 public class SearchController {
 
-    @Autowired
     private SearchService searchService;
-
-    @Autowired
     private FlashCardRepository flashCardRepository;
-
-    @Autowired
     private QuizzesRepository quizzesRepository;
-
-    @Autowired
     private UserRepository userRepository;
-    @Autowired
     private CardItemRepository cardItemRepository;
 
     // Search không phân loại (keyword ra flashcard + quiz + user)
@@ -96,9 +89,6 @@ public class SearchController {
         return ResponseEntity.ok(response);
     }
 
-
-
-
     // Search theo keyword + type
     @GetMapping("/by-type")
     public List<Map<String, String>> searchByType(
@@ -107,6 +97,7 @@ public class SearchController {
     ) {
         return searchService.searchByType(keyword, type);
     }
+
     @GetMapping
     public List<Map<String, String>> search(
             @RequestParam("keyword") String keyword,

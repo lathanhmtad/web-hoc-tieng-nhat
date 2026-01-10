@@ -1,10 +1,10 @@
 package com.example.Oboe.Service;
 
 import com.example.Oboe.DTOs.CommentDTOs;
-import com.example.Oboe.Entity.BaiViet;
-import com.example.Oboe.Entity.BinhLuan;
-import com.example.Oboe.Entity.NguoiDung;
-import com.example.Oboe.Entity.ThongBao;
+import com.example.Oboe.Entity.BAI_VIET;
+import com.example.Oboe.Entity.BINH_LUAN;
+import com.example.Oboe.Entity.NGUOI_DUNG;
+import com.example.Oboe.Entity.THONG_BAO;
 import com.example.Oboe.Repository.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -58,7 +58,7 @@ public class CommentService {
 
 
     public Map<String, Object> getCommentsByTeamId(UUID teamId, int page, int size) {
-        List<BinhLuan> binhLuans = commentRepository.findByMaThamChieu(teamId);
+        List<BINH_LUAN> binhLuans = commentRepository.findByMaThamChieu(teamId);
 
         List<CommentDTOs> allDtos = binhLuans.stream()
                 .map(this::toDTO)
@@ -124,14 +124,14 @@ public class CommentService {
     //  Tạo comment mới (comment cha)
     public CommentDTOs createComment(UUID teamId, UUID userId, CommentDTOs dto) {
         //  Lấy người gửi
-        NguoiDung sender = userService.findById(userId)
+        NGUOI_DUNG sender = userService.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Người dùng không hợp lệ"));
 
-        NguoiDung receiver = null;
+        NGUOI_DUNG receiver = null;
         boolean isBlog = false;
 
         //  Xác định loại nội dung
-        Optional<BaiViet> blogOpt = blogRepository.findById(teamId);
+        Optional<BAI_VIET> blogOpt = blogRepository.findById(teamId);
         if (blogOpt.isPresent()) {
             isBlog = true;
             receiver = blogOpt.get().getNguoiDung();
@@ -149,20 +149,20 @@ public class CommentService {
         LocalDateTime vietnamTime = LocalDateTime.now(vietnamZone);
 
         //  Tạo Comment
-        BinhLuan binhLuan = new BinhLuan();
+        BINH_LUAN binhLuan = new BINH_LUAN();
         binhLuan.setTieuDe(dto.getTitle());
         binhLuan.setNoiDung(dto.getContent());
         binhLuan.setNgayTao(vietnamTime);
         binhLuan.setNguoiDung(sender);
         binhLuan.setMaThamChieu(teamId);
-        BinhLuan saved = commentRepository.save(binhLuan);
+        BINH_LUAN saved = commentRepository.save(binhLuan);
         CommentDTOs commentDTO = toDTO(saved);
 
         //  Nếu là comment blog → tạo thông báo và gửi WebSocket
         // Nếu là comment blog → tạo thông báo và gửi WebSocket
         if (isBlog && receiver != null && !receiver.getMaNguoiDung().equals(sender.getMaNguoiDung())) {
             // Tạo thông báo
-            ThongBao notification = new ThongBao();
+            THONG_BAO notification = new THONG_BAO();
             notification.setNguoiDung(receiver);
             notification.setNoiDung("Bạn vừa nhận được một bình luận mới từ " + sender.getEmail());
             notification.setDaDuocDoc(false);
@@ -170,7 +170,7 @@ public class CommentService {
             notification.setMaDoiTuong(saved.getMaThamChieu());          // ID của comment
             notification.setLoaiDoiTuong("BLog");            // Kiểu: "Comment"
 
-            ThongBao savedNoti = notificationsRepository.save(notification);
+            THONG_BAO savedNoti = notificationsRepository.save(notification);
 
             // Gửi WebSocket nếu người nhận đang online
             WebSocketSession receiverSession = SessionManager.getSession(receiver.getMaNguoiDung());
@@ -202,11 +202,11 @@ public class CommentService {
     // Tạo phản hồi (comment con) dựa trên comment cha
     public CommentDTOs CommentReply(UUID parentCommentId, UUID userId, CommentDTOs dto) {
         // Lấy người gửi (sender) từ userId
-        NguoiDung sender = userService.findById(userId)
+        NGUOI_DUNG sender = userService.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Người dùng không hợp lệ"));
 
         // Lấy comment cha (parent comment)
-        BinhLuan parent = commentRepository.findById(parentCommentId)
+        BINH_LUAN parent = commentRepository.findById(parentCommentId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy bình luận cha"));
 
         // Lấy giờ hiện tại theo múi giờ Việt Nam
@@ -214,7 +214,7 @@ public class CommentService {
         LocalDateTime vietnamTime = LocalDateTime.now(vietnamZone);
 
         // Tạo comment con (reply)
-        BinhLuan reply = new BinhLuan();
+        BINH_LUAN reply = new BINH_LUAN();
         reply.setTieuDe(dto.getTitle());
         reply.setNoiDung(dto.getContent());
         reply.setNgayTao(vietnamTime);
@@ -223,14 +223,14 @@ public class CommentService {
         reply.setMaThamChieu(parent.getMaThamChieu()); // giữ nguyên blogId hoặc teamId giống comment cha
 
         // Lưu comment con vào database
-        BinhLuan savedReply = commentRepository.save(reply);
+        BINH_LUAN savedReply = commentRepository.save(reply);
 
         // Lấy người nhận (receiver) là người viết comment cha
-        NguoiDung receiver = parent.getNguoiDung();
+        NGUOI_DUNG receiver = parent.getNguoiDung();
 
         // Nếu người nhận khác người gửi → tạo và lưu thông báo
         if (receiver != null && !receiver.getMaNguoiDung().equals(sender.getMaNguoiDung())) {
-            ThongBao notification = new ThongBao();
+            THONG_BAO notification = new THONG_BAO();
             notification.setNguoiDung(receiver); // Gửi tới người nhận
             notification.setNoiDung("Bạn vừa nhận được một phản hồi từ " + sender.getEmail());
             notification.setDaDuocDoc(false);
@@ -238,7 +238,7 @@ public class CommentService {
             notification.setMaDoiTuong(parent.getMaThamChieu());
             notification.setLoaiDoiTuong("BLog");
 
-            ThongBao savedNoti = notificationsRepository.save(notification);
+            THONG_BAO savedNoti = notificationsRepository.save(notification);
 
             // Gửi WebSocket nếu người nhận đang online
             WebSocketSession receiverSession = SessionManager.getSession(receiver.getMaNguoiDung());
@@ -265,7 +265,7 @@ public class CommentService {
         return toDTO(savedReply);
     }
     public CommentDTOs getcommentbyID(UUID commentId) {
-        BinhLuan binhLuan = getCommentEntityById(commentId);
+        BINH_LUAN binhLuan = getCommentEntityById(commentId);
         if (binhLuan == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy bình luận với ID đã cho");
         }
@@ -273,10 +273,10 @@ public class CommentService {
     }
     //  Cập nhật comment (chỉ người tạo mới được sửa)
     public CommentDTOs updateComment(UUID commentId, UUID userId, CommentDTOs dto) {
-        BinhLuan binhLuan = getCommentEntityById(commentId);
+        BINH_LUAN binhLuan = getCommentEntityById(commentId);
         if (binhLuan == null) return null;
 
-        Optional<NguoiDung> userOpt = userService.findById(userId);
+        Optional<NGUOI_DUNG> userOpt = userService.findById(userId);
         if (userOpt.isEmpty()) return null;
 
         // Chỉ cho phép sửa nếu là người tạo
@@ -291,10 +291,10 @@ public class CommentService {
 
     //  Xóa comment nếu đúng người tạo
     public boolean deleteComment(UUID commentId, UUID userId) {
-        BinhLuan binhLuan = getCommentEntityById(commentId);
+        BINH_LUAN binhLuan = getCommentEntityById(commentId);
         if (binhLuan == null) return false;
 
-        Optional<NguoiDung> userOpt = userService.findById(userId);
+        Optional<NGUOI_DUNG> userOpt = userService.findById(userId);
         if (userOpt.isEmpty()) return false;
 
         if (!binhLuan.getNguoiDung().getMaNguoiDung().equals(userOpt.get().getMaNguoiDung())) return false;
@@ -305,21 +305,21 @@ public class CommentService {
 
     // Lấy tất cả comment của một user
     public List<CommentDTOs> getCommentByUserId(UUID userId) {
-        Optional<NguoiDung> userOpt = userService.findById(userId);
+        Optional<NGUOI_DUNG> userOpt = userService.findById(userId);
         if (userOpt.isEmpty()) return List.of(); // trả về List rỗng nếu không có user
-        List<BinhLuan> binhLuans = commentRepository.findCommentByUserId(userId);
+        List<BINH_LUAN> binhLuans = commentRepository.findCommentByUserId(userId);
         return binhLuans.stream()
                 .map(this::toShortDTO).toList();
     }
 
     //lấy  Lấy tất cả comment của một user
     public Page<CommentDTOs> getCommentByUserIds(UUID userId, int page, int size) {
-        Optional<NguoiDung> userOpt = userService.findById(userId);
+        Optional<NGUOI_DUNG> userOpt = userService.findById(userId);
         if (userOpt.isEmpty()) {
             return Page.empty(); // Trả về Page rỗng thay vì List.of()
         }
         Pageable pageable = PageRequest.of(page, size); //  Tạo pageable
-        Page<BinhLuan> commentPage = commentRepository.findCommentByUserIds(userId, pageable); //
+        Page<BINH_LUAN> commentPage = commentRepository.findCommentByUserIds(userId, pageable); //
 
         List<CommentDTOs> dtoList = commentPage.stream()
                 .map(this::toDTO)
@@ -334,12 +334,12 @@ public class CommentService {
     }
 
     //  Hàm dùng chung để lấy comment theo ID
-    public BinhLuan getCommentEntityById(UUID commentId) {
+    public BINH_LUAN getCommentEntityById(UUID commentId) {
         return commentRepository.findById(commentId).orElse(null);
     }
 
     //  Chuyển từ entity -> DTO
-    private CommentDTOs toDTO(BinhLuan binhLuan) {
+    private CommentDTOs toDTO(BINH_LUAN binhLuan) {
         CommentDTOs dto = new CommentDTOs();
         dto.setCommentId(binhLuan.getMaBinhLuan());
         dto.setTitle(binhLuan.getTieuDe());
@@ -360,7 +360,7 @@ public class CommentService {
         dto.setReplies(new ArrayList<>()); // Khởi tạo danh sách phản hồi
         return dto;
     }
-    private CommentDTOs toShortDTO(BinhLuan binhLuan) {
+    private CommentDTOs toShortDTO(BINH_LUAN binhLuan) {
         CommentDTOs dto = new CommentDTOs();
         dto.setCommentId(binhLuan.getMaBinhLuan());
         dto.setTitle(binhLuan.getTieuDe());

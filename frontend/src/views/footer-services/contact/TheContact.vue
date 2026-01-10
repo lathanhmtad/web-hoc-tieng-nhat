@@ -165,11 +165,11 @@ const submitForm = async () => {
     
     // Tạo payload theo format API
     const feedbackDto = {
-      fullName: formData.value.name,
+      hoVaTen: formData.value.name,
       email: formData.value.email,
-      title: formData.value.title,
-      topic: formData.value.subject,
-      content: formData.value.message
+      tieuDe: formData.value.title,
+      chuDe: formData.value.subject,
+      noiDung: formData.value.message
     };
     
     // Gọi API gửi feedback

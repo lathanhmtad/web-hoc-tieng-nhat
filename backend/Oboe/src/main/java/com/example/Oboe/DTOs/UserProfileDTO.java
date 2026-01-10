@@ -18,16 +18,16 @@ public class UserProfileDTO {
     private String avatarUrl;
     private String address;
     private LocalDate day_of_birth;
-    private PhuongThucXacThuc authProvider;
+    private PHUONG_THUC_XAC_THUC authProvider;
     private boolean verified;
-    private LoaiTaiKhoan accountType;
-    private VaiTro role;
-    private TrangThaiTaiKhoan status;
+    private LOAI_TAI_KHOAN accountType;
+    private VAI_TRO role;
+    private TRANG_THAI_TAI_KHOAN status;
     private LocalDateTime create_at;
     private LocalDateTime update_at;
 
     // Constructor
-    public UserProfileDTO(NguoiDung nguoiDung) {
+    public UserProfileDTO(NGUOI_DUNG nguoiDung) {
         this.maNguoiDung = nguoiDung.getMaNguoiDung();
         this.userName = nguoiDung.getEmail();
         this.firstName = nguoiDung.getHo();

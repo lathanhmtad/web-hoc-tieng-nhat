@@ -1,7 +1,7 @@
 package com.example.Oboe.Service;
 
 import com.example.Oboe.DTOs.SampleSentenceDTO;
-import com.example.Oboe.Entity.MauCau;
+import com.example.Oboe.Entity.MAU_CAU;
 import com.example.Oboe.Repository.GrammarRepository;
 import com.example.Oboe.Repository.SampleSentenceRepository;
 import lombok.AllArgsConstructor;
@@ -20,7 +20,7 @@ public class SampleSentenceServiceImpl implements SampleSentenceService {
     private SampleSentenceRepository repository;
     private GrammarRepository grammarRepository;
 
-    private SampleSentenceDTO convertToDTO(MauCau entity) {
+    private SampleSentenceDTO convertToDTO(MAU_CAU entity) {
         return SampleSentenceDTO.builder()
                 .id(entity.getMaMauCau())
                 .japaneseText(entity.getCauTiengNhat())
@@ -35,8 +35,8 @@ public class SampleSentenceServiceImpl implements SampleSentenceService {
                 .build();
     }
 
-    private MauCau convertToEntity(SampleSentenceDTO dto) {
-        MauCau entity = new MauCau();
+    private MAU_CAU convertToEntity(SampleSentenceDTO dto) {
+        MAU_CAU entity = new MAU_CAU();
         entity.setMaMauCau(dto.getId());
         entity.setCauTiengNhat(dto.getJapaneseText());
         entity.setNghiaTiengViet(dto.getVietnameseMeaning());
@@ -51,13 +51,13 @@ public class SampleSentenceServiceImpl implements SampleSentenceService {
 
     @Override
     public SampleSentenceDTO create(SampleSentenceDTO dto) {
-        MauCau entity = convertToEntity(dto);
+        MAU_CAU entity = convertToEntity(dto);
         return convertToDTO(repository.save(entity));
     }
 
     @Override
     public SampleSentenceDTO update(UUID id, SampleSentenceDTO dto) {
-        MauCau entity = repository.findById(id)
+        MAU_CAU entity = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("SampleSentence not found"));
         entity.setCauTiengNhat(dto.getJapaneseText());
         entity.setNghiaTiengViet(dto.getVietnameseMeaning());
@@ -79,14 +79,14 @@ public class SampleSentenceServiceImpl implements SampleSentenceService {
 
     @Override
     public SampleSentenceDTO getById(UUID id) {
-        MauCau entity = repository.findById(id)
+        MAU_CAU entity = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("SampleSentence not found"));
         return convertToDTO(entity);
     }
 
     @Override
     public Map<String, Object> getAll(Pageable pageable) {
-        Page<MauCau> pageResult = repository.findAll(pageable);
+        Page<MAU_CAU> pageResult = repository.findAll(pageable);
         Page<SampleSentenceDTO> dtoPage = pageResult.map(this::convertToDTO);
 
         Map<String, Object> response = new HashMap<>();

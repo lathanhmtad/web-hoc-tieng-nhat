@@ -8,30 +8,24 @@
     <div class="detail-card">
       <!-- Action Buttons -->
       <div class="action-buttons">
-        <button 
-          class="action-btn" 
-          :class="{ 'active': isFavorite }"
-          @click="toggleFavorite"
-        >
+        <button class="action-btn" :class="{ 'active': isFavorite }" @click="toggleFavorite">
           <i class="fas fa-star"></i>
         </button>
-        <button 
-          class="action-btn"
-          :class="{ 'active': isInFlashcards }"
-          @click="toggleFlashcard"
-        >
+        <button class="action-btn" :class="{ 'active': isInFlashcards }" @click="toggleFlashcard">
           <i class="fas fa-book"></i>
         </button>
       </div>
 
       <!-- Main Content -->
       <div class="main-info">
+        <div v-if="type === 'kanji'" class="kanji-writer-wrapper">
+          <KanjiWriter :character="item[mainField]" :size="150" />
+        </div>
         <h1 class="main-text">{{ item[mainField] }}</h1>
         <div v-if="readingField && item[readingField]" class="reading-text">{{ item[readingField] }}</div>
         <div v-if="item.readings && item.readings.length > 0" class="reading-text">
           <span v-for="(reading, index) in item.readings" :key="index">
-            {{ reading }}{{ index < item.readings.length - 1 ? ', ' : '' }}
-          </span>
+            {{ reading }}{{ index < item.readings.length - 1 ? ', ' : '' }} </span>
         </div>
         <div class="meaning-text">{{ item[meaningField] }}</div>
       </div>
@@ -40,12 +34,8 @@
       <div v-if="showRelated" class="related-section">
         <h3 class="section-title">{{ relatedTitle }}</h3>
         <div v-if="relatedItems.length > 0" class="related-grid">
-          <div 
-            v-for="relatedItem in relatedItems" 
-            :key="relatedItem[relatedKeyField]"
-            class="related-item"
-            @click="onRelatedItemClick(relatedItem)"
-          >
+          <div v-for="relatedItem in relatedItems" :key="relatedItem[relatedKeyField]" class="related-item"
+            @click="onRelatedItemClick(relatedItem)">
             <div class="related-main">{{ relatedItem[relatedMainField] }}</div>
             <div class="related-info">
               <template v-if="type === 'word'">
@@ -95,11 +85,13 @@ import { useStore } from 'vuex';
 import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import CommentSection from '@/components/layout/comment/CommentSection.vue';
+import KanjiWriter from '@/components/layout/kanji-writer/KanjiWriter.vue';
 
 export default defineComponent({
   name: 'DetailPage',
   components: {
-    CommentSection
+    CommentSection,
+    KanjiWriter
   },
   props: {
     type: {
@@ -185,30 +177,30 @@ export default defineComponent({
     });
 
     const isFavorite = computed(() => {
-        const currentId = route.params.id;
-        if (!currentId) return false;
-        
-        return store.state.user.favoriteItems.some(fav => {
-          switch (props.type) {
-            case 'word':
-              return fav.vocabularyId === currentId;
-            case 'grammar':
-              return fav.grammaId === currentId; // Note: API uses 'grammaId' not 'grammarId'
-            case 'kanji':
-              return fav.kanjiId === currentId;
-            case 'sentence':
-              return fav.sampleSentenceId === currentId;
-            default:
-              return false;
-          }
-        });
+      const currentId = route.params.id;
+      if (!currentId) return false;
+
+      return store.state.user.favoriteItems.some(fav => {
+        switch (props.type) {
+          case 'word':
+            return fav.vocabularyId === currentId;
+          case 'grammar':
+            return fav.grammaId === currentId; // Note: API uses 'grammaId' not 'grammarId'
+          case 'kanji':
+            return fav.kanjiId === currentId;
+          case 'sentence':
+            return fav.sampleSentenceId === currentId;
+          default:
+            return false;
+        }
+      });
     });
-    
+
     const isInFlashcards = computed(() => {
       // Always use route params ID for consistency
       const currentId = route.params.id;
       if (!currentId) return false;
-      
+
       return store.getters['flashcard/isInFlashcard'](props.type, currentId);
     });
 
@@ -223,8 +215,8 @@ export default defineComponent({
         console.error('No ID found in route params');
         return;
       }
-      
-      store.dispatch('user/toggleFavorite', { 
+
+      store.dispatch('user/toggleFavorite', {
         type: props.type, // Use original type, not favoriteType
         itemId: currentId // Pass ID directly from URL
       });
@@ -237,7 +229,7 @@ export default defineComponent({
         console.error('No ID found in route params');
         return;
       }
-      
+
       if (isInFlashcards.value) {
         store.dispatch('flashcard/removeItem', {
           type: props.type,
