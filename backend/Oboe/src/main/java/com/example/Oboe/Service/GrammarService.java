@@ -118,9 +118,15 @@ public class GrammarService {
         dto.setExample(nguPhap.getViDu());
         dto.setGrammarType(nguPhap.getLoaiNguPhap());
         dto.setJlptLevel(nguPhap.getTrinhDoJlpt());
-        List<ReadingDTO> readingDTOs = readingRepository.findByLoaiDoiTuongAndMaDoiTuong("grammar", nguPhap.getMaNguPhap())
-                .stream().map(this::readingToDTO).collect(Collectors.toList());
-        dto.setReadings(readingDTOs);
+        dto.setSentencesLinks(
+                nguPhap.getMauCaus().stream()
+                        .map(item -> GrammarDTO.SentencesLinks.builder()
+                                .japaneseText(item.getCauTiengNhat())
+                                .meaning(item.getNghiaTiengViet())
+                                .build())
+                        .toList()
+        );
+
         return dto;
     }
 

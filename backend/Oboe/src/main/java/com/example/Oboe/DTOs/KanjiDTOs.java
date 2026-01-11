@@ -1,8 +1,10 @@
 package com.example.Oboe.DTOs;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -16,5 +18,13 @@ public class KanjiDTOs {
     private String onYomi;
     private String kunYomi;
     private String jlptLevel;
+    private List<VocabLink> vocabLinks;
 
+    @Getter
+    @Setter
+    @Builder
+    public static class VocabLink {
+        private String word;
+        private String meaning;
+    }
 }

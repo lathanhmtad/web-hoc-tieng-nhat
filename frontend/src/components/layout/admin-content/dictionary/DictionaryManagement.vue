@@ -760,7 +760,7 @@ const loadVocabulary = async (page = 0) => {
         id: item.vocalbId,
         word: item.words,
         reading: item.vietnamese_pronunciation || '',
-        meaning: item.meanning || item.meaning || item.vietnameseMeaning || '', // Thử nhiều trường khác nhau
+        meaning: item.meaning || item.vietnameseMeaning || '', // Thử nhiều trường khác nhau
         type: item.wordType,
         scriptType: item.scriptType,
         kanjiId: item.kanjiId,
@@ -881,7 +881,7 @@ const loadAllVocabulary = async () => {
       id: item.vocalbId,
       word: item.words,
       reading: item.vietnamese_pronunciation || '',
-      meaning: item.meanning || item.vietnameseMeaning || '',
+      meaning: item.meaning || item.vietnameseMeaning || '',
       type: item.wordType,
       scriptType: item.scriptType,
       kanjiId: item.kanjiId,

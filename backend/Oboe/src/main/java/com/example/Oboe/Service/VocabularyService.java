@@ -56,7 +56,7 @@ public class VocabularyService {
 
         TU_VUNG vocab = new TU_VUNG();
         vocab.setNoiDungTu(dto.getWords());
-        vocab.setNghia(dto.getMeanning());
+        vocab.setNghia(dto.getMeaning());
         vocab.setLoaiTu(dto.getWordType());
         vocab.setKieuChu(dto.getScriptType());
         vocab.setPhatAmTiengViet(dto.getVietnamese_pronunciation());
@@ -94,7 +94,7 @@ public class VocabularyService {
                 .orElseThrow(() -> new RuntimeException("Từ vựng không tồn tại"));
 
         if (dto.getWords() != null) vocab.setNoiDungTu(dto.getWords());
-        if (dto.getMeanning() != null) vocab.setNghia(dto.getMeanning());
+        if (dto.getMeaning() != null) vocab.setNghia(dto.getMeaning());
         if (dto.getWordType() != null) vocab.setLoaiTu(dto.getWordType());
         if (dto.getScriptType() != null) vocab.setKieuChu(dto.getScriptType());
         if (dto.getVietnamese_pronunciation() != null) vocab.setPhatAmTiengViet(dto.getVietnamese_pronunciation());
@@ -146,7 +146,7 @@ public class VocabularyService {
         VocabularyDTOs dto = new VocabularyDTOs();
         dto.setVocalbId(vocab.getMaTuVung());
         dto.setWords(vocab.getNoiDungTu());
-        dto.setMeanning(vocab.getNghia());
+        dto.setMeaning(vocab.getNghia());
         dto.setWordType(vocab.getLoaiTu());
         dto.setScriptType(vocab.getKieuChu());
 

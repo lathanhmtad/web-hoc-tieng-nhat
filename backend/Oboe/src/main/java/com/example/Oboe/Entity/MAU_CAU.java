@@ -17,6 +17,7 @@ public class MAU_CAU {
     private UUID maMauCau;
     private String cauTiengNhat;
     private String nghiaTiengViet;
+
     @ManyToOne
     @JoinColumn(name = "maNguPhap")
     private NGU_PHAP nguPhap;

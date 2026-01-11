@@ -14,7 +14,7 @@ public class VocabularyDTOs {
 
     private UUID vocalbId;
     private String words;
-    private String meanning;
+    private String meaning;
     private String wordType; // noun, verb, adj,...
     private String scriptType; // hiragana, katakana, kanji
     private List<KanjiLink> kanjiLinks;

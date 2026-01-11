@@ -6,7 +6,7 @@
         <!-- Các nút điều khiển -->
         <div class="controls">
             <button @click="animate">Xem viết mẫu</button>
-            <button @click="quiz">Tập viết (Quiz)</button>
+            <button @click="quiz">Tập viết</button>
         </div>
     </div>
 </template>
@@ -84,6 +84,12 @@ watch(() => props.character, () => {
     align-items: center;
 }
 
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 4px
+}
+
 .writer-target {
     border: 1px solid #ddd;
     background-color: #fff;
@@ -93,8 +99,7 @@ watch(() => props.character, () => {
 }
 
 button {
-    margin: 0 5px;
-    padding: 8px 16px;
+    padding: 8px;
     background-color: #42b983;
     color: white;
     border: none;

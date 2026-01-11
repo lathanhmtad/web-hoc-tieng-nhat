@@ -161,6 +161,17 @@ public class KanjiService {
         dto.setKunYomi(hanTu.getKunYomi());
         dto.setVietnamesePronunciation(hanTu.getPhatAmTiengViet());
         dto.setJlptLevel(hanTu.getTrinhDoJlpt());
+        dto.setVocabLinks(
+            hanTu.getCacTuVungLienQuan()
+                    .stream()
+                    .map(item -> KanjiDTOs.VocabLink
+                            .builder()
+                            .word(item.getTuVung().getNoiDungTu())
+                            .meaning(item.getTuVung().getNghia())
+                            .build())
+                    .toList()
+        );
+
         return dto;
     }
 }

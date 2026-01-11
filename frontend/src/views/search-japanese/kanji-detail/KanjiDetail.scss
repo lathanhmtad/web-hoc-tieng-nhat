@@ -1,54 +1,342 @@
-@use '@/assets/css/index.scss' as *;
-.detail-container {
-  max-width: 800px;
-  margin: 2rem auto;
-  padding: 2rem;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 0px 4px rgba(0, 0, 0, 0.4);
-}
-.kanji-header {
-  text-align: center;
-  margin-bottom: 2rem;
+/* ==========================================================================
+   KANJI DETAIL PAGE STYLES - REFACTORED (4/8 GRID)
+========================================================================== 
+*/
+
+// --- 1. Variables (Matched with WordDetail) ---
+$color-primary: #4f46e5;      // Indigo 600
+$color-primary-soft: #e0e7ff; // Indigo 100
+$color-accent: #06b6d4;       // Cyan 500
+$color-text-main: #1e293b;    // Slate 800
+$color-text-sub: #64748b;     // Slate 500
+$color-bg-page: #f8fafc;      // Slate 50
+$color-white: #ffffff;
+$color-border: #e2e8f0;
+
+$radius-lg: 16px;
+$radius-md: 12px;
+
+$font-jp: 'Noto Sans JP', sans-serif;
+
+// --- 2. Global Container ---
+.kanji-detail-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 30px 20px;
+  font-family: $font-jp;
+  color: $color-text-main;
+  background-color: $color-bg-page;
+  min-height: 100vh;
 }
 
-.kanji-char {
-  font-size: 5rem;
-  margin-bottom: 1rem;
-}
-
-.kanji-info {
-  h2 {
-    color: #333;
-    font-size: 2rem;
-    margin-bottom: 1.5rem;
-  }
-}
-
-.readings {
+// Loading Spinner
+.loading-container {
   display: flex;
   justify-content: center;
-  gap: 2rem;
-  margin-top: 2rem;
-}
-
-.reading-section {
-  flex: 1;
-  max-width: 300px;
-
-  h3 {
-    color: #666;
-    margin-bottom: 0.5rem;
-  }
-
-  p {
-    font-size: 1.2rem;
-    color: #333;
+  align-items: center;
+  min-height: 400px;
+  .spinner {
+    width: 40px; height: 40px;
+    border: 3px solid $color-border;
+    border-top-color: $color-primary;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
   }
 }
+@keyframes spin { 100% { transform: rotate(360deg); } }
 
-.not-found {
+/* ==========================================================================
+   GRID SYSTEM (4/8 SPLIT)
+========================================================================== 
+*/
+.layout-grid {
+  display: grid;
+  grid-template-columns: 4fr 8fr;
+  gap: 30px;
+  align-items: start;
+
+  @media (max-width: 992px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================================================
+   LEFT COLUMN (4/12): VISUAL & STATS
+========================================================================== 
+*/
+.col-visual {
+  .sticky-wrapper {
+    position: sticky;
+    top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+}
+
+// --- Writer Card ---
+.writer-card {
+  background: $color-white;
+  border-radius: $radius-lg;
+  padding: 24px;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+  border: 1px solid $color-border;
   text-align: center;
-  margin: 4rem auto;
-  color: #666;
-} 
+
+  .icon {
+    color: $color-primary;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    color: $color-text-sub;
+
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin: 0;
+    }
+  }
+
+  .writer-display {
+    background: #fdfdfd;
+    border: 2px dashed $color-border;
+    border-radius: $radius-md;
+    padding: 15px;
+    display: inline-flex; // Co lại vừa nội dung
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+// --- Stats Grid ---
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+
+  .stat-item {
+    background: $color-white;
+    padding: 16px;
+    border-radius: $radius-lg;
+    border: 1px solid $color-border;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+
+    .label {
+      font-size: 0.85rem;
+      color: $color-text-sub;
+      margin-bottom: 4px;
+    }
+
+    .value {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: $color-text-main;
+    }
+
+    &.highlight {
+      background: $color-primary-soft;
+      border-color: rgba($color-primary, 0.2);
+      .value { color: $color-primary; }
+    }
+  }
+}
+
+/* ==========================================================================
+   RIGHT COLUMN (8/12): CONTENT
+========================================================================== 
+*/
+.col-content {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+// --- HERO CARD ---
+.hero-card {
+  background: $color-white;
+  border-radius: $radius-lg;
+  padding: 40px;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+  border: 1px solid $color-border;
+  position: relative;
+  overflow: hidden;
+
+  // Decor line
+  &::top {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, $color-primary, $color-accent);
+  }
+
+  .main-info {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+
+    .kanji-char {
+      font-size: 4.5rem;
+      font-weight: 900;
+      line-height: 1;
+      color: $color-text-main;
+      margin: 0;
+    }
+
+    .meta-info {
+      .kanji-meaning {
+        font-size: 2rem;
+        font-weight: 800;
+        margin: 0 0 8px 0;
+        color: $color-text-main;
+      }
+      .han-viet-tag {
+        display: inline-block;
+        background: #f1f5f9;
+        color: $color-text-sub;
+        padding: 4px 12px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.95rem;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+  }
+
+  .divider {
+    height: 1px;
+    background: $color-border;
+    margin: 30px 0;
+  }
+
+  .readings-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+
+    .reading-box {
+      .r-label {
+        display: block;
+        font-size: 0.9rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: $color-text-sub;
+        margin-bottom: 8px;
+        
+        &::before {
+          content: '•';
+          margin-right: 6px;
+        }
+      }
+      
+      .r-value {
+        font-size: 1.25rem;
+        font-weight: 500;
+        color: $color-text-main;
+        margin: 0;
+        line-height: 1.5;
+      }
+
+      &.on-yomi .r-label { color: $color-accent; } // Màu Cyan cho On
+      &.kun-yomi .r-label { color: $color-primary; } // Màu Indigo cho Kun
+    }
+    
+    @media (max-width: 600px) {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+// --- VOCAB SECTION ---
+.vocab-section {
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    
+    .icon { color: $color-primary; }
+    h3 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: $color-text-main;
+      margin: 0;
+    }
+  }
+
+  .vocab-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); // Responsive Grid
+    gap: 16px;
+  }
+
+  .vocab-card {
+    background: $color-white;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+
+    &:hover {
+      border-color: $color-primary;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.1);
+      transform: translateY(-2px);
+
+      .vocab-word { color: $color-primary; }
+      .arrow-action { opacity: 1; transform: translateX(0); }
+    }
+
+    .vocab-word {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: $color-text-main;
+      margin-bottom: 6px;
+      transition: color 0.2s;
+    }
+
+    .vocab-mean {
+      font-size: 1rem;
+      color: $color-text-sub;
+      line-height: 1.4;
+    }
+
+    .arrow-action {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      color: $color-primary;
+      opacity: 0;
+      transform: translateX(-10px);
+      transition: all 0.2s;
+    }
+  }
+}
+
+.btn-speak {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.4rem;
+  margin-left: 8px;
+  padding: 0;
+  transition: transform 0.1s;
+}

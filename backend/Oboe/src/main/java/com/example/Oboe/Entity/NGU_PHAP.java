@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -21,4 +22,7 @@ public class NGU_PHAP {
     private String viDu;
     private String loaiNguPhap;
     private String trinhDoJlpt;
+
+    @OneToMany(mappedBy = "nguPhap")
+    private List<MAU_CAU> mauCaus;
 }

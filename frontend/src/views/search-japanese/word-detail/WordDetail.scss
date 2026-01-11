@@ -1,94 +1,351 @@
-@use '@/assets/css/index.scss' as *;
-.word-detail {
-  max-width: 1000px;
+/* ==========================================================================
+   WORD DETAIL PAGE STYLES - REFACTORED (4/8 GRID)
+========================================================================== 
+*/
+
+// --- 1. Variables ---
+$color-primary: #4f46e5; // Indigo 600
+$color-primary-soft: #e0e7ff; // Indigo 100
+$color-text-main: #1e293b; // Slate 800
+$color-text-sub: #64748b; // Slate 500
+$color-bg-page: #f8fafc; // Slate 50
+$color-white: #ffffff;
+$color-border: #e2e8f0;
+
+$radius-lg: 16px;
+$radius-md: 12px;
+$radius-sm: 8px;
+
+$font-jp: 'Noto Sans JP', sans-serif;
+
+// --- 2. Global Container ---
+.word-detail-container {
+  max-width: 1200px; // Tăng width một chút để chứa 2 cột thoải mái
   margin: 0 auto;
-  padding: 24px;
+  padding: 30px 20px;
+  font-family: $font-jp;
+  color: $color-text-main;
+  background-color: $color-bg-page;
+  min-height: 100vh;
 }
 
-.word-card {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 0px 4px rgba(0, 0, 0, 0.4);
-  padding: 24px;
-}
+// Loading
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
 
-.word-info {
-  margin-bottom: 40px;
-  text-align: center;
-  padding: 20px 0;
-}
-
-.word-kanji {
-  font-size: 4rem;
-  font-weight: bold;
-  margin-bottom: 16px;
-  color: $primary-color;
-}
-
-.word-kana {
-  font-size: 2rem;
-  color: #666;
-  margin-bottom: 16px;
-}
-
-.word-meaning {
-  font-size: 1.5rem;
-  color: #444;
-  max-width: 600px;
-  margin: 0 auto;
-  line-height: 1.4;
-}
-
-.section-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 16px;
-}
-
-.kanji-section {
-  margin-top: 24px;
-  border-top: 1px solid #eee;
-  padding-top: 24px;
-}
-
-.kanji-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 16px;
-}
-
-.kanji-item {
-  background: #f8f8f8;
-  border-radius: 8px;
-  padding: 16px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-
-  &:hover {
-    background-color: #f0f0f0;
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid $color-border;
+    border-top-color: $color-primary;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
   }
 }
 
-.kanji-char {
-  font-size: 2rem;
-  font-weight: bold;
-  margin-bottom: 8px;
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
-.kanji-info {
-  font-size: 0.875rem;
+
+/* ==========================================================================
+   GRID SYSTEM (4/8 SPLIT)
+========================================================================== 
+*/
+.layout-grid {
+  display: grid;
+  grid-template-columns: 4fr 8fr; // Tỉ lệ 4 - 8
+  gap: 30px;
+  align-items: start; // Căn lề trên
+
+  // Responsive: Tablet dọc & Mobile sẽ chuyển về 1 cột
+  @media (max-width: 992px) {
+    grid-template-columns: 1fr;
+  }
 }
 
-.label {
-  font-weight: 500;
+
+/* ==========================================================================
+   LEFT COLUMN (4/12): KANJI SIDEBAR
+========================================================================== 
+*/
+.col-kanji {
+
+  // Sticky Positioning: Giữ Kanji luôn hiển thị khi scroll mẫu câu
+  .sticky-wrapper {
+    position: sticky;
+    top: 20px;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+
+    // Ẩn thanh cuộn cho gọn
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+  }
 }
 
-.empty-message {
-  color: #666;
+.section-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+
+  .icon {
+    display: flex;
+    color: $color-primary;
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: $color-text-sub;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0;
+  }
 }
 
-.not-found {
-  text-align: center;
-  color: #666;
+.kanji-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.kanji-card {
+  background: $color-white;
+  border-radius: $radius-lg;
   padding: 24px;
-} 
+  border: 1px solid $color-border;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+  }
+
+  .kanji-display {
+    background: #fdfdfd;
+    border: 1px dashed $color-border;
+    border-radius: $radius-md;
+    padding: 10px;
+    margin-bottom: 16px;
+    // Đảm bảo Kanji Writer nằm giữa đẹp
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .k-char {
+    display: block;
+    font-size: 1rem;
+    font-weight: 800;
+    color: $color-text-main;
+    margin-bottom: 4px;
+  }
+}
+
+.empty-kanji {
+  text-align: center;
+  padding: 40px;
+  color: $color-text-sub;
+  background: rgba($color-primary-soft, 0.3);
+  border-radius: $radius-lg;
+  border: 1px dashed $color-border;
+}
+
+
+/* ==========================================================================
+   RIGHT COLUMN (8/12): MAIN CONTENT
+========================================================================== 
+*/
+.col-content {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+// --- HERO CARD ---
+.hero-card {
+  background: $color-white;
+  border-radius: $radius-lg;
+  padding: 40px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  border: 1px solid $color-border;
+  position: relative;
+  overflow: hidden;
+
+  // Thanh trang trí nhỏ bên trái
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    background: $color-primary;
+  }
+
+  .word-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 24px;
+
+    .word-type-badge {
+      background: $color-primary-soft;
+      color: $color-primary;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
+
+    .main-word {
+      font-size: 3.5rem;
+      font-weight: 900;
+      line-height: 1.1;
+      margin: 0;
+      color: $color-text-main;
+    }
+  }
+
+  .readings-box {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: baseline;
+
+    .pronunciation-vn {
+      font-size: 1rem;
+      color: $color-text-sub;
+
+      .value {
+        font-weight: 600;
+        color: $color-text-main;
+        margin-left: 6px;
+      }
+    }
+
+    .readings-jp {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+
+      .reading-pill {
+        background: #f1f5f9;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 1rem;
+        color: $color-text-main;
+      }
+    }
+  }
+
+  .divider {
+    height: 1px;
+    background: $color-border;
+    margin: 24px 0;
+  }
+
+  .meaning-box {
+    p {
+      font-size: 1.25rem;
+      line-height: 1.6;
+      color: $color-text-main;
+      font-weight: 500;
+      margin: 0;
+    }
+  }
+}
+
+// --- SENTENCES SECTION ---
+.sentences-section {
+  .sentence-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .sentence-item {
+    background: $color-white;
+    border-radius: $radius-md;
+    padding: 20px;
+    border: 1px solid transparent; // Chuẩn bị cho hover
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    display: flex;
+    gap: 16px;
+    transition: all 0.2s;
+
+    &:hover {
+      border-color: rgba($color-primary, 0.3);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+      .s-index {
+        background: $color-primary;
+        color: white;
+      }
+    }
+
+    .s-index {
+      width: 28px;
+      height: 28px;
+      flex-shrink: 0;
+      background: $color-primary-soft;
+      color: $color-primary;
+      border-radius: 50%;
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .s-content {
+      .jp-text {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: $color-text-main;
+        margin-bottom: 6px;
+        line-height: 1.5;
+      }
+
+      .vn-text {
+        font-size: 1rem;
+        color: $color-text-sub;
+        line-height: 1.5;
+        text-align: left;
+      }
+    }
+  }
+}
+
+.btn-speak {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.4rem;
+  margin-left: 8px;
+  padding: 0;
+  transition: transform 0.1s;
+}

@@ -1,55 +1,186 @@
-@use '@/assets/css/index.scss' as *;
-.sentence-detail {
-  max-width: 1000px;
+/* ==========================================================================
+   SENTENCE DETAIL PAGE STYLES - FLASHCARD STYLE
+========================================================================== 
+*/
+
+// --- 1. Variables ---
+$color-primary: #4f46e5;      // Indigo 600
+$color-primary-soft: #e0e7ff; // Indigo 100
+$color-text-main: #1e293b;    // Slate 800
+$color-text-sub: #64748b;     // Slate 500
+$color-bg-page: #f8fafc;      // Slate 50
+$color-white: #ffffff;
+$color-border: #e2e8f0;
+
+$radius-card: 16px;
+$radius-md: 12px;
+
+$font-jp: 'Noto Sans JP', sans-serif;
+
+// --- 2. Container ---
+.sentence-detail-wrapper {
+  max-width: 800px; // Cùng width với GrammarDetail để đồng bộ
   margin: 0 auto;
-  padding: 24px;
+  padding: 40px 20px;
+  font-family: $font-jp;
+  color: $color-text-main;
+  min-height: 60vh; // Đảm bảo card nằm ở vị trí đẹp ngay cả khi ít nội dung
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; 
+  gap: 40px;
 }
 
+// Loading
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  .spinner {
+    width: 40px; height: 40px;
+    border: 3px solid $color-border;
+    border-top-color: $color-primary;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+}
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+
+/* ==========================================================================
+   MAIN CARD (FLASHCARD)
+========================================================================== 
+*/
 .sentence-card {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 0px 4px rgba(0, 0, 0, 0.4);
-  padding: 24px;
-}
-
-.sentence-info {
-  margin-bottom: 40px;
+  background: $color-white;
+  border-radius: $radius-card;
+  padding: 60px 40px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08); // Shadow sâu tạo độ nổi
+  border: 1px solid $color-border;
   text-align: center;
-  padding: 40px 0;
+  position: relative;
+  overflow: hidden;
+
+  // Đường viền trang trí trên cùng
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, $color-primary, #818cf8);
+  }
+
+  .card-icon {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 56px; height: 56px;
+    background: $color-primary-soft;
+    color: $color-primary;
+    border-radius: 50%;
+    margin-bottom: 30px;
+  }
+
+  .jp-text {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1.4;
+    color: $color-text-main;
+    margin: 0 0 30px 0;
+  }
+
+  .divider {
+    width: 60px;
+    height: 3px;
+    background: $color-border;
+    margin: 0 auto 30px auto;
+    border-radius: 2px;
+  }
+
+  .vn-meaning {
+    font-size: 1.5rem;
+    color: $color-text-sub;
+    font-weight: 400;
+    line-height: 1.6;
+  }
 }
 
-.sentence-japanese {
-  font-size: 2.5rem;
-  font-weight: bold;
-  margin-bottom: 24px;
-  color: #333;
-  line-height: 1.4;
+/* ==========================================================================
+   META SECTION (GRAMMAR LINK)
+========================================================================== 
+*/
+.meta-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+
+  .section-label {
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: $color-text-sub;
+    letter-spacing: 1px;
+  }
+
+  .grammar-link-card {
+    background: $color-white;
+    border: 1px solid $color-border;
+    border-radius: 50px; // Bo tròn dạng pill
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+
+    &:hover {
+      border-color: $color-primary;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+      transform: translateY(-2px);
+
+      .label { color: $color-primary; }
+      .arrow { transform: translateX(4px); opacity: 1; color: $color-primary; }
+    }
+
+    .icon {
+      color: $color-text-sub;
+      display: flex;
+    }
+
+    .label {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: $color-text-main;
+      transition: color 0.2s;
+    }
+
+    .arrow {
+      color: $color-text-sub;
+      opacity: 0.5;
+      transition: all 0.2s;
+    }
+  }
 }
 
-.sentence-reading {
-  font-size: 1.5rem;
-  color: #666;
-  margin-bottom: 24px;
-  line-height: 1.4;
+.btn-speak {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.4rem;
+  margin-left: 8px;
+  padding: 0;
+  transition: transform 0.1s;
 }
 
-.sentence-meaning {
-  font-size: 1.25rem;
-  color: #444;
-  max-width: 800px;
-  margin: 0 auto;
-  line-height: 1.6;
+// Mobile Responsive
+@media (max-width: 768px) {
+  .sentence-card {
+    padding: 40px 20px;
+    
+    .jp-text { font-size: 1.8rem; }
+    .vn-meaning { font-size: 1.2rem; }
+  }
 }
-
-.section-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 16px;
-}
-
-.not-found {
-  text-align: center;
-  color: #666;
-  padding: 24px;
-  font-size: 1.25rem;
-} 
