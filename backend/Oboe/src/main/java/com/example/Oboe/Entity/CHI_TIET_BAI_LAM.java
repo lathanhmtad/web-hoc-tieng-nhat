@@ -15,7 +15,7 @@ public class CHI_TIET_BAI_LAM {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(updatable = false, nullable = false)
-    private UUID maCauTraLoi;
+    private UUID maChiTietBaiLam;
 
     private String noiDungTraLoi;
     private boolean laDapAnDung;

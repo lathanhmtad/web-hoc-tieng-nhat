@@ -44,8 +44,8 @@
               <div class="word-header">
                 <span class="word-type-badge">{{ getWordTypeLabel(wordData.wordType) }}</span>
                 <h1 class="main-word">
-                  {{ wordData.words }}
                   <button class="btn-speak" @click.stop.prevent="speak(wordData.words)">🔊</button>
+                  {{ wordData.words }}
                 </h1>
               </div>
 
@@ -87,8 +87,8 @@
                   <div class="s-index">{{ index + 1 }}</div>
                   <div class="s-content">
                     <div class="jp-text">
-                      {{ sentence.japaneseText }}
                       <button class="btn-speak" @click="speak(sentence.japaneseText)">🔊</button>
+                      {{ sentence.japaneseText }}
                     </div>
                     <div class="vn-text">{{ sentence.vietnameseMeaning }}</div>
                   </div>
@@ -125,7 +125,7 @@ export default {
     const wordId = ref(route.params.id);
     const wordData = ref(null);
     const isLoading = ref(false);
-    const { speak, isPlaying } = useAudio()
+    const { speak } = useAudio()
 
     const getWordTypeLabel = (type) => {
       const types = {
@@ -172,8 +172,7 @@ export default {
       wordId,
       isLoading,
       getWordTypeLabel,
-      speak,
-      isPlaying
+      speak
     };
   }
 };

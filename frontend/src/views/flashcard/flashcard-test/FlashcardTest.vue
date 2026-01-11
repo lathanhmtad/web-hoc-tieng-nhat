@@ -225,6 +225,7 @@ import { useI18n } from 'vue-i18n';
 import ExitTestButton from '@/components/layout/button-exit/ExitTestButton.vue';
 import aiApi from '@/api/modules/aiApi';
 import questionApi from '@/api/modules/questionApi';
+import quizApi from '@/api/modules/quizApi';
 
 const route = useRoute();
 const router = useRouter();
@@ -252,7 +253,6 @@ const aiEvaluationResult = ref(null);
 const isEvaluatingAI = ref(false);
 const isAddingToLibrary = ref(false);
 const isAddedToLibrary = ref(false); // Track if quiz has been added to library
-
 
 const formatTime = (seconds) => {
   const minutes = Math.floor(seconds / 60);
@@ -293,7 +293,9 @@ const initializeTest = () => {
   isReviewing.value = false; // NEW: Ensure not in review mode
 
   const flashcards = store.getters['flashcard/getLearningItems'];
+
   if (!flashcards || flashcards.length === 0) {
+
     console.error('No flashcards found in store');
     router.push({ 
       name: 'flashcardLearn',
@@ -340,6 +342,7 @@ const initializeTest = () => {
     }
 
     const baseQuestion = {
+      questionId: card.questionID || card.flashcardID || card.id,
       question: front,
       correctAnswer: back
     };
@@ -755,7 +758,18 @@ const saveTestToHistory = async () => {
       totalQuestions: totalQuestions.value,
       testType: testType.value,
     };
-    
+
+    const quizId = route.query.quizId
+    if(quizId) {
+      const answerPayload = answers.value.map((ans, index) => {
+        return {
+          questionId: questions.value[index].questionId, 
+          answer: ans.userAnswer, 
+        }
+      })
+      await quizApi.submitAnswers(quizId, answerPayload)
+    }
+
     await store.dispatch('history/saveTestToHistory', testData);
 
   } catch (error) {

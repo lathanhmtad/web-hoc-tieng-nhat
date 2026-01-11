@@ -135,6 +135,7 @@ public class FavoritesService {
                 })
                 .toList();
     }
+
     //lấy tất cả các tử yêu thích
     public List<FavoritesDTO> getAllFavoritesByUserId(UUID userId) {
         List<YEU_THICH> list = favoritesRepository.findByUserId(userId);

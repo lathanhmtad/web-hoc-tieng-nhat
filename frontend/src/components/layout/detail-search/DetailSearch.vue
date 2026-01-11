@@ -11,16 +11,8 @@
       <div class="action-buttons">
         <button
           class="action-btn"
-          :class="{ active: isFavorite }"
-          @click="toggleFavorite"
-        >
-          <i class="fas fa-star"></i>
-        </button>
-
-        <button
-          class="action-btn"
           :class="{ active: isInFlashcards }"
-          @click="toggleFlashcard"
+          @click="toggleFavorite"
         >
           <i class="fas fa-book"></i>
         </button>
@@ -128,16 +120,6 @@ export default defineComponent({
       });
     });
 
-    const toggleFavorite = () => {
-      const currentId = route.params.id;
-      if (!currentId) return;
-
-      store.dispatch('user/toggleFavorite', {
-        type: props.type,
-        itemId: currentId
-      });
-    };
-
     /* ===============================
      * Flashcard
      * =============================== */
@@ -151,9 +133,14 @@ export default defineComponent({
       );
     });
 
-    const toggleFlashcard = () => {
+    const toggleFavorite = () => {
       const currentId = route.params.id;
       if (!currentId) return;
+
+      store.dispatch('user/toggleFavorite', {
+        type: props.type,
+        itemId: currentId
+      });
 
       const action = isInFlashcards.value
         ? 'flashcard/removeItem'
@@ -180,8 +167,7 @@ export default defineComponent({
       notFoundMessageText,
       isFavorite,
       isInFlashcards,
-      toggleFavorite,
-      toggleFlashcard
+      toggleFavorite
     };
   }
 });

@@ -25,6 +25,7 @@ const actions = {
       createdAt: new Date().toISOString(),
     };
     commit('ADD_TO_HISTORY', newHistoryItem);
+    
     return newHistoryItem;
   },
   async deleteTestFromHistory({ commit }, itemId) {

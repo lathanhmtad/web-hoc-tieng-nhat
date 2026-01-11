@@ -42,8 +42,6 @@ const quizApi = {
 
   async create(dto) {
     try {
-
-
       const res = await axios.post(PREFIX, dto);
 
       return res.data;
@@ -87,6 +85,7 @@ const quizApi = {
       throw new Error(handleApiError(error));
     }
   },
+  
   // Tìm kiếm quiz theo từ khóa
   async search(keyword) {
     try {

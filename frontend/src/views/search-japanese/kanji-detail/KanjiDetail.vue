@@ -50,8 +50,8 @@
             <section class="hero-card">
               <div class="main-info">
                 <h1 class="kanji-char">
-                  {{ kanjiData.characterName }}
                   <button class="btn-speak" @click="speak(kanjiData.characterName)">🔊</button>
+                  {{ kanjiData.characterName }}
                 </h1>
                 <div class="meta-info">
                   <h2 class="kanji-meaning">{{ kanjiData.meaning }}</h2>
@@ -91,8 +91,8 @@
                 <div v-for="(vocab, index) in kanjiData.vocabLinks" :key="index" class="vocab-card"
                   @click="navigateToVocabularyDetail(vocab)">
                   <div class="vocab-word">
-                    {{ vocab.word }}
                     <button class="btn-speak" @click.stop="speak(vocab.word)">🔊</button>
+                    {{ vocab.word }}
                   </div>
                   <div class="vocab-mean">{{ vocab.meaning }}</div>
                   <div class="arrow-action">

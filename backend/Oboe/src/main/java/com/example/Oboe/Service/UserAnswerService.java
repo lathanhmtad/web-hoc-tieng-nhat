@@ -4,30 +4,29 @@ import com.example.Oboe.DTOs.QuizResultDTO;
 import com.example.Oboe.DTOs.UserAnswerDTO;
 import com.example.Oboe.Entity.*;
 import com.example.Oboe.Repository.*;
+import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class UserAnswerService {
-    private final UserAnswerRepository userAnswerRepository;
-    private final QuestionsRepository questionsRepository;
-    private final QuizzesRepository quizzesRepository;
-    private final UserRepository userRepository;
-    private final QuizResultRepository quizResultRepository;
+    private UserAnswerRepository userAnswerRepository;
+    private QuestionsRepository questionsRepository;
+    private QuizzesRepository quizzesRepository;
+    private UserRepository userRepository;
+    private QuizResultRepository quizResultRepository;
 
-    @Autowired
-    public UserAnswerService(UserAnswerRepository userAnswerRepository, QuestionsRepository questionsRepository
-            , QuizzesRepository quizzesRepository, UserRepository userRepository,QuizResultRepository quizResultRepository) {
-        this.questionsRepository = questionsRepository;
-        this.userAnswerRepository = userAnswerRepository;
-        this.quizzesRepository = quizzesRepository;
-        this.userRepository = userRepository;
-        this.quizResultRepository =  quizResultRepository;
-    }
+    @Transactional
     public QuizResultDTO saveUserAnswer(List<UserAnswerDTO> answers, UUID userId, UUID quizzesId) {
         // Lấy QuizID
         BAI_KIEM_TRA quiz = quizzesRepository.findById(quizzesId).orElse(null);
@@ -41,8 +40,8 @@ public class UserAnswerService {
         }
 
         // Đếm tổng số câu hỏi
-        int totalQuestions = questionsRepository.countByBaiKiemTra_MaBaiKiemTra(quizzesId);
-
+        List<CAU_HOI> allQuestions = questionsRepository.findByBaiKiemTra_MaBaiKiemTra(quizzesId);
+        int totalQuestions = allQuestions.size();
 
         if (totalQuestions == 0) {
             return new QuizResultDTO("Quiz không có câu hỏi nào!", 0, totalQuestions, answers.size(), LocalDateTime.now());
@@ -55,49 +54,55 @@ public class UserAnswerService {
             return new QuizResultDTO("Bạn đã trả lời nhiều hơn số câu hỏi trong quiz này!", 0, totalQuestions, answers.size(), LocalDateTime.now());
         }
 
-        //  Tìm attemptNumber lớn nhất đã có
-//        Integer latestAttempt = userAnswerRepository.findMaxAttemptNumber(userId, quizzesId);
-//        int currentAttempt = (latestAttempt == null) ? 1 : latestAttempt + 1;
+        // 3. Convert List câu hỏi sang Map để tìm kiếm nhanh (O(1)) theo ID
+        Map<UUID, CAU_HOI> questionMap = allQuestions.stream()
+                .collect(Collectors.toMap(CAU_HOI::getMaCauHoi, Function.identity())); // Giả sử getter ID là getMaCauHoi()
 
         long correctAnswers = 0;
+        List<CHI_TIET_BAI_LAM> chiTietBaiLamList = new ArrayList<>();
 
-//        for (UserAnswerDTO dto : answers) {
-//            CauHoi question = questionsRepository.findById(dto.getQuestionId())
-//                    .orElseThrow(() -> new RuntimeException("Không tìm thấy câu hỏi"));
-//
-//            // Kiểm tra đúng/sai
-//            boolean isCorrect = dto.getAnswer().equalsIgnoreCase(question.getCorrectAnswer());
-//
-//            CauTraLoiNguoiDung userAnswer = new CauTraLoiNguoiDung();
-//            userAnswer.setQuiz(quiz);
-//            userAnswer.setUser(nguoiDung);
-//            userAnswer.setQuestion(question);
-//            userAnswer.setAnswer(dto.getAnswer());
-//            userAnswer.setCorrect(isCorrect);
-//            userAnswer.setAttemptNumber(currentAttempt);
-//
-//            userAnswerRepository.save(userAnswer);
-//
-//            if (isCorrect) correctAnswers++;
-//        }
-//
-//        double score = ((double) correctAnswers / totalQuestions) * 100;
-//        score = Math.round(score * 100.0) / 100.0;
-//        LocalDateTime takenAt = LocalDateTime.now();
-//
-//        KetQua result = new KetQua();
-//        result.setQuiz(quiz);
-//        result.setUser(nguoiDung);
-//        result.setTakenAt(takenAt);
-//        result.setScore(score);
-//        try {
-//            quizResultRepository.save(result);
-//            return new QuizResultDTO("Lưu đáp án thành công!", score, totalQuestions, correctAnswers, takenAt);
-//        } catch (Exception e) {
-//            e.printStackTrace(); // hoặc log lỗi
-//            return new QuizResultDTO("Lỗi khi lưu kết quả quiz!", 0, totalQuestions, correctAnswers, LocalDateTime.now());
-//        }
-        return null;
+        for (UserAnswerDTO dto : answers) {
+            CAU_HOI question = questionMap.get(dto.getQuestionId());
+
+            if (question == null) {
+                // Tùy chọn: throw exception hoặc continue. Ở đây mình continue để tránh crash
+                continue;
+            }
+            // Kiểm tra đúng/sai
+            boolean isCorrect = dto.getAnswer().equalsIgnoreCase(question.getDapAnChinhXac());
+
+            CHI_TIET_BAI_LAM chiTietBaiLam = new CHI_TIET_BAI_LAM();
+            chiTietBaiLam.setCauHoi(question);
+            chiTietBaiLam.setNoiDungTraLoi(dto.getAnswer());
+            chiTietBaiLam.setLaDapAnDung(isCorrect);
+            chiTietBaiLamList.add(chiTietBaiLam);
+
+            if (isCorrect) correctAnswers++;
+        }
+
+        double score = ((double) correctAnswers / totalQuestions) * 100;
+        score = Math.round(score * 100.0) / 100.0;
+        LocalDateTime takenAt = LocalDateTime.now();
+
+        try {
+            LICH_SU_LAM_BAI result = new LICH_SU_LAM_BAI();
+            result.setBaiKiemTra(quiz);
+            result.setNguoiDung(nguoiDung);
+            result.setDiemSo(score);
+            result.setThoiGianLamBai(takenAt);
+
+            LICH_SU_LAM_BAI savedResult = quizResultRepository.save(result);
+
+            for (CHI_TIET_BAI_LAM item : chiTietBaiLamList) {
+                item.setLichSuLamBai(savedResult);
+            }
+
+            userAnswerRepository.saveAll(chiTietBaiLamList);
+            return new QuizResultDTO("Lưu đáp án thành công!", score, totalQuestions, correctAnswers, takenAt);
+        } catch (Exception e) {
+            e.printStackTrace(); // hoặc log lỗi
+            return new QuizResultDTO("Lỗi khi lưu kết quả quiz!", 0, totalQuestions, correctAnswers, LocalDateTime.now());
+        }
     }
 }
 
